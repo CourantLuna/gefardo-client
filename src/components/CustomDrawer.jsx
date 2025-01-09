@@ -195,29 +195,60 @@ function CustomDrawer({ isOpen, onPageChange, selectedPage }) {
                     backgroundColor: expanded[item.segment]
                       ? theme.palette.action.hover
                       : 'transparent',
+                    '&:hover': {
+                      backgroundColor: theme.palette.action.hover,
+                    },
                   }}
                 >
                   <ListItemIcon
                     sx={{
-                      color: theme.palette.text.disabled,
+                      color: expanded[item.segment]
+                        ? theme.palette.primary.main // Icono seleccionado
+                        : theme.palette.text.disabled, // Icono no seleccionado
+                      position: 'relative',
+                      display: 'flex',
+                      alignItems: 'center',
                     }}
                   >
                     {item.icon}
+                    {!isOpen && (
+                      <Box
+                        component="span"
+                        sx={{
+                          position: 'absolute',
+                          right: -5, // Ajuste para posicionar el ícono cerca del principal
+                          color: theme.palette.text.secondary,
+                          display: 'flex',
+                          alignItems: 'center',
+                        }}
+                      >
+                        {expanded[item.segment] ? (
+                          <ExpandLessIcon fontSize="small" />
+                        ) : (
+                          <ExpandMoreIcon fontSize="small" />
+                        )}
+                      </Box>
+                    )}
                   </ListItemIcon>
+
                   {isOpen && (
                     <ListItemText
                       primary={item.title}
-                      sx={{ color: theme.palette.text.primary }}
+                      sx={{
+                        color: theme.palette.text.primary,
+                      }}
                     />
                   )}
+
                   {isOpen && (
                     expanded[item.segment] ? (
                       <ExpandLessIcon sx={{ color: theme.palette.text.primary }} />
                     ) : (
-                      <ExpandMoreIcon sx={{ color: theme.palette.text.primary }} />
+                      <ExpandMoreIcon sx={{ color: theme.palette.text.disabled }} />
                     )
                   )}
                 </ListItem>
+
                 <Collapse in={expanded[item.segment]} timeout="auto" unmountOnExit>
                   <List disablePadding>
                     {item.children.map((child, childIndex) => {
