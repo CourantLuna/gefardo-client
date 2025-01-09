@@ -14,7 +14,6 @@ import {
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import BarChartIcon from '@mui/icons-material/BarChart';
-import LayersIcon from '@mui/icons-material/Layers';
 import PersonIcon from '@mui/icons-material/Person';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -27,73 +26,50 @@ const drawerWidth = 300;
 const collapsedWidth = 85;
 
 const NAVIGATION = [
-  // Sección de Inicio
-  { type: 'title', title: 'Home' },
+  { type: 'title', title: 'Home', roles: ['Administrador', 'Inspector', 'Farmaceutico'] },
   {
     segment: 'dashboard',
     title: 'Inicio',
     icon: <DashboardIcon />,
+    roles: ['Administrador', 'Inspector', 'Farmaceutico'],
   },
-  { type: 'divider' },
-
-  // Sección de Gestión
-  { type: 'title', title: 'Gestión' },
+  { type: 'divider', roles: ['Administrador', 'Inspector', 'Farmaceutico'] },
+  { type: 'title', title: 'Gestión', roles: ['Administrador', 'Inspector', 'Farmaceutico'] },
   {
     segment: 'solicitudes',
     title: 'Solicitudes',
     icon: <ShoppingCartIcon />,
+    roles: ['Administrador', 'Farmaceutico'],
     children: [
-      { segment: 'revisar-solicitudes', title: 'Revisar solicitudes', icon: <ReceiptIcon /> }, // Administrador
-      { segment: 'crear-solicitudes', title: 'Crear solicitudes', icon: <ReceiptIcon /> }, // Farmacéutico
-      { segment: 'consultar-estado', title: 'Consultar estado', icon: <ReceiptIcon /> }, // Farmacéutico
+      { segment: 'revisar-solicitudes', title: 'Revisar solicitudes', icon: <ReceiptIcon />, roles: ['Administrador'] },
+      { segment: 'crear-solicitudes', title: 'Crear solicitudes', icon: <ReceiptIcon />, roles: ['Farmaceutico'] },
+      { segment: 'consultar-estado', title: 'Consultar estado', icon: <ReceiptIcon />, roles: ['Farmaceutico'] },
     ],
   },
   {
     segment: 'inspecciones',
     title: 'Inspecciones',
     icon: <BarChartIcon />,
+    roles: ['Administrador', 'Inspector'],
     children: [
-      { segment: 'ver-asignadas', title: 'Ver asignadas', icon: <TrendingUpIcon /> }, // Inspector
-      { segment: 'programar-inspecciones', title: 'Programar inspecciones', icon: <TrendingUpIcon /> }, // Administrador
-      { segment: 'completar-inspecciones', title: 'Completar inspecciones', icon: <TrendingUpIcon /> }, // Inspector
-    ],
-  },
-  {
-    segment: 'seguimiento',
-    title: 'Seguimiento',
-    icon: <LayersIcon />,
-    children: [
-      { segment: 'ver-acciones', title: 'Ver acciones', icon: <ReceiptIcon /> }, // Farmacéutico
-      { segment: 'crear-acciones', title: 'Crear acciones', icon: <ReceiptIcon /> }, // Administrador/Inspector
-      { segment: 'actualizar-acciones', title: 'Actualizar acciones', icon: <ReceiptIcon /> }, // Administrador/Inspector
+      { segment: 'ver-asignadas', title: 'Ver asignadas', icon: <TrendingUpIcon />, roles: ['Inspector'] },
+      { segment: 'programar-inspecciones', title: 'Programar inspecciones', icon: <TrendingUpIcon />, roles: ['Administrador'] },
+      { segment: 'completar-inspecciones', title: 'Completar inspecciones', icon: <TrendingUpIcon />, roles: ['Inspector'] },
     ],
   },
   {
     segment: 'usuarios',
     title: 'Usuarios',
     icon: <PersonIcon />,
+    roles: ['Administrador'],
     children: [
-      { segment: 'crear-usuario', title: 'Crear usuario', icon: <PersonAddIcon /> }, // Administrador
-      { segment: 'modificar-usuario', title: 'Modificar usuario', icon: <SettingsIcon /> }, // Administrador
+      { segment: 'crear-usuario', title: 'Crear usuario', icon: <PersonAddIcon />, roles: ['Administrador'] },
+      { segment: 'modificar-usuario', title: 'Modificar usuario', icon: <SettingsIcon />, roles: ['Administrador'] },
     ],
   },
-  { type: 'divider' },
-
-  // Sección de Reportes
-  { type: 'title', title: 'Reportes' },
-  {
-    segment: 'reportes',
-    title: 'Reportes',
-    icon: <BarChartIcon />,
-    children: [
-      { segment: 'ver-inspecciones', title: 'Ver inspecciones', icon: <TrendingUpIcon /> }, // Administrador
-      { segment: 'ver-historial', title: 'Ver historial', icon: <ReceiptIcon /> }, // Administrador
-    ],
-  },
- 
 ];
 
-function CustomDrawer({ isOpen, onPageChange, selectedPage }) {
+function CustomDrawer({ isOpen, onPageChange, selectedPage, userRole }) {
   const theme = useTheme();
   const [expanded, setExpanded] = useState({});
 
@@ -103,6 +79,12 @@ function CustomDrawer({ isOpen, onPageChange, selectedPage }) {
       [segment]: !prev[segment],
     }));
   };
+
+  // Filtrar elementos según el rol del usuario
+  const filteredNavigation = NAVIGATION.filter((item) => {
+    if (!item.roles) return true;
+    return item.roles.includes(userRole);
+  });
 
   return (
     <Drawer
@@ -124,7 +106,7 @@ function CustomDrawer({ isOpen, onPageChange, selectedPage }) {
     >
       <Box>
         <List>
-          {NAVIGATION.map((item, index) => {
+          {filteredNavigation.map((item, index) => {
             if (item.type === 'title') {
               return (
                 <Typography
@@ -203,8 +185,8 @@ function CustomDrawer({ isOpen, onPageChange, selectedPage }) {
                   <ListItemIcon
                     sx={{
                       color: expanded[item.segment]
-                        ? theme.palette.primary.main // Icono seleccionado
-                        : theme.palette.text.disabled, // Icono no seleccionado
+                        ? theme.palette.primary.main
+                        : theme.palette.text.disabled,
                       position: 'relative',
                       display: 'flex',
                       alignItems: 'center',
@@ -216,7 +198,7 @@ function CustomDrawer({ isOpen, onPageChange, selectedPage }) {
                         component="span"
                         sx={{
                           position: 'absolute',
-                          right: -5, // Ajuste para posicionar el ícono cerca del principal
+                          right: -5,
                           color: theme.palette.text.secondary,
                           display: 'flex',
                           alignItems: 'center',
@@ -251,48 +233,50 @@ function CustomDrawer({ isOpen, onPageChange, selectedPage }) {
 
                 <Collapse in={expanded[item.segment]} timeout="auto" unmountOnExit>
                   <List disablePadding>
-                    {item.children.map((child, childIndex) => {
-                      const isChildSelected = selectedPage?.segment === child.segment;
+                    {item.children
+                      .filter((child) => child.roles.includes(userRole))
+                      .map((child, childIndex) => {
+                        const isChildSelected = selectedPage?.segment === child.segment;
 
-                      return (
-                        <ListItem
-                          button
-                          key={childIndex}
-                          onClick={() =>
-                            onPageChange({ segment: child.segment, title: child.title })
-                          }
-                          sx={{
-                            pl: 4,
-                            backgroundColor: isChildSelected
-                              ? theme.palette.action.selected
-                              : 'transparent',
-                            '&:hover': {
-                              backgroundColor: theme.palette.action.hover,
-                            },
-                          }}
-                        >
-                          <ListItemIcon
+                        return (
+                          <ListItem
+                            button
+                            key={childIndex}
+                            onClick={() =>
+                              onPageChange({ segment: child.segment, title: child.title })
+                            }
                             sx={{
-                              color: isChildSelected
-                                ? theme.palette.primary.main
-                                : theme.palette.text.disabled,
+                              pl: 4,
+                              backgroundColor: isChildSelected
+                                ? theme.palette.action.selected
+                                : 'transparent',
+                              '&:hover': {
+                                backgroundColor: theme.palette.action.hover,
+                              },
                             }}
                           >
-                            {child.icon}
-                          </ListItemIcon>
-                          {isOpen && (
-                            <ListItemText
-                              primary={child.title}
+                            <ListItemIcon
                               sx={{
                                 color: isChildSelected
                                   ? theme.palette.primary.main
-                                  : theme.palette.text.primary,
+                                  : theme.palette.text.disabled,
                               }}
-                            />
-                          )}
-                        </ListItem>
-                      );
-                    })}
+                            >
+                              {child.icon}
+                            </ListItemIcon>
+                            {isOpen && (
+                              <ListItemText
+                                primary={child.title}
+                                sx={{
+                                  color: isChildSelected
+                                    ? theme.palette.primary.main
+                                    : theme.palette.text.primary,
+                                }}
+                              />
+                            )}
+                          </ListItem>
+                        );
+                      })}
                   </List>
                 </Collapse>
               </React.Fragment>

@@ -12,7 +12,7 @@ import Logout from '@mui/icons-material/Logout';
 import Person from '@mui/icons-material/Person';
 
 
-function CustomNavbar({ appName, onMenuClick, darkMode, onToggleDarkMode }) {
+function CustomNavbar({ appName, onMenuClick, darkMode, onToggleDarkMode, onLogout  }) {
   //const [darkMode, setDarkMode] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null); // Controla el menú desplegable del perfil
 
@@ -21,9 +21,17 @@ function CustomNavbar({ appName, onMenuClick, darkMode, onToggleDarkMode }) {
     setAnchorEl(event.currentTarget);
   };
 
+  const handleLogout = () => {
+    onLogout(); // Call the onLogout function passed from the parent
+    handleClose(); // Close the menu
+  };
+
+
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  
 
   //  const theme = themeConfig(darkMode);
 
@@ -64,11 +72,6 @@ function CustomNavbar({ appName, onMenuClick, darkMode, onToggleDarkMode }) {
           {/* Navigation Buttons */}
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
 
-            {/* Theme Toggle */}
-            {/* <IconButton color="inherit" onClick={handleThemeToggle}>
-  {darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
-</IconButton> */}
-
             {/* Profile Button */}
             <IconButton
               color="inherit"
@@ -108,7 +111,7 @@ function CustomNavbar({ appName, onMenuClick, darkMode, onToggleDarkMode }) {
                 </ListItemIcon>
                 Configuracion
               </MenuItem>
-              <MenuItem onClick={handleClose}>
+              <MenuItem onClick={handleLogout}>
                 <ListItemIcon>
                   <Logout fontSize="small" />
                 </ListItemIcon>

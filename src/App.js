@@ -1,110 +1,39 @@
-import React, { useState } from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
-import './App.css';
-
-import CustomNavbar from './components/CustomNavbar';
-import CustomDrawer from './components/CustomDrawer';
-import { Box, CssBaseline, createTheme, ThemeProvider, Typography } from '@mui/material';
-
-const drawerWidth = 240;
-const collapsedWidth = 60;
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider, AuthContext } from './context/authContext'; // Importamos el contexto
+import LoginPage from './pages/LoginPage';
+import GefardoPage from './pages/GefardoPage';
 
 function App() {
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
-  const [selectedPage, setSelectedPage] = useState({ segment: 'dashboard', title: 'Inicio' });
-
-  // Crear tema dinámico
-  const theme = createTheme({
-    palette: {
-      mode: darkMode ? 'dark' : 'light',
-    },
-  });
-
-  const handleToggleDrawer = () => {
-    setDrawerOpen(!drawerOpen);
-  };
-
-  const handleToggleDarkMode = () => {
-    setDarkMode(!darkMode);
-  };
-
-  const handleNavigationClick = (page) => {
-    setSelectedPage(page);
-  };
-
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
+    <AuthProvider>
       <Router>
-        <Box>
-          {/* Navbar - Siempre ocupa todo el ancho */}
-          <CustomNavbar
-            appName="Gefardo"
-            onMenuClick={handleToggleDrawer}
-            darkMode={darkMode}
-            onToggleDarkMode={handleToggleDarkMode}
-            selectedPage={selectedPage}
-            onNavigationClick={handleNavigationClick} // Lógica de navegación
-          />
+        <AuthContext.Consumer>
+          {({ isAuthenticated }) => (
+            <Routes>
+              {/* Ruta de Login */}
+              <Route
+                path="/login"
+                element={
+                  isAuthenticated ? <Navigate to="/gefardo" replace /> : <LoginPage />
+                }
+              />
 
-          {/* Drawer - Controla la navegación también */}
-          <CustomDrawer
-            isOpen={drawerOpen}
-            onPageChange={handleNavigationClick} // Lógica de navegación
-            selectedPage={selectedPage} // Página seleccionada
-          />
+              {/* Ruta Principal de Gefardo */}
+              <Route
+                path="/gefardo/*"
+                element={
+                  isAuthenticated ? <GefardoPage /> : <Navigate to="/login" replace />
+                }
+              />
 
-          {/* Contenido principal */}
-          <Box
-            component="main"
-            sx={{
-              flexGrow: 1,
-              p: 3,
-              marginLeft: drawerOpen
-                ? `${drawerWidth}px`
-                : `${collapsedWidth}px`, // Ajusta según el estado del Drawer
-              transition: "margin-left 0.3s", // Transición suave
-              overflowX: "hidden", // Previene desbordamientos horizontales
-              display: "flex", // Habilita diseño flexible
-              justifyContent: "center", // Centrado horizontal
-              flexDirection: "column",
-              textAlign: "center",
-              marginBottom: 2, // Espacio inferior para separación
-            }}
-          >
-            {/* Contenido dinámico según la página seleccionada */}
-            <Typography
-  variant="h4"
-  sx={{
-    fontWeight: 'bold',
-    marginBottom: 1, // Espacio entre título y subrayado
-  }}
->
-  {selectedPage.title.toUpperCase()}
-</Typography>
-
-            <Box
-              sx={{
-                alignSelf: "center",
-                width: "50px", // Longitud de la línea subrayada
-                height: "4px", // Grosor de la línea
-                backgroundColor: theme.palette.primary.main, // Color dinámico según el tema
-                borderRadius: "4px", // Bordes redondeados
-                marginBottom: 2, // Espacio inferior para separación
-              }}
-            ></Box>
-            {/* Aquí puedes agregar el contenido dinámico según la página */}
-            <Typography variant="body1">
-              This is the content for
-               {selectedPage.title}
-            </Typography>
-          </Box>
-
-
-        </Box>
+              {/* Redirección por defecto */}
+              <Route path="*" element={<Navigate to="/login" replace />} />
+            </Routes>
+          )}
+        </AuthContext.Consumer>
       </Router>
-    </ThemeProvider>
+    </AuthProvider>
   );
 }
 
