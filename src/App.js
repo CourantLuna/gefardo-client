@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider, AuthContext } from './context/authContext'; // Importamos el contexto
-import LoginPage from './pages/LoginPage';
+import { AuthProvider, AuthContext } from './context/authContext';
+import HomePage from './pages/HomePage';
 import GefardoPage from './pages/GefardoPage';
 
 function App() {
@@ -11,24 +11,19 @@ function App() {
         <AuthContext.Consumer>
           {({ isAuthenticated }) => (
             <Routes>
-              {/* Ruta de Login */}
-              <Route
-                path="/login"
-                element={
-                  isAuthenticated ? <Navigate to="/gefardo" replace /> : <LoginPage />
-                }
-              />
+              {/* Ruta de Home */}
+              <Route path="/" element={<HomePage />} />
 
-              {/* Ruta Principal de Gefardo */}
+              {/* Ruta de Gefardo */}
               <Route
-                path="/gefardo/*"
+                path="/gefardo"
                 element={
-                  isAuthenticated ? <GefardoPage /> : <Navigate to="/login" replace />
+                  isAuthenticated ? <GefardoPage /> : <Navigate to="/" replace />
                 }
               />
 
               {/* Redirección por defecto */}
-              <Route path="*" element={<Navigate to="/login" replace />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           )}
         </AuthContext.Consumer>
