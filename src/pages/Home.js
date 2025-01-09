@@ -1,30 +1,37 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+//import React, { useEffect, useState } from 'react';
+//import axios from 'axios';
+import DynamicForm from '../components/DynamicForm';
 
 function Home() {
-  const [provincias, setProvincias] = useState([]);
+  const jsonSchema = [
+    {
+      name: "username",
+      label: "Username",
+      type: "text",
+      required: true,
+    },
+    {
+      name: "email",
+      label: "Email",
+      type: "email",
+      required: true,
+    },
+    {
+      name: "age",
+      label: "Age",
+      type: "number",
+      required: false,
+    },
+  ];
+  const handleSubmit = (data) => {
+    console.log("Form Data Submitted: ", data);
+  };
 
-  useEffect(() => {
-    // Realizar una solicitud GET a la API de Provincias
-    axios.get('/api/provincias')
-      .then(response => {
-        setProvincias(response.data);
-      })
-      .catch(error => {
-        console.error("Hubo un error al obtener las provincias", error);
-      });
-  }, []);
 
   return (
     <div>
-      <h1>Lista de Provincias</h1>
-      <ul>
-        {provincias.map(provincia => (
-          <li key={provincia.Id_Provincia}>
-            {provincia.Descripcion} - {provincia.Estado === 1 ? 'Activo' : 'Inactivo'}
-          </li>
-        ))}
-      </ul>
+      <h1>Dynamic Form</h1>
+      <DynamicForm jsonSchema={jsonSchema} onSubmit={handleSubmit} />
     </div>
   );
 }
