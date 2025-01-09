@@ -23,7 +23,6 @@ import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 
-
 const drawerWidth = 300;
 const collapsedWidth = 85;
 
@@ -94,13 +93,10 @@ const NAVIGATION = [
  
 ];
 
-
-
 function CustomDrawer({ isOpen, onPageChange, selectedPage }) {
-  const theme = useTheme(); // Obtiene el tema actual
-  const [expanded, setExpanded] = useState({}); // Controla qué menús están expandidos
+  const theme = useTheme();
+  const [expanded, setExpanded] = useState({});
 
-  // Alternar expansión de un submenú
   const handleToggle = (segment) => {
     setExpanded((prev) => ({
       ...prev,
@@ -117,19 +113,18 @@ function CustomDrawer({ isOpen, onPageChange, selectedPage }) {
         [`& .MuiDrawer-paper`]: {
           width: isOpen ? drawerWidth : collapsedWidth,
           boxSizing: 'border-box',
-          marginTop: { xs: '56px', sm: '64px' }, // Espaciado debajo del Navbar
+          marginTop: { xs: '56px', sm: '64px' },
           overflowX: 'hidden',
           overflowY: 'auto',
           transition: 'width 0.3s',
-          backgroundColor: theme.palette.background.default, // Fondo dinámico según el tema
-          color: theme.palette.text.primary, // Texto dinámico según el tema
+          backgroundColor: theme.palette.background.default,
+          color: theme.palette.text.primary,
         },
       }}
     >
       <Box>
         <List>
           {NAVIGATION.map((item, index) => {
-            // Renderizar títulos de sección
             if (item.type === 'title') {
               return (
                 <Typography
@@ -148,14 +143,12 @@ function CustomDrawer({ isOpen, onPageChange, selectedPage }) {
               );
             }
 
-            // Renderizar divisores
             if (item.type === 'divider') {
               return <Divider key={index} />;
             }
 
-            const isSelected = selectedPage === item.segment;
+            const isSelected = selectedPage?.segment === item.segment;
 
-            // Si no tiene submenús, renderiza como ListItem
             if (!item.children) {
               return (
                 <ListItem
@@ -163,9 +156,7 @@ function CustomDrawer({ isOpen, onPageChange, selectedPage }) {
                   key={index}
                   onClick={() => onPageChange({ segment: item.segment, title: item.title })}
                   sx={{
-                    backgroundColor: isSelected
-                      ? theme.palette.action.selected
-                      : 'transparent',
+                    backgroundColor: isSelected ? theme.palette.action.selected : 'transparent',
                     '&:hover': {
                       backgroundColor: theme.palette.action.hover,
                     },
@@ -173,9 +164,7 @@ function CustomDrawer({ isOpen, onPageChange, selectedPage }) {
                 >
                   <ListItemIcon
                     sx={{
-                      color: isSelected
-                        ? theme.palette.primary.main // Icono seleccionado
-                        : theme.palette.text.disabled, // Icono no seleccionado
+                      color: isSelected ? theme.palette.primary.main : theme.palette.text.disabled,
                     }}
                   >
                     {item.icon}
@@ -185,8 +174,8 @@ function CustomDrawer({ isOpen, onPageChange, selectedPage }) {
                       primary={item.title}
                       sx={{
                         color: isSelected
-                          ? theme.palette.primary.main // Texto seleccionado
-                          : theme.palette.text.primary, // Texto no seleccionado
+                          ? theme.palette.primary.main
+                          : theme.palette.text.primary,
                       }}
                     />
                   )}
@@ -194,7 +183,6 @@ function CustomDrawer({ isOpen, onPageChange, selectedPage }) {
               );
             }
 
-            // Si tiene submenús, renderiza con submenús colapsables
             return (
               <React.Fragment key={index}>
                 <ListItem
@@ -212,35 +200,14 @@ function CustomDrawer({ isOpen, onPageChange, selectedPage }) {
                   <ListItemIcon
                     sx={{
                       color: theme.palette.text.disabled,
-                      position: 'relative',
                     }}
                   >
                     {item.icon}
-                    {!isOpen && (
-                      <Box
-                        component="span"
-                        sx={{
-                          position: 'absolute',
-                          right: -5,
-                          color: theme.palette.text.primary,
-                          display: 'flex',
-                          alignItems: 'center',
-                        }}
-                      >
-                        {expanded[item.segment] ? (
-                          <ExpandLessIcon fontSize="small" />
-                        ) : (
-                          <ExpandMoreIcon fontSize="small" />
-                        )}
-                      </Box>
-                    )}
                   </ListItemIcon>
                   {isOpen && (
                     <ListItemText
                       primary={item.title}
-                      sx={{
-                        color: theme.palette.text.primary,
-                      }}
+                      sx={{ color: theme.palette.text.primary }}
                     />
                   )}
                   {isOpen && (
@@ -254,15 +221,17 @@ function CustomDrawer({ isOpen, onPageChange, selectedPage }) {
                 <Collapse in={expanded[item.segment]} timeout="auto" unmountOnExit>
                   <List disablePadding>
                     {item.children.map((child, childIndex) => {
-                      const isChildSelected = selectedPage === child.segment;
+                      const isChildSelected = selectedPage?.segment === child.segment;
 
                       return (
                         <ListItem
                           button
                           key={childIndex}
-                          onClick={() => onPageChange({ segment: child.segment, title: child.title })}
+                          onClick={() =>
+                            onPageChange({ segment: child.segment, title: child.title })
+                          }
                           sx={{
-                            pl: 4, // Padding adicional para mostrar jerarquía
+                            pl: 4,
                             backgroundColor: isChildSelected
                               ? theme.palette.action.selected
                               : 'transparent',
