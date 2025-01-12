@@ -26,15 +26,23 @@ const AuthService = {
   },
 
    // Obtener el rol del usuario decodificando el token
-   getUserRole: () => {
+   getUserRoles: () => {
     try {
       const token = sessionStorage.getItem('token');
       if (!token) throw new Error('Token no encontrado.');
+  
       const decodedToken = jwtDecode(token); // Decodifica el token JWT
-      return decodedToken.roles?.[0] || 'Usuario'; // Ajusta según el formato del token
+  
+      // Verifica si 'roles' existe y es un array
+      if (Array.isArray(decodedToken.roles) && decodedToken.roles.length > 0) {
+        return decodedToken.roles; // Retorna todos los roles
+      }
+  
+      console.warn('Roles no encontrados en el token.');
+      return []; // Retorna un array vacío si no hay roles
     } catch (err) {
-      console.error('Error al obtener el rol del usuario:', err.message);
-      return 'Usuario'; // Rol predeterminado si falla
+      console.error('Error al obtener los roles del usuario:', err.message);
+      return []; // Retorna un array vacío si ocurre un error
     }
   },
 

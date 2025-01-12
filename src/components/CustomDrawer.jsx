@@ -69,9 +69,10 @@ const NAVIGATION = [
   },
 ];
 
-function CustomDrawer({ isOpen, onPageChange, selectedPage, userRole }) {
+function CustomDrawer({ isOpen, onPageChange, selectedPage, userRoles }) {
   const theme = useTheme();
   const [expanded, setExpanded] = useState({});
+  
 
   const handleToggle = (segment) => {
     setExpanded((prev) => ({
@@ -80,10 +81,12 @@ function CustomDrawer({ isOpen, onPageChange, selectedPage, userRole }) {
     }));
   };
 
-  // Filtrar elementos según el rol del usuario
+  // Asegúrate de que userRoles sea un array
+  const validUserRoles = Array.isArray(userRoles) ? userRoles : [];
+  // Filtrar elementos según los roles del usuario
   const filteredNavigation = NAVIGATION.filter((item) => {
     if (!item.roles) return true;
-    return item.roles.includes(userRole);
+    return item.roles.some((role) => validUserRoles.includes(role));
   });
 
   return (
@@ -234,7 +237,7 @@ function CustomDrawer({ isOpen, onPageChange, selectedPage, userRole }) {
                 <Collapse in={expanded[item.segment]} timeout="auto" unmountOnExit>
                   <List disablePadding>
                     {item.children
-                      .filter((child) => child.roles.includes(userRole))
+                      .filter((child) => child.roles.some((role) => userRoles.includes(role)))
                       .map((child, childIndex) => {
                         const isChildSelected = selectedPage?.segment === child.segment;
 

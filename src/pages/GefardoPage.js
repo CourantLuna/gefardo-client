@@ -12,15 +12,22 @@ function GefardoPage() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
   const [selectedPage, setSelectedPage] = useState({ segment: 'dashboard', title: 'Inicio' });
-  const [userRole, setUserRole] = useState('Usuario'); // Estado para el rol del usuario
+  const [userRolesPasados=[], setUserRoles] = useState([]); // Cambia userRole a userRoles como array
 
   const { logout } = useContext(AuthContext); // Obtiene la función logout del contexto
 
 
    // Obtener el rol del usuario cuando la página se carga
    useEffect(() => {
-    const role = AuthService.getUserRole(); // Llama a AuthService para obtener el rol
-    setUserRole(role); // Actualiza el estado del rol
+    const roles = AuthService.getUserRoles();
+    if (!roles || roles.length === 0) {
+      console.warn('No se encontraron roles, asignando rol predeterminado.');
+      // setUserRoles(['Farmaceutico']); // Rol predeterminado
+    } else {
+      console.log('Roles del usuario:', roles);
+
+      setUserRoles(roles);
+    }
   }, []);
 
 
@@ -61,7 +68,7 @@ function GefardoPage() {
           isOpen={drawerOpen}
           onPageChange={handleNavigationClick}
           selectedPage={selectedPage}
-          userRole={userRole}	// Pasa el rol del usuario al drawer
+          userRoles={userRolesPasados}	// Pasa el rol del usuario al drawer
         />
 
         {/* Main Content */}
