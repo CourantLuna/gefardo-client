@@ -6,7 +6,7 @@ const AuthService = {
   // Login: Envía las credenciales al backend y guarda el token en sessionStorage
   login: async (email, password) => {
     try {
-      const response = await axios.post(`${API_URL}auth/login`, {
+      const response = await axios.post(`${API_URL}/auth/login`, {
         Correo_Electronico: email,
         Clave: password,
       });
