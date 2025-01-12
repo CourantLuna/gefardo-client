@@ -1,8 +1,9 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import CustomNavbar from '../components/CustomNavbar';
 import CustomDrawer from '../components/CustomDrawer';
 import { Box, CssBaseline, createTheme, ThemeProvider, Typography } from '@mui/material';
 import { AuthContext } from '../context/authContext'; // Importa el AuthContext
+import AuthService from '../services/authService'; // Importa AuthService
 
 const drawerWidth = 240;
 const collapsedWidth = 60;
@@ -11,8 +12,17 @@ function GefardoPage() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
   const [selectedPage, setSelectedPage] = useState({ segment: 'dashboard', title: 'Inicio' });
+  const [userRole, setUserRole] = useState('Usuario'); // Estado para el rol del usuario
 
   const { logout } = useContext(AuthContext); // Obtiene la función logout del contexto
+
+
+   // Obtener el rol del usuario cuando la página se carga
+   useEffect(() => {
+    const role = AuthService.getUserRole(); // Llama a AuthService para obtener el rol
+    setUserRole(role); // Actualiza el estado del rol
+  }, []);
+
 
   const theme = createTheme({
     palette: {
@@ -51,7 +61,7 @@ function GefardoPage() {
           isOpen={drawerOpen}
           onPageChange={handleNavigationClick}
           selectedPage={selectedPage}
-          userRole="Administrador"
+          userRole={userRole}	// Pasa el rol del usuario al drawer
         />
 
         {/* Main Content */}

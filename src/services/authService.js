@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { API_URL } from '../config';
+import {jwtDecode} from 'jwt-decode'; // Importa jwt-decode
 
 
 const AuthService = {
@@ -22,6 +23,19 @@ const AuthService = {
   // Obtener el token almacenado
   getToken: () => {
     return sessionStorage.getItem('token');
+  },
+
+   // Obtener el rol del usuario decodificando el token
+   getUserRole: () => {
+    try {
+      const token = sessionStorage.getItem('token');
+      if (!token) throw new Error('Token no encontrado.');
+      const decodedToken = jwtDecode(token); // Decodifica el token JWT
+      return decodedToken.roles?.[0] || 'Usuario'; // Ajusta según el formato del token
+    } catch (err) {
+      console.error('Error al obtener el rol del usuario:', err.message);
+      return 'Usuario'; // Rol predeterminado si falla
+    }
   },
 
   // Verificar si el token es válido usando el backend
