@@ -22,17 +22,17 @@ function LoginForm(  onEnablePharmacyClick, // Callback when the new button is c
 ) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-
-    if (email && password) {
-      login();
-      navigate('/gefardo');
-    } else {
-      alert('Por favor ingresa un correo electrónico y una contraseña válidos.');
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await login(email, password); // Llama al contexto para autenticar
+      navigate('/gefardo'); // Redirige al dashboard si el login es exitoso
+    } catch (err) {
+      setError(err.message); // Muestra el mensaje de error en la interfaz
     }
   };
 
@@ -89,6 +89,12 @@ function LoginForm(  onEnablePharmacyClick, // Callback when the new button is c
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
+
+{error && (
+          <Typography color="error">
+            {error}
+          </Typography>
+        )}
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
             label="Recuérdame"

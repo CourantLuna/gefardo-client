@@ -6,7 +6,6 @@ import { Box, CssBaseline, createTheme, ThemeProvider } from "@mui/material";
 import LoginPage from "../components/LoginForm"; // Asegúrate de que el formulario esté exportado correctamente
 
 function HomePage() {
-  const [drawerOpen, setDrawerOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
   const { isAuthenticated, logout } = useContext(AuthContext);
 
@@ -53,7 +52,7 @@ function HomePage() {
           )}
 
           {/* If authenticated, you can replace this with dashboard content */}
-          {isAuthenticated && <h1>Bienvenido al sistema Gefardo</h1>}
+          {/* {isAuthenticated && <h1>Bienvenido al sistema Gefardo</h1>} */}
         </Box>
       </Box>
     </ThemeProvider>
