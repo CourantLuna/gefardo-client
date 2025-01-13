@@ -7,8 +7,8 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true); // Estado para manejar la carga inicial
 
-   // Verificar el token al cargar la aplicación
-   useEffect(() => {
+  // Verificar el token al cargar la aplicación
+  useEffect(() => {
     const checkToken = async () => {
       const token = AuthService.getToken(); // Obtener el token almacenado
       if (token) {
@@ -25,7 +25,6 @@ export const AuthProvider = ({ children }) => {
       }
       setLoading(false); // Finaliza la carga
     };
-
     checkToken(); // Ejecutar verificación
   }, []);
 
@@ -44,14 +43,10 @@ export const AuthProvider = ({ children }) => {
 
   // Función de logout
   const logout = () => {
-    AuthService.logout(); // Limpia el token del almacenamiento
-    sessionStorage.removeItem('token'); // Limpia el token del almacenamiento
-    sessionStorage.removeItem('isAuthenticated'); // Limpia el estado de autenticación
+  AuthService.logout();
     setIsAuthenticated(false); // Actualiza el estado de autenticación
   };
-
-
-  // Mostrar un loader mientras se verifica el token
+// Mostrar un loader mientras se verifica el token
   if (loading) {
     return <div>Loading...</div>;
   }

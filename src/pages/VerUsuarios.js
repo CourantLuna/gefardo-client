@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Grid, Card, CardContent, Typography, Button, CardActions, Switch, TextField, Box } from '@mui/material';
+import axios from 'axios';
 import AuthService from '../services/authService'; // Importa AuthService
-import userService from '../services/userService'; // Importa userService
-
+import userService from '../services/userService';
 import {jwtDecode} from 'jwt-decode';
 
 function VerUsuarios() {
   const [usuarios, setUsuarios] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState(''); // Estado para la búsqueda
   const [error, setError] = useState(null);
 
   // Verifica si el token es válido
@@ -18,14 +18,13 @@ function VerUsuarios() {
 
       const decodedToken = jwtDecode(token);
       const currentTime = Date.now() / 1000;
-      return decodedToken.exp > currentTime;
+      return decodedToken.exp > currentTime; // Verifica que el token no haya expirado
     } catch (err) {
       console.error('Error al verificar el token:', err.message);
       return false;
     }
   };
 
-  // Cargar usuarios desde el servicio
   useEffect(() => {
     if (!isTokenValid()) {
       AuthService.logout();
@@ -60,6 +59,8 @@ function VerUsuarios() {
     }
   };
 
+
+  // Filtrar usuarios según el término de búsqueda
   const filteredUsuarios = usuarios.filter((usuario) =>
     `${usuario.Nombre} ${usuario.Apellido}`.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -67,15 +68,19 @@ function VerUsuarios() {
   return (
     <div>
       {error && <Typography color="error">{error}</Typography>}
+
+      {/* Barra de búsqueda */}
       <Box marginLeft={2} marginTop={3} sx={{ display: 'flex', alignItems: 'center' }}>
         <TextField
           fullWidth
           variant="outlined"
           label="Buscar usuarios"
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={(e) => setSearchTerm(e.target.value)} // Actualiza el término de búsqueda
         />
       </Box>
+
+      {/* Lista de usuarios filtrados */}
       <Grid container spacing={3} padding={3}>
         {filteredUsuarios.map((usuario) => (
           <Grid item xs={12} sm={6} md={4} key={usuario.Usuario_Id}>
