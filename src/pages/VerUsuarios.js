@@ -1,36 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { Grid, Card, CardContent, Typography, Button, CardActions, Switch, TextField, Box } from '@mui/material';
-import axios from 'axios';
-import AuthService from '../services/authService'; // Importa AuthService
 import userService from '../services/userService';
-import {jwtDecode} from 'jwt-decode';
 
 function VerUsuarios() {
   const [usuarios, setUsuarios] = useState([]);
   const [searchTerm, setSearchTerm] = useState(''); // Estado para la búsqueda
   const [error, setError] = useState(null);
 
-  // Verifica si el token es válido
-  const isTokenValid = () => {
-    try {
-      const token = AuthService.getToken();
-      if (!token) return false;
-
-      const decodedToken = jwtDecode(token);
-      const currentTime = Date.now() / 1000;
-      return decodedToken.exp > currentTime; // Verifica que el token no haya expirado
-    } catch (err) {
-      console.error('Error al verificar el token:', err.message);
-      return false;
-    }
-  };
 
   useEffect(() => {
-    if (!isTokenValid()) {
-      AuthService.logout();
-      window.location.href = '/';
-      return;
-    }
+    // const checkToken = async () => {
+    //   const isValid = await AuthService.verifyToken();
+    //   if (!isValid) {
+    //     AuthService.logout(); // O alguna acción para desloguear al usuario
+    //     window.location.href = '/';
+    //   }
+    // };
+
+    // checkToken();
 
     const fetchUsuarios = async () => {
       try {
@@ -56,9 +43,11 @@ function VerUsuarios() {
       );
     } catch (error) {
       console.error('Error al cambiar estado:', error);
+      setError('Hubo un problema al cambiar el estado del usuario.');
     }
   };
 
+  const label = { inputProps: { 'aria-label': 'Switch demo' } };
 
   // Filtrar usuarios según el término de búsqueda
   const filteredUsuarios = usuarios.filter((usuario) =>
@@ -68,6 +57,7 @@ function VerUsuarios() {
   return (
     <div>
       {error && <Typography color="error">{error}</Typography>}
+      <Switch {...label} defaultChecked />
 
       {/* Barra de búsqueda */}
       <Box marginLeft={2} marginTop={3} sx={{ display: 'flex', alignItems: 'center' }}>
@@ -99,22 +89,30 @@ function VerUsuarios() {
                   Estado: {usuario.Estado ? 'Activo' : 'Inactivo'}
                 </Typography>
               </CardContent>
-              <CardActions>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={() => alert(`Modificar usuario ${usuario.Usuario_Id}`)}
-                >
-                  Modificar
-                </Button>
+              <CardActions sx={{ justifyContent: 'space-around', alignItems: 'center' }}>
+                
                 <Switch
-                  checked={usuario.Estado === 1}
-                  onChange={() => toggleEstado(usuario.Usuario_Id, usuario.Estado)}
+                  checked={usuario.Estado === 1} // Estado controlado
+                  onChange={(e) =>
+                    toggleEstado(usuario.Id_Usuario, e.target.checked ? 1 : 0)
+                  }
+                  inputProps={{
+                    'aria-label': `Cambiar estado de ${usuario.Nombre}`,
+                  }}
                   color="primary"
                 />
                 <Typography variant="body2">
                   {usuario.Estado ? 'Deshabilitar' : 'Habilitar'}
                 </Typography>
+
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => alert(`Modificar usuario ${usuario.Id_Usuario}`)}
+                >
+                  Modificar
+                </Button>
+
               </CardActions>
             </Card>
           </Grid>

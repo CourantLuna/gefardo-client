@@ -72,7 +72,6 @@ const AuthService = {
   logout: () => {
     sessionStorage.removeItem('token'); // Elimina el token del almacenamiento
     sessionStorage.removeItem('isAuthenticated'); // Limpia el estado de autenticación
-
   },
 };
 

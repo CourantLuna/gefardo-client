@@ -6,16 +6,28 @@ import { ApiEndpoints } from '../environments/apiEnpoints';
 
 const axiosInstance = axios.create({
   baseURL: `${environment.apiBaseUrl}/api`,
-  headers: {
-    Authorization: `Bearer ${AuthService.getToken()}`,
-  },
 });
 
-// Interceptor para manejar errores
+axiosInstance.interceptors.request.use(
+  (config) => {
+    const token = AuthService.getToken();
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    } else {
+      console.error('Token no válido. Redirigiendo a inicio de sesión.');
+      AuthService.logout();
+      window.location.href = '/';
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response && error.response.status === 403) {
+      console.error('Acceso denegado. Redirigiendo al inicio.');
       AuthService.logout();
       window.location.href = '/';
     }
@@ -25,12 +37,23 @@ axiosInstance.interceptors.response.use(
 
 const userService = {
   getUsuarios: async () => {
-    const response = await axiosInstance.get(`${ApiEndpoints.usuarios}`);
-    return response.data;
+    try {
+      const response = await axiosInstance.get(ApiEndpoints.usuarios);
+      return response.data;
+    } catch (error) {
+      console.error('Error al obtener usuarios:', error.response?.data || error.message);
+      throw new Error(error.response?.data?.message || 'No se pudo obtener la lista de usuarios.');
+    }
   },
 
+
   toggleEstado: async (id, nuevoEstado) => {
-    await axiosInstance.patch(`${ApiEndpoints.usuarios}/${id}`, { Estado: nuevoEstado });
+    try {
+      await axiosInstance.patch(`${ApiEndpoints.usuarios}/${id}`, { Estado: nuevoEstado });
+    } catch (error) {
+      console.error('Error al cambiar el estado del usuario:', error.response?.data || error.message);
+      throw new Error(error.response?.data?.message || 'No se pudo cambiar el estado del usuario.');
+    }
   },
 
   // Puedes añadir otros métodos aquí, como crear o eliminar usuarios
