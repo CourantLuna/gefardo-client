@@ -1,5 +1,6 @@
 import axios from 'axios';
-import { API_URL } from '../config';
+import { environment } from '../environments/environment';
+import { ApiEndpoints } from '../environments/apiEnpoints';
 import {jwtDecode} from 'jwt-decode'; // Importa jwt-decode
 
 
@@ -7,12 +8,14 @@ const AuthService = {
   // Login: Envía las credenciales al backend y guarda el token en sessionStorage
   login: async (email, password) => {
     try {
-      const response = await axios.post(`${API_URL}/auth/login`, {
+      const response = await axios.post(`${environment.apiBaseUrl}/auth/login`, {
         Correo_Electronico: email,
         Clave: password,
       });
       const token = response.data.token; // Obtén el token de la respuesta
       sessionStorage.setItem('token', token); // Guarda el token en sessionStorage
+      sessionStorage.setItem('isAuthenticated', 'true'); // Guarda el estado de autenticación
+
       return token;
     } catch (err) {
       console.error('Error en AuthService.login:', err.response?.data || err.message);
@@ -53,7 +56,7 @@ const AuthService = {
       if (!token) throw new Error('Token no encontrado.');
 
       // Verifica el token con el backend
-      const response = await axios.get(`${API_URL}/secure`, {
+      const response = await axios.get(`${environment.apiBaseUrl}${ApiEndpoints.Authentication}`, {
         params: {
           authorization: `Bearer ${token}`,
         },
@@ -68,6 +71,8 @@ const AuthService = {
   // Logout: Limpia el token del almacenamiento
   logout: () => {
     sessionStorage.removeItem('token'); // Elimina el token del almacenamiento
+    sessionStorage.removeItem('isAuthenticated'); // Limpia el estado de autenticación
+
   },
 };
 

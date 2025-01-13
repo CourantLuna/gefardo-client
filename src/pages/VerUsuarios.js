@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Grid, Card, CardContent, Typography, Button, CardActions, Switch, TextField, Box } from '@mui/material';
-import axios from 'axios';
 import AuthService from '../services/authService'; // Importa AuthService
+import userService from '../services/userService'; // Importa userService
+
 import {jwtDecode} from 'jwt-decode';
 
-function ListaUsuarios() {
+function VerUsuarios() {
   const [usuarios, setUsuarios] = useState([]);
-  const [searchTerm, setSearchTerm] = useState(''); // Estado para la búsqueda
+  const [searchTerm, setSearchTerm] = useState('');
   const [error, setError] = useState(null);
 
   // Verifica si el token es válido
@@ -17,65 +18,48 @@ function ListaUsuarios() {
 
       const decodedToken = jwtDecode(token);
       const currentTime = Date.now() / 1000;
-      return decodedToken.exp > currentTime; // Verifica que el token no haya expirado
+      return decodedToken.exp > currentTime;
     } catch (err) {
       console.error('Error al verificar el token:', err.message);
       return false;
     }
   };
 
-  // Configuración de axios con interceptor
-  const axiosInstance = axios.create({
-    baseURL: 'http://localhost:3001/api',
-    headers: {
-      Authorization: `Bearer ${AuthService.getToken()}`,
-    },
-  });
-
-  axiosInstance.interceptors.response.use(
-    (response) => response,
-    (error) => {
-      if (error.response && error.response.status === 403) {
-        setError('No tienes permisos para realizar esta acción.');
-        AuthService.logout(); // Opcional: Desconecta al usuario automáticamente
-        window.location.href = '/'; // Redirige al login
-      }
-      return Promise.reject(error);
-    }
-  );
-
-  // Cargar datos de usuarios
+  // Cargar usuarios desde el servicio
   useEffect(() => {
     if (!isTokenValid()) {
       AuthService.logout();
-      window.location.href = '/login'; // Redirige si el token es inválido
+      window.location.href = '/';
       return;
     }
 
-    axiosInstance
-      .get('/Usuarios')
-      .then((response) => setUsuarios(response.data))
-      .catch((error) => {
+    const fetchUsuarios = async () => {
+      try {
+        const data = await userService.getUsuarios();
+        setUsuarios(data);
+      } catch (error) {
         console.error('Error al cargar usuarios:', error);
         setError('Hubo un problema al cargar los usuarios. Inténtalo de nuevo más tarde.');
-      });
-  }, [axiosInstance]);
+      }
+    };
 
-  const toggleEstado = (id, estadoActual) => {
+    fetchUsuarios();
+  }, []);
+
+  const toggleEstado = async (id, estadoActual) => {
     const nuevoEstado = estadoActual === 1 ? 0 : 1;
-    axiosInstance
-      .patch(`/Usuarios/${id}`, { Estado: nuevoEstado })
-      .then(() => {
-        setUsuarios((prevUsuarios) =>
-          prevUsuarios.map((user) =>
-            user.Usuario_Id === id ? { ...user, Estado: nuevoEstado } : user
-          )
-        );
-      })
-      .catch((error) => console.error('Error al cambiar estado:', error));
+    try {
+      await userService.toggleEstado(id, nuevoEstado);
+      setUsuarios((prevUsuarios) =>
+        prevUsuarios.map((user) =>
+          user.Usuario_Id === id ? { ...user, Estado: nuevoEstado } : user
+        )
+      );
+    } catch (error) {
+      console.error('Error al cambiar estado:', error);
+    }
   };
 
-  // Filtrar usuarios según el término de búsqueda
   const filteredUsuarios = usuarios.filter((usuario) =>
     `${usuario.Nombre} ${usuario.Apellido}`.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -83,19 +67,15 @@ function ListaUsuarios() {
   return (
     <div>
       {error && <Typography color="error">{error}</Typography>}
-
-      {/* Barra de búsqueda */}
       <Box marginLeft={2} marginTop={3} sx={{ display: 'flex', alignItems: 'center' }}>
         <TextField
           fullWidth
           variant="outlined"
           label="Buscar usuarios"
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)} // Actualiza el término de búsqueda
+          onChange={(e) => setSearchTerm(e.target.value)}
         />
       </Box>
-
-      {/* Lista de usuarios filtrados */}
       <Grid container spacing={3} padding={3}>
         {filteredUsuarios.map((usuario) => (
           <Grid item xs={12} sm={6} md={4} key={usuario.Usuario_Id}>
@@ -139,4 +119,4 @@ function ListaUsuarios() {
   );
 }
 
-export default ListaUsuarios;
+export default VerUsuarios;
