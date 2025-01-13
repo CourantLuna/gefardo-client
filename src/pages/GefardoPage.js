@@ -184,9 +184,9 @@ function GefardoPage() {
             }}
           ></Box>
 
-          <Typography variant="body1">
+          {/* <Typography variant="body1">
             This is the content for {selectedPage.title}.
-          </Typography>
+          </Typography> */}
           {/* Contenido dinámico */}
           <Outlet />
         </Box>
