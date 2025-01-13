@@ -6,8 +6,7 @@ import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import PersonIcon from '@mui/icons-material/Person';
 import SettingsIcon from '@mui/icons-material/Settings';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
-// import OtraPagina from './pages/OtraPagina';
-// import NuevaFuncionalidad from './pages/NuevaFuncionalidad';
+
 
 const NAVIGATION = [
     { type: 'title', title: 'Home', roles: ['Administrador', 'Inspector', 'Farmaceutico'] },

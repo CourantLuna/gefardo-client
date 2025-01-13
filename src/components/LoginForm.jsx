@@ -18,7 +18,7 @@ import AddCircleIcon from '@mui/icons-material/AddCircle'; // Importa el ícono 
 import LoginIcon from '@mui/icons-material/Login'; // Importa el ícono de Material-UI
 
 
-function LoginForm(  onEnablePharmacyClick, // Callback when the new button is clicked
+function LoginForm(onEnablePharmacyClick, // Callback when the  button is clicked
 ) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -35,6 +35,9 @@ function LoginForm(  onEnablePharmacyClick, // Callback when the new button is c
       setError(err.message); // Muestra el mensaje de error en la interfaz
     }
   };
+
+  const isFormValid = email.trim() !== '' && password.trim() !== '';
+
 
   return (
     <Container component="main" maxWidth="xs">
@@ -90,46 +93,47 @@ function LoginForm(  onEnablePharmacyClick, // Callback when the new button is c
             onChange={(e) => setPassword(e.target.value)}
           />
 
-{error && (
-          <Typography color="error">
-            {error}
-          </Typography>
-        )}
+          {error && (
+            <Typography color="error">
+              {error}
+            </Typography>
+          )}
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
             label="Recuérdame"
           />
-         <Button
-  type="submit"
-  fullWidth
-  variant="contained"
-  startIcon={<LoginIcon />} // Asegura que el ícono esté a la izquierda
-  sx={{
-    mt: 3,
-    mb: 2,
-    padding: 1.5,
-    display: 'flex',
-    alignItems: 'center', 
-    justifyItems: 'start',
-  }}
->
-  Iniciar sesión
-</Button>
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            disabled={!isFormValid} // Deshabilita el botón si no es válido
+            startIcon={<LoginIcon />} // Asegura que el ícono esté a la izquierda
+            sx={{
+              mt: 3,
+              mb: 2,
+              padding: 1.5,
+              display: 'flex',
+              alignItems: 'center',
+              justifyItems: 'start',
+            }}
+          >
+            Iniciar sesión
+          </Button>
 
-<Button
-  variant="outlined"
-  fullWidth
-  startIcon={<AddCircleIcon />} // Ícono a la izquierda
-  onClick={onEnablePharmacyClick}
-  sx={{
-    mb: 2,
-    padding: 1.5,    
-  }}
->
-  
-  Habilitar Farmacia
+          <Button
+            variant="outlined"
+            fullWidth
+            startIcon={<AddCircleIcon />} // Ícono a la izquierda
+            onClick={onEnablePharmacyClick}
+            sx={{
+              mb: 2,
+              padding: 1.5,
+            }}
+          >
 
-</Button>
+            Habilitar Farmacia
+
+          </Button>
         </Box>
       </Paper>
     </Container>

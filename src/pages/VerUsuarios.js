@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Grid, Card, CardContent, Typography, Button, CardActions, Switch } from '@mui/material';
+import { Grid, Card, CardContent, Typography, Button, CardActions, Switch, TextField, Box } from '@mui/material';
 import axios from 'axios';
 import AuthService from '../services/authService'; // Importa AuthService
 import {jwtDecode} from 'jwt-decode';
 
 function ListaUsuarios() {
   const [usuarios, setUsuarios] = useState([]);
+  const [searchTerm, setSearchTerm] = useState(''); // Estado para la búsqueda
   const [error, setError] = useState(null);
 
   // Verifica si el token es válido
@@ -74,11 +75,29 @@ function ListaUsuarios() {
       .catch((error) => console.error('Error al cambiar estado:', error));
   };
 
+  // Filtrar usuarios según el término de búsqueda
+  const filteredUsuarios = usuarios.filter((usuario) =>
+    `${usuario.Nombre} ${usuario.Apellido}`.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div>
       {error && <Typography color="error">{error}</Typography>}
+
+      {/* Barra de búsqueda */}
+      <Box marginLeft={2} marginTop={3} sx={{ display: 'flex', alignItems: 'center' }}>
+        <TextField
+          fullWidth
+          variant="outlined"
+          label="Buscar usuarios"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)} // Actualiza el término de búsqueda
+        />
+      </Box>
+
+      {/* Lista de usuarios filtrados */}
       <Grid container spacing={3} padding={3}>
-        {usuarios.map((usuario) => (
+        {filteredUsuarios.map((usuario) => (
           <Grid item xs={12} sm={6} md={4} key={usuario.Usuario_Id}>
             <Card variant="outlined">
               <CardContent>
