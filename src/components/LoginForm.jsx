@@ -30,7 +30,7 @@ function LoginForm(  onEnablePharmacyClick, // Callback when the new button is c
     e.preventDefault();
     try {
       await login(email, password); // Llama al contexto para autenticar
-      navigate('/gefardo'); // Redirige al dashboard si el login es exitoso
+      navigate('/gefardo/dashboard'); // Redirige al dashboard si el login es exitoso
     } catch (err) {
       setError(err.message); // Muestra el mensaje de error en la interfaz
     }

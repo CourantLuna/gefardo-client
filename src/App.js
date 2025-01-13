@@ -1,8 +1,15 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider, AuthContext } from './context/authContext';
-import HomePage from './pages/HomePage';
-import GefardoPage from './pages/GefardoPage';
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import { AuthProvider, AuthContext } from "./context/authContext";
+import HomePage from "./pages/HomePage";
+import GefardoPage from "./pages/GefardoPage";
+import VerUsuarios from "./pages/VerUsuarios";
+import NotFound from "./pages/NotFound";
 
 function App() {
   return (
@@ -11,19 +18,25 @@ function App() {
         <AuthContext.Consumer>
           {({ isAuthenticated }) => (
             <Routes>
-              {/* Ruta de Home */}
+              {/* Ruta principal */}
               <Route path="/" element={<HomePage />} />
 
-              {/* Ruta de Gefardo */}
+              {/* Rutas protegidas para Gefardo */}
               <Route
                 path="/gefardo"
                 element={
-                  isAuthenticated ? <GefardoPage /> : <Navigate to="/" replace />
+                  isAuthenticated ? (
+                    <GefardoPage />
+                  ) : (
+                    <Navigate to="/" replace />
+                  )
                 }
-              />
-
-              {/* Redirección por defecto */}
-              <Route path="*" element={<Navigate to="/" replace />} />
+              >
+                {/* Ruta anidada para ver usuarios */}
+                <Route path="ver-usuarios" element={<VerUsuarios />} />
+                {/* <Route path="otra-pagina" element={<OtraPagina />} /> */}
+                <Route path="*" element={<NotFound />} />
+              </Route>
             </Routes>
           )}
         </AuthContext.Consumer>
