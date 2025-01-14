@@ -1,4 +1,4 @@
-// services/userService.js
+// services/userService.js 
 import axios from 'axios';
 import AuthService from './authService'; // Asegúrate de que AuthService existe
 import { environment } from '../environments/environment';
@@ -55,6 +55,25 @@ const userService = {
       throw new Error(error.response?.data?.message || 'No se pudo cambiar el estado del usuario.');
     }
   },
+
+  getRoles: async (idUsuario) => {  
+    try {
+      const response = await axiosInstance.get(`${ApiEndpoints.RolesByUsuarioId}/${idUsuario}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error al obtener roles:', error.response?.data || error.message);
+      throw new Error(error.response?.data?.message || 'No se pudo obtener los roles.');
+    } 
+  },
+  getAllRoles: async () => {
+    try {
+        const response = await axiosInstance.get(`${ApiEndpoints.AllUserRoles}`);
+        return response.data; // La API debería devolver la tabla puente con los datos
+    } catch (error) {
+        console.error('Error al obtener todos los roles:', error);
+        throw error; // Opcional: Propagar el error para manejarlo en el componente
+    }
+},
 
   // Puedes añadir otros métodos aquí, como crear o eliminar usuarios
 };

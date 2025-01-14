@@ -3,8 +3,6 @@ export const ApiEndpoints = {
     Authentication: '/auth/secure',
     register: '/auth/register',
     usuarios: '/usuarios',
-    changeProfileImage: '/Profile/ChangeProfileImage',
-    userinfo: '/Profile/info',
-    forgotPassword: '/Auth/ForgotPassword',
-    changePassword: '/Auth/ChangePassword',
+    RolesByUsuarioId: '/usuarioRoles/usuario/roles',
+    AllUserRoles: '/usuarioRoles',
   };
