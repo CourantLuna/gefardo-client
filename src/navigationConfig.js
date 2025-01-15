@@ -4,8 +4,7 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 import StoreIcon from '@mui/icons-material/Store';
 import PeopleIcon from '@mui/icons-material/People';
 import BarChartIcon from '@mui/icons-material/BarChart';
-import GavelIcon from '@mui/icons-material/Gavel';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import EventAvailableIcon from '@mui/icons-material/EventAvailable';import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import PersonSearchIcon from '@mui/icons-material/PersonSearch';
 import AddBusinessIcon from '@mui/icons-material/AddBusiness';
@@ -18,6 +17,7 @@ import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
 import FolderIcon from '@mui/icons-material/Folder';
 import EnhancedEncryptionIcon from '@mui/icons-material/EnhancedEncryption';
 import HttpsIcon from '@mui/icons-material/Https';
+import WorkHistoryIcon from '@mui/icons-material/WorkHistory';
 
 const NAVIGATION = [
     { type: 'title', title: 'Home', roles: ['Administrador', 'Inspector', 'Farmaceutico'] },
@@ -50,13 +50,13 @@ const NAVIGATION = [
         {
           segment: 'nuevas-solicitudes',
           title: 'Nueva solicitud',
-          icon: <AssignmentIcon />,
+          icon: <MedicalServicesIcon />,
           roles: ['Farmaceutico'],
         },
         {
           segment: 'consultar-estado',
           title: 'Consultar estado',
-          icon: <AssignmentIcon />,
+          icon: <WorkHistoryIcon />,
           roles: ['Farmaceutico'],
         },
       ],
@@ -67,10 +67,10 @@ const NAVIGATION = [
         icon: <AssignmentTurnedInIcon />,
         roles: ['Administrador', 'Inspector'],
         children: [
-          { segment: 'ver-asignadas', title: 'Ver asignadas', icon: <CheckCircleIcon />, roles: ['Inspector'] },
-          { segment: 'ver-inspecciones', title: 'Ver inspecciones', icon: <CheckCircleIcon />, roles: ['Administrador'] },
+          { segment: 'ver-asignadas', title: 'Ver asignadas', icon: <AssignmentTurnedInIcon />, roles: ['Inspector'] },
+          { segment: 'ver-inspecciones', title: 'Ver inspecciones', icon: <AssignmentTurnedInIcon />, roles: ['Administrador'] },
           { segment: 'programar-inspecciones', title: 'Programar inspecciones', icon: <EventIcon />, roles: ['Administrador'] },
-          { segment: 'completar-inspecciones', title: 'Completar inspecciones', icon: <CheckCircleIcon />, roles: ['Inspector'] },
+          { segment: 'completar-inspecciones', title: 'Completar inspecciones', icon: <EventAvailableIcon />, roles: ['Inspector'] },
         ],
      },
      {
