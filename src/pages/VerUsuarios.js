@@ -15,6 +15,11 @@ import {
   TextField,
   Box,
   Chip,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
 } from "@mui/material";
 import userService from "../services/userService";
 import {
@@ -22,8 +27,6 @@ import {
   LocalPharmacy,
   VerifiedUser,
 } from "@mui/icons-material"; // Íconos de roles
-import { Email, Tag } from "@mui/icons-material"; // Íconos para ID y Correo
-
 
 function VerUsuarios() {
   const [usuarios, setUsuarios] = useState([]);
@@ -160,42 +163,24 @@ function VerUsuarios() {
       {/* Lista de usuarios filtrados */}
       <Grid container spacing={3} padding={3}>
         {filteredUsuarios.map((usuario) => (
-          <Grid item xs={12} sm={4} md={3} key={usuario.Id_Usuario}>
-            <Card variant="outlined" sx={{ minHeight: "260px", maxHeight: "260px" }}>
-              <CardContent>
+          <Grid item xs={12} sm={6} md={4} key={usuario.Id_Usuario}>
+            <Card
+              variant="outlined"
+              sx={{ minHeight: "300px", maxHeight: "300px" }}
+            >
+              <CardContent
+              
+              >
                 <Typography variant="h6">
                   {usuario.Nombre} {usuario.Apellido}
                 </Typography>
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 1,
-                    mt: 1,
-                    backgroundColor: "background.default",
-                    borderRadius: "4px",
-                  }}
-                >
-                  <Tag fontSize="small" color="action" />
-                  <Typography variant="caption" color="text.primary">
-                    Código: {usuario.Id_Usuario}
-                  </Typography>
-                </Box>
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 1,
-                    mt: 1,
-                    color: "primary.main",
-                  }}
-                >
-                  <Email fontSize="small" />
-                  <Typography variant="caption">{usuario.Correo_Electronico}</Typography>
-                </Box>
 
                 {/* Mostrar roles como chips */}
-                <Box mt={2}>
+                <Box mt={2}
+                sx={{
+                  minHeight: "75px", // Ajusta la altura de las acciones a 30% del contenedor
+                  maxheight: "75px",
+                }}>
                   {roles[usuario.Id_Usuario]?.length > 0 ? (
                     roles[usuario.Id_Usuario].map((rolId, index) => {
                       const role = roleConfig[rolId];
@@ -205,7 +190,7 @@ function VerUsuarios() {
                           label={role.name}
                           color={role.color}
                           icon={role.icon}
-                          style={{ marginRight: 5, marginBottom: 5 }}
+                          style={{ marginRight: 2, marginBottom: 2 }}
                         />
                       );
                     })
@@ -215,9 +200,49 @@ function VerUsuarios() {
                     </Typography>
                   )}
                 </Box>
+
+                {/* Mini tabla para Código y Correo */}
+                <TableContainer
+                  sx={{
+                    border: "1px solid",
+                    borderColor: "divider",
+                    borderRadius: "4px",
+                  }}
+                >
+                  <Table size="small" aria-label="mini table">
+                    <TableBody>
+                      <TableRow>
+                        <TableCell
+                          sx={{ fontWeight: "bold", whiteSpace: "nowrap" }}
+                        >
+                          Código
+                        </TableCell>
+                        <TableCell>{usuario.Id_Usuario}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell
+                          sx={{ fontWeight: "bold", whiteSpace: "nowrap" }}
+                        >
+                          Correo
+                        </TableCell>
+                        <TableCell>{usuario.Correo_Electronico}</TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+
               </CardContent>
+
               <CardActions
-                sx={{ display: "flex", justifyContent: "space-around", alignSelf: "flex-end" }}
+                sx={{
+                
+                  minHeight: "40px", // Ajusta la altura de las acciones a 30% del contenedor
+                  maxheight: "40px",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                  alignContent  : "center",
+                }}
               >
                 <Box
                   sx={{
@@ -228,6 +253,7 @@ function VerUsuarios() {
                 >
                   <Switch
                     checked={usuario.Estado}
+                    disabled
                     onChange={() =>
                       toggleEstado(
                         usuario.Id_Usuario,
@@ -244,12 +270,13 @@ function VerUsuarios() {
                     {usuario.Estado ? "Activo" : "Inactivo"}
                   </Typography>
                 </Box>
-                
               </CardActions>
+
             </Card>
           </Grid>
         ))}
       </Grid>
+
       {/* Snackbar para notificaciones */}
       <Snackbar
         open={snackbar.open}
