@@ -165,7 +165,7 @@ function VerUsuarios() {
         {filteredUsuarios.map((usuario) => (
           <Grid item xs={12} sm={6} md={4} key={usuario.Id_Usuario}>
             <Card
-              variant="outlined"
+              variant="elevation"
               sx={{ minHeight: "300px", maxHeight: "300px" }}
             >
               <CardContent
