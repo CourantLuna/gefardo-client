@@ -98,24 +98,33 @@ function VerUsuarios() {
   return (
     <div>
       <Box margin={2} display="flex" gap={2}>
+     
         <TextField
           fullWidth
           label="Buscar usuarios"
+          type="search"
+          variant="outlined"
+
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-        <FormControl variant="outlined" sx={{ minWidth: 150 }}>
-          <InputLabel id="filter-estado-label">Estado</InputLabel>
-          <Select
-            labelId="filter-estado-label"
-            value={filterEstado}
-            onChange={(e) => setFilterEstado(e.target.value)}
-          >
-            <MenuItem value="todos">Todos</MenuItem>
+        
+
+<FormControl variant="outlined" sx={{ maxWidth: 200, minWidth: 110 }}>
+        <InputLabel id="filter-estado-label">Estado</InputLabel>
+        <Select
+          labelId="filter-estado-label"
+          value={filterEstado}
+          onChange={(e) => setFilterEstado(e.target.value)}
+          label="Estado"
+        >
+          
+          <MenuItem value="todos">Todos</MenuItem>
             <MenuItem value="activo">Activos</MenuItem>
             <MenuItem value="inactivo">Inactivos</MenuItem>
-          </Select>
-        </FormControl>
+        </Select>
+      </FormControl>
+       
       </Box>
       <Grid container spacing={3} padding={3}>
         {filteredUsuarios.map((usuario) => (
