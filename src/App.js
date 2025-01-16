@@ -10,6 +10,7 @@ import HomePage from "./pages/HomePage";
 import GefardoPage from "./pages/GefardoPage";
 import VerUsuarios from "./pages/VerUsuarios";
 import NotFound from "./pages/NotFound";
+import VerFormularios from "./pages/VerFormularios";
 
 function App() {
   return (
@@ -34,6 +35,8 @@ function App() {
               >
                 {/* Ruta anidada para ver usuarios */}
                 <Route path="ver-usuarios" element={<VerUsuarios />} />
+                <Route path="ver-formularios" element={ <VerFormularios/>} />
+
                 {/* <Route path="otra-pagina" element={<OtraPagina />} /> */}
                 <Route path="*" element={<NotFound />} />
               </Route>
