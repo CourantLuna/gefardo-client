@@ -4,7 +4,7 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 import StoreIcon from '@mui/icons-material/Store';
 import PeopleIcon from '@mui/icons-material/People';
 import BarChartIcon from '@mui/icons-material/BarChart';
-import EventAvailableIcon from '@mui/icons-material/EventAvailable';import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import PersonSearchIcon from '@mui/icons-material/PersonSearch';
 import AddBusinessIcon from '@mui/icons-material/AddBusiness';
@@ -18,6 +18,7 @@ import FolderIcon from '@mui/icons-material/Folder';
 import EnhancedEncryptionIcon from '@mui/icons-material/EnhancedEncryption';
 import HttpsIcon from '@mui/icons-material/Https';
 import WorkHistoryIcon from '@mui/icons-material/WorkHistory';
+import SettingsIcon from '@mui/icons-material/Settings';
 
 const NAVIGATION = [
     { type: 'title', title: 'Home', roles: ['Administrador', 'Inspector', 'Farmaceutico'] },
@@ -42,6 +43,12 @@ const NAVIGATION = [
           roles: ['Administrador'],
         },
         {
+          segment: 'Gestionar-servicios',
+          title: 'Gestionar servicios',
+          icon: <SettingsIcon />,
+          roles: ['Administrador'],
+        },
+        {
           segment: 'crear-servicios',
           title: 'Crear servicios',
           icon: <MedicalServicesIcon />,
@@ -54,8 +61,8 @@ const NAVIGATION = [
           roles: ['Farmaceutico'],
         },
         {
-          segment: 'consultar-estado',
-          title: 'Consultar estado',
+          segment: 'mis-solicitudes',
+          title: 'Mis solicitudes',
           icon: <WorkHistoryIcon />,
           roles: ['Farmaceutico'],
         },

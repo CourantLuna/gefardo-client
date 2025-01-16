@@ -189,6 +189,7 @@ function GefardoPage() {
           </Typography> */}
           {/* Contenido dinámico */}
           <Outlet />
+          
         </Box>
       </Box>
     </ThemeProvider>
