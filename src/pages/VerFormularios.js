@@ -1,6 +1,7 @@
 import React from 'react';
 import DynamicForm from '../components/CustomForm'; 
 
+
 const jsonFields = [
     {
       "sectionTitle": "1. Información del Establecimiento",
@@ -53,7 +54,7 @@ const jsonFields = [
           "label": "Provincia",
           "type": "select",
           "required": true,
-          "options": ["Santo Domingo", "Santiago", "La Vega", "Puerto Plata"],
+          "modelOptions": "Provincia",
           "md": 3.38,
           "value": ""
         },
@@ -146,7 +147,7 @@ const jsonFields = [
           "label": "Tipo de Establecimiento",
           "type": "select",
           "required": true,
-          "options": ["Farmacia Comunitaria", "Farmacia Hospitalaria", "Otra"],
+          "modelOptions": "TipoFarmacia",
           "md": 3.15 ,
           "value": ""
 

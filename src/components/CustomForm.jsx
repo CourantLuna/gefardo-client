@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import {
   TextField,
   Select,
@@ -15,10 +15,44 @@ import {
   Paper, Box, Grid
 } from "@mui/material";
 
+import generalService from '../services/generalService';
+
+const modelIdNames = {
+    Roles: { idFieldName: 'Id_Rol', defaultField: 'Nombre' },
+    UsuarioRoles: { idFieldName: 'Id_UsuarioRoles', defaultField: 'Id_Rol' },
+    Usuarios: { idFieldName: 'Id_Usuario', defaultField: 'Nombre' },
+    AccionesSeguimiento: { idFieldName: 'Id_AccionSeguimiento', defaultField: 'Descripcion' },
+    ClasificacionRiesgo: { idFieldName: 'Id_ClasificacionRiesgo', defaultField: 'Nivel' },
+    Farmacia: { idFieldName: 'Id_Farmacia', defaultField: 'Nombre' },
+    FlujoEstadosServicio: { idFieldName: 'Id_FlujoEstadoServicio', defaultField: 'EstadoActual' },
+    Formulario: { idFieldName: 'Id_Formulario', defaultField: 'Titulo' },
+    Hallazgos: { idFieldName: 'Id_Hallazgo', defaultField: 'Descripcion' },
+    HistorialCambio: { idFieldName: 'Id_HistorialCambio', defaultField: 'Cambio' },
+    Inspeccion: { idFieldName: 'Id_Inspeccion', defaultField: 'Fecha' },
+    Licencia: { idFieldName: 'Id_Licencia', defaultField: 'Numero' },
+    ListasVerificacion: { idFieldName: 'Id_ListaVerificacion', defaultField: 'Nombre' },
+    Provincia: { idFieldName: 'Id_Provincia', defaultField: 'Descripcion' },
+    Sancion: { idFieldName: 'Id_Sancion', defaultField: 'Motivo' },
+    Servicio: { idFieldName: 'Id_Servicio', defaultField: 'Descripcion' },
+    TipoFarmacia: { idFieldName: 'Id_Tipo_Farmacia', defaultField: 'Descripcion' },
+    TipoServicio: { idFieldName: 'Id_TipoServicio', defaultField: 'Descripcion' },
+};
+
+
+const fetchAllUsuarios = async (model) => {
+    try {
+        console.log(`El modelo es ${model}`);
+        const data = await generalService.getFromTable(`${model}`, `${modelIdNames[model].idFieldName},${modelIdNames[model].defaultField}`);
+        console.log('Datos obtenidos:', data);
+      } catch (error) {
+        console.error('Error al obtener datos:', error.message);
+      }
+  };
 
 
 const DynamicForm = ({ formFields }) => {
   const [formValues, setFormValues] = useState({});
+  const [dynamicOptions, setDynamicOptions] = useState({});
 
   const handleChange = (name, value) => {
     setFormValues({
@@ -123,32 +157,28 @@ const DynamicForm = ({ formFields }) => {
         </Grid>
 
         );
-      case "select":
-        return (
-            <Grid item xs={xs} sm={sm} md={md} key={field.name}>
-
-          <FormControl key={field.name} fullWidth margin="normal">
-            <InputLabel>{field.label}</InputLabel>
-            <Select
-              value={formValues[field.name] || ""}
-              onChange={(e) => handleChange(field.name, e.target.value)}
-              required={field.required}
-              slotProps={{
-                inputLabel: {
-                  shrink: true,
-                },
-              }}
-            >
-              {field.options.map((option, index) => (
-                <MenuItem key={index} value={option}>
-                  {`Opción ${option}`}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          </Grid>
-
-        );
+        case "select":
+            return (
+              <Grid item xs={xs} sm={sm} md={md} key={field.name}>
+                <FormControl key={field.name} fullWidth margin="normal">
+                  <InputLabel>{field.label}</InputLabel>
+                  <Select
+                    value={formValues[field.name] || ""}
+                    onChange={(e) => handleChange(field.name, e.target.value)}
+                    required={field.required}
+                  >
+                    {dynamicOptions[field.name]?.map((option, index) => (
+                      <MenuItem key={index} value={option.value}>
+                        {option.label}
+                      </MenuItem>
+                    )) || (
+                      <MenuItem disabled>Cargando opciones...</MenuItem>
+                    )}
+                  </Select>
+                </FormControl>
+              </Grid>
+            );
+          
       case "file":
         return (
             <Grid item xs={xs} sm={sm} md={md} key={field.name}>
@@ -286,6 +316,7 @@ const DynamicForm = ({ formFields }) => {
           <Box
               key={section.sectionTitle}
             sx={{
+            marginTop:"10px",
               display: "flex",
               flexDirection: "row",
               justifyContent: "flex-start",
@@ -303,6 +334,46 @@ const DynamicForm = ({ formFields }) => {
       </Paper>
 
   );
+  
+
+  useEffect(() => {
+    
+    fetchAllUsuarios("Usuarios");
+
+    const loadDynamicOptions = async () => {
+        const optionsData = {};
+    
+        // Filtra los campos que tienen `modelOptions` especificado
+        const selectFields = formFields
+          .flatMap((section) => section.fields)
+          .filter((field) => field.type === "select" && field.modelOptions);
+    
+        // Carga las opciones para cada campo
+        for (const field of selectFields) {
+          const model = field.modelOptions;
+          if (modelIdNames[model]) {
+            try {
+              const data = await generalService.getFromTable(
+                model,
+                `${modelIdNames[model].idFieldName},${modelIdNames[model].defaultField}`
+              );
+              optionsData[field.name] = data.map((item) => ({
+                value: item[modelIdNames[model].idFieldName],
+                label: item[modelIdNames[model].defaultField],
+              }));
+            } catch (error) {
+              console.error(`Error al cargar opciones para ${model}:`, error.message);
+            }
+          } else {
+            console.warn(`Modelo ${model} no encontrado en modelIdNames.`);
+          }
+        }
+    
+        setDynamicOptions(optionsData);
+      };
+    
+      loadDynamicOptions();
+  }, [formFields]);
 
   return (
     <Box  sx={{ flexGrow: 1, }}>
