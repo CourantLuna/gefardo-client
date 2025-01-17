@@ -41,9 +41,15 @@ const DynamicForm = ({ formFields }) => {
   };
 
   const renderField = (field) => {
+    const xs = field.xs || 12; // Tamaño predeterminado para móviles (toda la fila)
+    const sm = field.sm || 6; // Tamaño predeterminado para pantallas medianas
+    const md = field.md || 4; // Tamaño predeterminado para pantallas grandes
+
     switch (field.type) {
       case "text":
         return (
+        <Grid item xs={xs} sm={sm} md={md} key={field.name}>
+
           <TextField
             key={field.name}
             label={field.label}
@@ -54,9 +60,13 @@ const DynamicForm = ({ formFields }) => {
             value={formValues[field.name] || ""}
             onChange={(e) => handleChange(field.name, e.target.value)}
           />
+          </Grid>
+
         );
       case "password":
         return (
+            <Grid item xs={xs} sm={sm} md={md} key={field.name}>
+
           <TextField
             key={field.name}
             type="password"
@@ -67,6 +77,8 @@ const DynamicForm = ({ formFields }) => {
             value={formValues[field.name] || ""}
             onChange={(e) => handleChange(field.name, e.target.value)}
           />
+                    </Grid>
+
         );
       case "date":
       case "time":
@@ -76,26 +88,27 @@ const DynamicForm = ({ formFields }) => {
       case "email":
       case "search":
         return (
+            <Grid item xs={xs} sm={sm} md={md} key={field.name}>
+
           <TextField
             key={field.name}
             type={field.type}
-            slotProps={{
-                inputLabel: {
-                  shrink: true,
-                },
-              }}
-              fullWidth
+           
             label={field.label}
             required={field.required}
+            fullWidth
             margin="normal"
             value={formValues[field.name] || ""}
             onChange={(e) => handleChange(field.name, e.target.value)}
           />
+                              </Grid>
+
         );
       case "number":
         return (
 
-         
+            <Grid item xs={xs} sm={sm} md={md} key={field.name}>
+
           <TextField
             key={field.name}
             type="number"
@@ -107,16 +120,19 @@ const DynamicForm = ({ formFields }) => {
             value={formValues[field.name] || ""}
             onChange={(e) => handleChange(field.name, e.target.value)}
           />
+        </Grid>
+
         );
       case "select":
         return (
+            <Grid item xs={xs} sm={sm} md={md} key={field.name}>
+
           <FormControl key={field.name} fullWidth margin="normal">
             <InputLabel>{field.label}</InputLabel>
             <Select
               value={formValues[field.name] || ""}
               onChange={(e) => handleChange(field.name, e.target.value)}
               required={field.required}
-              fullWidth
               slotProps={{
                 inputLabel: {
                   shrink: true,
@@ -130,9 +146,13 @@ const DynamicForm = ({ formFields }) => {
               ))}
             </Select>
           </FormControl>
+          </Grid>
+
         );
       case "file":
         return (
+            <Grid item xs={xs} sm={sm} md={md} key={field.name}>
+
           <TextField
             key={field.name}
             type="file"
@@ -143,9 +163,13 @@ const DynamicForm = ({ formFields }) => {
             margin="normal"
             onChange={(e) => handleFileChange(field.name, e.target.files)}
           />
+                    </Grid>
+
         );
       case "checkbox":
         return (
+            <Grid item xs={xs} sm={sm} md={md} key={field.name}>
+
           <FormControlLabel
             key={field.name}
             control={
@@ -155,11 +179,14 @@ const DynamicForm = ({ formFields }) => {
               />
             }
             label={field.label}
-            sx={{alignSelf:"flex-start", justifyContent:"flex-start"}}
           />
+                              </Grid>
+
         );
       case "radio":
         return (
+            <Grid item xs={xs} sm={sm} md={md} key={field.name}>
+
           <FormControl component="fieldset" key={field.name} margin="normal">
             <Typography>{field.label}</Typography>
             <RadioGroup
@@ -176,9 +203,13 @@ const DynamicForm = ({ formFields }) => {
               ))}
             </RadioGroup>
           </FormControl>
+          </Grid>
+
         );
       case "button":
         return (
+            <Grid item xs={xs} sm={sm} md={md} key={field.name}>
+
           <Button
             key={field.name}
             variant="contained"
@@ -189,26 +220,56 @@ const DynamicForm = ({ formFields }) => {
           >
             {field.label}
           </Button>
+          </Grid>
+
         );
-        case "telefono":
+        case "tel":
             return (
+                <Grid item xs={xs} sm={sm} md={md} key={field.name}>
                 <TextField
-                key={field.name}
-                label={field.label}
-                required={field.required}
-                fullWidth
-                margin="normal"
-                value={formValues[field.name]
-                  ? formValues[field.name]
-                      .replace(/(\d{3})(\d{4})(\d{0,4})/, "($1)-$2-$3") // Formatea solo para mostrar
-                  : ""}
-                onChange={(e) => {
-                  const rawValue = e.target.value.replace(/\D/g, ""); // Elimina caracteres no numéricos
-                  handleChange(field.name, rawValue); // Almacena solo los dígitos
-                }}
-                inputProps={{ maxLength: 15 }} // Limita a 15 caracteres
-              />
+                  label={field.label}
+                  required={field.required}
+                  fullWidth
+                  margin="normal"
+                  value={
+                    formValues[field.name]
+                      ? formValues[field.name]
+                          .replace(/(\d{3})(\d{3})(\d{0,4})/, "$1-$2-$3") // Aplica formato para visualización
+                          .replace(/-$/, "") // Elimina guión final si sobra
+                      : ""
+                  }
+                  onChange={(e) => {
+                    const rawValue = e.target.value.replace(/\D/g, ""); // Elimina caracteres no numéricos
+                    handleChange(field.name, rawValue.slice(0, 10)); // Guarda solo los primeros 10 dígitos
+                  }}
+                  inputProps={{ maxLength: 12 }} // Limita la entrada visible (incluyendo guiones)
+                />
+              </Grid>
             );
+        case "id":
+            return (
+                <Grid item xs={xs} sm={sm} md={md} key={field.name}>
+                    <TextField
+                        label={field.label}
+                        required={field.required}
+                        fullWidth
+                        margin="normal"
+                        value={
+                            formValues[field.name]
+                                ? formValues[field.name]
+                                    .replace(/(\d{3})(\d{7})(\d{0,1})/, "$1-$2-$3") // Formatea como XXX-XXXXXXX-X
+                                    .replace(/-$/, "") // Elimina guión final si es innecesario
+                                : ""
+                        }
+                        onChange={(e) => {
+                            const rawValue = e.target.value.replace(/\D/g, ""); // Solo dígitos
+                            handleChange(field.name, rawValue.slice(0, 11)); // Limita a 11 dígitos
+                        }}
+                        inputProps={{ maxLength: 13 }} // Limita la entrada visible (11 dígitos + 2 guiones)
+                    />
+                </Grid>
+            );
+          
 
       default:
         return null;
@@ -216,45 +277,63 @@ const DynamicForm = ({ formFields }) => {
   };
 
   const renderSection = (section) => (
-    <Grid item xs={12} sm={6} key={section.sectionTitle}>
-    <Paper elevation={2} style={{ padding: "10px", marginBottom: "20px" }}>
-      <Typography variant="h6" gutterBottom>
-        {section.sectionTitle}
-      </Typography>
-      {section.divider && <Divider style={{ marginBottom: "10px" }} />}
+      <Paper elevation={2} style={{  marginBottom: "20px"}}>
+         <Typography variant="h6" gutterBottom paddingTop={1}>
+            {section.sectionTitle}
+        </Typography>
+            {section.divider && <Divider style={{margin:"0 auto",  width:"50vw", }} />}
+
+          <Box
+              key={section.sectionTitle}
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "flex-start",
+              alignItems: "center",
+              flexWrap: "wrap   ",
+              gap: "0px 20px", padding:"0px 15px",
+            }}
+          >
+            
+
       {section.fields.map((field) => renderField(field))}
-    </Paper>
-  </Grid>
+
+          </Box>
+
+      </Paper>
 
   );
 
   return (
+    <Box  sx={{ flexGrow: 1, }}>
 
-    <Paper elevation={4} style={{ padding: "15px" }}>
-    <form onSubmit={handleSubmit} style={{ maxWidth: "100%", margin: "0 auto" }}>
-      <Typography variant="h5" marginY={3}>
-        Formulario Dinámico con Secciones Tetris
-      </Typography>
-      <Box
-        sx={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(350px, 1fr))", // Cada elemento ocupa un mínimo de 250px y se ajusta automáticamente
-          gap: "16px", // Espaciado entre elementos
-        }}
-      >
-        {formFields.map((section) => renderSection(section))}
+<Grid container  spacing={1} >
+
+      <Paper elevation={4}  style={{ padding: "15px"}}>
+
+          <form onSubmit={handleSubmit} >
+              <Typography variant="h5" marginY={3}>
+                  Formulario Dinámico con Secciones Wrappables
+              </Typography>
+              <Box
+                 
+              >
+                  {formFields.map((section) => renderSection(section))}
+              </Box>
+              <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+
+                  style={{ marginTop: "20px", height:"50px" }}
+              >
+                  Enviar
+              </Button>
+          </form>
+      </Paper>
+      </Grid>
       </Box>
-      <Button
-        type="submit"
-        variant="contained"
-        color="primary"
-        fullWidth
-        style={{ marginTop: "20px" }}
-      >
-        Enviar
-      </Button>
-    </form>
-  </Paper>
 
   );
 };

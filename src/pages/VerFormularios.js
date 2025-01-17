@@ -10,50 +10,70 @@ const jsonFields = [
           "name": "nombre_farmacia",
           "label": "Nombre Comercial de la Farmacia",
           "type": "text",
-          "required": true
+          "required": true,
+          "md": 12,
+          "value": ""
+
         },
         {
           "name": "direccion_calle",
           "label": "Calle",
           "type": "text",
-          "required": true
+          "required": true,
+          "md": 3,
+          "value": ""
         },
         {
           "name": "direccion_numero",
           "label": "Número",
-          "type": "text",
-          "required": true
+          "type": "number",
+          "required": true,
+          "md": 1,
+          "value": ""
         },
         {
           "name": "direccion_sector",
           "label": "Sector/Barrio",
           "type": "text",
-          "required": true
+          "required": true,
+          "md": 2,
+          "value": ""
         },
         {
           "name": "direccion_municipio",
           "label": "Municipio",
           "type": "text",
-          "required": true
+          "required": true,
+          "md": 2,
+          "value": ""
+
         },
         {
           "name": "direccion_provincia",
           "label": "Provincia",
           "type": "select",
           "required": true,
-          "options": ["Santo Domingo", "Santiago", "La Vega", "Puerto Plata"]
+          "options": ["Santo Domingo", "Santiago", "La Vega", "Puerto Plata"],
+          "md": 3.38,
+          "value": ""
         },
         {
           "name": "telefono",
           "label": "Teléfono",
-          "type": "telefono",
-          "required": true
+          "type": "tel",
+          "required": true,
+          "md": 3 ,
+          "value": ""
+
         },
         {
           "name": "correo_electronico",
           "label": "Correo Electrónico",
           "type": "email",
-          "required": true
+          "required": true,
+          "md": 3.15 ,
+          "value": ""
+
         }
       ]
     },
@@ -65,37 +85,55 @@ const jsonFields = [
           "name": "nombre_responsable",
           "label": "Nombre Completo del Responsable Técnico",
           "type": "text",
-          "required": true
+          "required": true,
+          "md": 6.3 ,
+          "value": ""
+
+          
         },
         {
           "name": "cedula_responsable",
           "label": "Cédula de Identidad",
-          "type": "text",
-          "required": true
+          "type": "id",
+          "required": true,
+          "md": 5.54 ,
+          "value": ""
+
         },
         {
           "name": "titulo_universitario",
           "label": "Título Universitario",
           "type": "text",
-          "required": true
+          "required": true,
+          "md": 6.3 ,
+          "value": ""
+
         },
         {
           "name": "numero_exequatur",
           "label": "Número de Exequátur",
-          "type": "text",
-          "required": true
+          "type": "number",
+          "required": true,
+          "md": 2 ,
+          "value": ""
+
         },
         {
           "name": "telefono_responsable",
           "label": "Teléfono del Responsable Técnico",
-          "type": "telefono",
-          "required": true
+          "type": "tel",
+          "required": true,
+          "md": 3.38,
+          "value": ""
         },
         {
           "name": "correo_responsable",
           "label": "Correo Electrónico del Responsable Técnico",
           "type": "email",
-          "required": true
+          "required": true,
+          "md": 3.15 ,
+          "value": ""
+
         }
       ]
     },
@@ -108,7 +146,10 @@ const jsonFields = [
           "label": "Tipo de Establecimiento",
           "type": "select",
           "required": true,
-          "options": ["Farmacia Comunitaria", "Farmacia Hospitalaria", "Otra"]
+          "options": ["Farmacia Comunitaria", "Farmacia Hospitalaria", "Otra"],
+          "md": 3.15 ,
+          "value": ""
+
         },
         {
           "name": "servicios_ofrecidos",
@@ -119,13 +160,19 @@ const jsonFields = [
             "Venta de Productos de Higiene",
             "Fórmulas Magistrales",
             "Otros"
-          ]
+          ],
+          "md": 8,
+          "value": ""
+
         },
         {
           "name": "descripcion_proyecto",
           "label": "Descripción del Proyecto",
           "type": "text",
-          "required": false
+          "required": false,
+          "md": 12,
+          "value": ""
+
         }
       ]
     },
@@ -137,96 +184,84 @@ const jsonFields = [
           "name": "certificado_nombre",
           "label": "Certificado de Nombre Comercial (ONAPI)",
           "type": "file",
-          "required": true
+          "required": true,
+          "md": 3.9,
+          "value": ""
+
         },
         {
           "name": "planos_local",
           "label": "Planos del Local Avalados (CODIA)",
           "type": "file",
-          "required": true
+          "required": false,
+          "md": 3.9,
+          "value": ""
+
         },
         {
           "name": "cedula_propietario",
           "label": "Cédula del Propietario",
           "type": "file",
-          "required": true
+          "required": false,
+          "md": 3.9,
+          "value": ""
+
         },
         {
           "name": "titulo_responsable",
           "label": "Título Universitario del Responsable Técnico",
           "type": "file",
-          "required": true
+          "required": false,
+          "md": 3.9,
+          "value": ""
+
         },
         {
           "name": "rnc",
           "label": "Certificado del RNC",
           "type": "file",
-          "required": true
+          "required": false,
+          "md": 3.9,
+          "value": ""
+
         },
         {
           "name": "contrato_titulo",
           "label": "Contrato de Alquiler o Título de Propiedad",
           "type": "file",
-          "required": true
+          "required": false,
+          "md": 3.9,
+          "value": ""
+
         },
         {
           "name": "declaracion_jurada",
           "label": "Declaración Jurada",
           "type": "file",
-          "required": true
+          "required": false,
+          "md": 3.9,
+          "value": ""
+
         },
         {
           "name": "comprobante_pago",
           "label": "Comprobante de Pago",
           "type": "file",
-          "required": true
+          "required": false,
+          "md": 3.9,
+          "value": ""
         }
       ]
     },
-    {
-      "sectionTitle": "5. Información del Progreso",
-      "divider": true,
-      "fields": [
-        {
-          "name": "estado_solicitud",
-          "label": "Estado de la Solicitud",
-          "type": "select",
-          "required": true,
-          "options": [
-            "Pendiente",
-            "En Revisión",
-            "Aprobado",
-            "Rechazado"
-          ]
-        },
-        {
-          "name": "fecha_solicitud",
-          "label": "Fecha de la Solicitud",
-          "type": "date",
-          "required": true
-        },
-        {
-          "name": "fecha_actualizacion",
-          "label": "Fecha de Actualización",
-          "type": "date",
-          "required": false
-        },
-        {
-          "name": "observaciones",
-          "label": "Observaciones",
-          "type": "text",
-          "required": false
-        }
-      ]
-    }
+   
   ]
   ;
  
 
   const VerFormularios = () => {
     return (
-        <div style={{ padding: "20px" }}>
-        <h1>Formulario Dinámico para Farmacias</h1>
+        <div style={{ paddingLeft: "30px" }}>
+        {/* <h1>Formulario Dinámico para Farmacias</h1> */}
         <DynamicForm formFields={jsonFields} />
       </div>
     );
