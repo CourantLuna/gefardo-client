@@ -44,8 +44,6 @@ const generalService = {
    */
  getFromTable: async (table, fields) => {
     try {
-        console.log("los campos ahora pasados son: ",fields)
-        const url2 = fields ? console.log(`${table}?fields=${fields}`) : `${table}`;
 
       const url = fields ? `${table}?fields=${fields}` : `${table}`;
       const response = await axiosInstance.get(url);

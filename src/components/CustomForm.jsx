@@ -376,35 +376,35 @@ const DynamicForm = ({ formFields }) => {
   }, [formFields]);
 
   return (
-    <Box  sx={{ flexGrow: 1, }}>
+    <Box sx={{ flexGrow: 1, }}>
 
-<Grid container  spacing={1} >
+      <Grid container spacing={1} >
 
-      <Paper elevation={4}  style={{ padding: "15px"}}>
+        <Paper elevation={4} style={{ padding: "15px" }}>
 
           <form onSubmit={handleSubmit} >
-              <Typography variant="h5" marginY={3}>
-                  Formulario Dinámico con Secciones Wrappables
-              </Typography>
-              <Box
-                 
-              >
-                  {formFields.map((section) => renderSection(section))}
-              </Box>
-              <Button
-                  type="submit"
-                  variant="contained"
-                  color="primary"
-                  fullWidth
+            <Typography variant="h5" marginY={3}>
+              Formulario Dinámico con Secciones Wrappables
+            </Typography>
+            <Box
 
-                  style={{ marginTop: "20px", height:"50px" }}
-              >
-                  Enviar
-              </Button>
+            >
+              {formFields.map((section) => renderSection(section))}
+            </Box>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              fullWidth
+
+              style={{ marginTop: "20px", height: "50px" }}
+            >
+              Enviar
+            </Button>
           </form>
-      </Paper>
+        </Paper>
       </Grid>
-      </Box>
+    </Box>
 
   );
 };
