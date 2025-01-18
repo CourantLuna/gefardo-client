@@ -308,7 +308,7 @@ const DynamicForm = ({ formFields }) => {
 
   const renderSection = (section) => (
       <Paper elevation={2} style={{  marginBottom: "20px"}}>
-         <Typography variant="h6" gutterBottom paddingTop={1}>
+         <Typography variant="h6" gutterBottom paddingTop={1} display={"flex"} justifyContent={"center"} alignContent={"center"}>
             {section.sectionTitle}
         </Typography>
             {section.divider && <Divider style={{margin:"0 auto",  width:"50vw", }} />}
