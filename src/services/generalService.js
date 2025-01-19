@@ -1,9 +1,10 @@
 import axios from 'axios';
 import AuthService from './authService'; // Asegúrate de que AuthService existe
 import { environment } from '../environments/environment';
+import { ApiEndpoints } from '../environments/apiEnpoints';
 
 const axiosInstance = axios.create({
-  baseURL: `${environment.apiBaseUrl}/api/general`,
+  baseURL: `${environment.apiBaseUrl}${ApiEndpoints.general}`,
 });
 
 // Interceptores para manejar el token y errores

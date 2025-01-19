@@ -5,4 +5,6 @@ export const ApiEndpoints = {
     usuarios: '/usuarios',
     RolesByUsuarioId: '/usuarioRoles/usuario/roles',
     AllUserRoles: '/usuarioRoles',
+    general: '/general',
+    forms: '/formularios',
   };

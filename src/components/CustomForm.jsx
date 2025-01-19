@@ -12,7 +12,7 @@ import {
   Radio,
   Typography,
   Divider,
-  Paper, Box, Grid
+  Paper, Box, Grid, Autocomplete
 } from "@mui/material";
 
 import generalService from '../services/generalService';
@@ -39,18 +39,18 @@ const modelIdNames = {
 };
 
 
-const fetchAllUsuarios = async (model) => {
-    try {
-        console.log(`El modelo es ${model}`);
-        const data = await generalService.getFromTable(`${model}`, `${modelIdNames[model].idFieldName},${modelIdNames[model].defaultField}`);
-        console.log('Datos obtenidos:', data);
-      } catch (error) {
-        console.error('Error al obtener datos:', error.message);
-      }
-  };
+// const fetchAllUsuarios = async (model) => {
+//     try {
+//         console.log(`El modelo es ${model}`);
+//         const data = await generalService.getFromTable(`${model}`, `${modelIdNames[model].idFieldName},${modelIdNames[model].defaultField}`);
+//         console.log('Datos obtenidos:', data);
+//       } catch (error) {
+//         console.error('Error al obtener datos:', error.message);
+//       }
+//   };
 
 
-const DynamicForm = ({ formFields }) => {
+const DynamicForm = ({ formFields, formTitle }) => {
   const [formValues, setFormValues] = useState({});
   const [dynamicOptions, setDynamicOptions] = useState({});
 
@@ -93,6 +93,8 @@ const DynamicForm = ({ formFields }) => {
             margin="normal"
             value={formValues[field.name] || ""}
             onChange={(e) => handleChange(field.name, e.target.value)}
+            error={field.required && !formValues[field.name]} // Marca como error si el campo está vacío
+            helperText={field.required && !formValues[field.name] ? "campo obligatorio" : ""} // Mensaje de error
           />
           </Grid>
 
@@ -110,6 +112,8 @@ const DynamicForm = ({ formFields }) => {
             margin="normal"
             value={formValues[field.name] || ""}
             onChange={(e) => handleChange(field.name, e.target.value)}
+            error={field.required && !formValues[field.name]} // Marca como error si el campo está vacío
+            helperText={field.required && !formValues[field.name] ? "campo obligatorio" : ""} // Mensaje de error
           />
                     </Grid>
 
@@ -134,6 +138,8 @@ const DynamicForm = ({ formFields }) => {
             margin="normal"
             value={formValues[field.name] || ""}
             onChange={(e) => handleChange(field.name, e.target.value)}
+            error={field.required && !formValues[field.name]} // Marca como error si el campo está vacío
+            helperText={field.required && !formValues[field.name] ? "campo obligatorio" : ""} // Mensaje de error
           />
                               </Grid>
 
@@ -153,6 +159,8 @@ const DynamicForm = ({ formFields }) => {
             margin="normal"
             value={formValues[field.name] || ""}
             onChange={(e) => handleChange(field.name, e.target.value)}
+            error={field.required && !formValues[field.name]} // Marca como error si el campo está vacío
+            helperText={field.required && !formValues[field.name] ? "campo obligatorio" : ""} // Mensaje de error
           />
         </Grid>
 
@@ -166,6 +174,8 @@ const DynamicForm = ({ formFields }) => {
                     value={formValues[field.name] || ""}
                     onChange={(e) => handleChange(field.name, e.target.value)}
                     required={field.required}
+                    error={field.required && !formValues[field.name]} // Marca como error si el campo está vacío
+                    helperText={field.required && !formValues[field.name] ? "campo obligatorio" : ""} // Mensaje de error
                   >
                     {dynamicOptions[field.name]?.map((option, index) => (
                       <MenuItem key={index} value={option.value}>
@@ -178,7 +188,32 @@ const DynamicForm = ({ formFields }) => {
                 </FormControl>
               </Grid>
             );
-          
+
+      case "autocomplete":
+        return (
+          <Grid item xs={xs} sm={sm} md={md} key={field.name}>
+            <Autocomplete
+              disablePortal
+              options={dynamicOptions[field.name] || []} // Usa las opciones dinámicas cargadas
+              getOptionLabel={(option) => option.label || ""}
+              value={formValues[field.name] || null}
+              onChange={( event, newValue) => handleChange(field.name, newValue || "")}
+              renderInput={(params) => 
+                <TextField {...params} label={field.label}
+                  required={field.required}
+                  error={field.required && !formValues[field.name]} // Marca como error si el campo está vacío
+                  helperText={field.required && !formValues[field.name] ? "campo obligatorio" : ""} // Mensaje de error
+                />}
+              renderOption={(props, option) => (
+                <li {...props} style={{ overflowY: "auto", maxHeight: "150px" }}>
+                  {option.label}
+                </li>
+              )}
+              sx={{ width: "100%" }}
+            />
+          </Grid>
+        );
+
       case "file":
         return (
             <Grid item xs={xs} sm={sm} md={md} key={field.name}>
@@ -192,6 +227,8 @@ const DynamicForm = ({ formFields }) => {
             fullWidth
             margin="normal"
             onChange={(e) => handleFileChange(field.name, e.target.files)}
+            error={field.required && !formValues[field.name]} // Marca como error si el campo está vacío
+            helperText={field.required && !formValues[field.name] ? "campo obligatorio" : ""} // Mensaje de error
           />
                     </Grid>
 
@@ -259,6 +296,8 @@ const DynamicForm = ({ formFields }) => {
                 <TextField
                   label={field.label}
                   required={field.required}
+                  error={field.required && !formValues[field.name]} // Marca como error si el campo está vacío
+                  helperText={field.required && !formValues[field.name] ? "campo obligatorio" : ""} // Mensaje de error
                   fullWidth
                   margin="normal"
                   value={
@@ -282,6 +321,8 @@ const DynamicForm = ({ formFields }) => {
                     <TextField
                         label={field.label}
                         required={field.required}
+                        error={field.required && !formValues[field.name]} // Marca como error si el campo está vacío
+                        helperText={field.required && !formValues[field.name] ? "campo obligatorio" : ""} // Mensaje de error
                         fullWidth
                         margin="normal"
                         value={
@@ -338,40 +379,71 @@ const DynamicForm = ({ formFields }) => {
 
   useEffect(() => {
     
-    fetchAllUsuarios("Usuarios");
+    // fetchAllUsuarios("Usuarios");
 
+    // const loadDynamicOptions = async () => {
+    //     const optionsData = {};
+    
+    //     // Filtra los campos que tienen `modelOptions` especificado
+    //     const selectFields = formFields
+    //       .flatMap((section) => section.fields)
+    //       .filter((field) => field.type === "select" && field.modelOptions);
+    
+    //     // Carga las opciones para cada campo
+    //     for (const field of selectFields) {
+    //       const model = field.modelOptions;
+    //       if (modelIdNames[model]) {
+    //         try {
+    //           const data = await generalService.getFromTable(
+    //             model,
+    //             `${modelIdNames[model].idFieldName},${modelIdNames[model].defaultField}`
+    //           );
+    //           optionsData[field.name] = data.map((item) => ({
+    //             value: item[modelIdNames[model].idFieldName],
+    //             label: item[modelIdNames[model].defaultField],
+    //           }));
+    //         } catch (error) {
+    //           console.error(`Error al cargar opciones para ${model}:`, error.message);
+    //         }
+    //       } else {
+    //         console.warn(`Modelo ${model} no encontrado en modelIdNames.`);
+    //       }
+    //     }
+    
+    //     setDynamicOptions(optionsData);
+    //   };
+    
     const loadDynamicOptions = async () => {
-        const optionsData = {};
-    
-        // Filtra los campos que tienen `modelOptions` especificado
-        const selectFields = formFields
-          .flatMap((section) => section.fields)
-          .filter((field) => field.type === "select" && field.modelOptions);
-    
-        // Carga las opciones para cada campo
-        for (const field of selectFields) {
-          const model = field.modelOptions;
-          if (modelIdNames[model]) {
-            try {
-              const data = await generalService.getFromTable(
-                model,
-                `${modelIdNames[model].idFieldName},${modelIdNames[model].defaultField}`
-              );
-              optionsData[field.name] = data.map((item) => ({
-                value: item[modelIdNames[model].idFieldName],
-                label: item[modelIdNames[model].defaultField],
-              }));
-            } catch (error) {
-              console.error(`Error al cargar opciones para ${model}:`, error.message);
-            }
-          } else {
-            console.warn(`Modelo ${model} no encontrado en modelIdNames.`);
+      const optionsData = {};
+  
+      // Filtra los campos que tienen `modelOptions` especificado
+      const dynamicFields = formFields
+        .flatMap((section) => section.fields)
+        .filter((field) => (field.type === "select" || field.type === "autocomplete") && field.modelOptions);
+  
+      // Carga las opciones para cada campo
+      for (const field of dynamicFields) {
+        const model = field.modelOptions;
+        if (modelIdNames[model]) {
+          try {
+            const data = await generalService.getFromTable(
+              model,
+              `${modelIdNames[model].idFieldName},${modelIdNames[model].defaultField}`
+            );
+            optionsData[field.name] = data.map((item) => ({
+              value: item[modelIdNames[model].idFieldName],
+              label: item[modelIdNames[model].defaultField],
+            }));
+          } catch (error) {
+            console.error(`Error al cargar opciones para ${model}:`, error.message);
           }
+        } else {
+          console.warn(`Modelo ${model} no encontrado en modelIdNames.`);
         }
-    
-        setDynamicOptions(optionsData);
-      };
-    
+      }
+  
+      setDynamicOptions(optionsData);
+    };
       loadDynamicOptions();
   }, [formFields]);
 
@@ -380,11 +452,12 @@ const DynamicForm = ({ formFields }) => {
 
       <Grid container spacing={1} >
 
-        <Paper elevation={4} style={{ padding: "15px" }}>
 
           <form onSubmit={handleSubmit} >
             <Typography variant="h5" marginY={3}>
-              Formulario Dinámico con Secciones Wrappables
+              {/* Formulario Dinámico con Secciones Wrappables */}
+              {formTitle}
+
             </Typography>
             <Box
 
@@ -402,7 +475,6 @@ const DynamicForm = ({ formFields }) => {
               Enviar
             </Button>
           </form>
-        </Paper>
       </Grid>
     </Box>
 
