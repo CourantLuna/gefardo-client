@@ -7,33 +7,33 @@ const axiosInstance = axios.create({
   baseURL: `${environment.apiBaseUrl}${ApiEndpoints.general}`,
 });
 
-// Interceptores para manejar el token y errores
-axiosInstance.interceptors.request.use(
-  (config) => {
-    const token = AuthService.getToken();
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    } else {
-      console.error('Token no válido. Redirigiendo a inicio de sesión.');
-      AuthService.logout();
-      window.location.href = '/';
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
+// // Interceptores para manejar el token y errores
+// axiosInstance.interceptors.request.use(
+//   (config) => {
+//     const token = AuthService.getToken();
+//     if (token) {
+//       config.headers.Authorization = `Bearer ${token}`;
+//     } else {
+//       console.error('Token no válido. Redirigiendo a inicio de sesión.');
+//       AuthService.logout();
+//       window.location.href = '/';
+//     }
+//     return config;
+//   },
+//   (error) => Promise.reject(error)
+// );
 
-axiosInstance.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response && error.response.status === 403) {
-      console.error('Acceso denegado. Redirigiendo al inicio.');
-      AuthService.logout();
-      window.location.href = '/';
-    }
-    return Promise.reject(error);
-  }
-);
+// axiosInstance.interceptors.response.use(
+//   (response) => response,
+//   (error) => {
+//     if (error.response && error.response.status === 403) {
+//       console.error('Acceso denegado. Redirigiendo al inicio.');
+//       AuthService.logout();
+//       window.location.href = '/';
+//     }
+//     return Promise.reject(error);
+//   }
+// );
 
 const generalService = {
   /**
