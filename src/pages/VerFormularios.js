@@ -272,19 +272,9 @@
 
 import React, { useState, useEffect } from "react";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  TablePagination,
-  useTheme,
+
   Box,
-  TableFooter,
-  Typography,
-  IconButton,
+
 
 } from "@mui/material";
 
@@ -297,28 +287,16 @@ import FilterAutocomplete from "../components/FilterAutocomplete";
 import DialogComponent from "../components/DialogComponent";
 import DynamicForm from '../components/CustomForm'; 
 
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import EditIcon from "@mui/icons-material/Edit";
-import ToggleOnIcon from "@mui/icons-material/ToggleOn";
-import ToggleOffIcon from "@mui/icons-material/ToggleOff";
-
-
-
 const VerFormularios = () => {
   const [formularios, setFormularios] = useState([]); // Datos de formularios
   const [filteredData, setFilteredData] = useState([]); // Datos filtrados
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [selectedId, setSelectedId] = useState(null); // ID seleccionado
 
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogContent, setDialogContent] = useState("");
 
-  const theme = useTheme();
-
- 
- 
 
   useEffect(() => {
 
@@ -420,8 +398,7 @@ return (
         gap: "16px",
       }}
     >
-
- {/* SearchBar para buscar por nombre */}
+      {/* SearchBar para buscar por nombre */}
       <SearchBar
         data={formularios}
         onFilterChange={handleFilterChange}
@@ -429,8 +406,13 @@ return (
         filterKey="Nombre_Formulario"
       />
 
-{/* Activar cuando tengamos el campo de Estado */}
-
+      {/* Activar cuando tengamos el campo de Estado */}
+      <FilterAutocomplete
+        label="Buscar por ID"
+        data={formularios}
+        filterKey="Estado"
+        onFilterChange={handleFilterChange}
+      />
       {/* <FilterAutocomplete
         label="Estado"
         data={formularios}
@@ -439,21 +421,24 @@ return (
       /> */}
     </Box>
 
-
     {/* Tabla de resultados */}
     <CustomGrid
-        data={filteredData}
-        columns={[
-          { key: "Id_Formulario", label: "ID" },
-          { key: "Nombre_Formulario", label: "Nombre" },
-          { key: "Creado_Por", label: "Creado Por" },
-          { key: "Modificado_Por", label: "Modificado Por" },
-          { key: "Fecha_Creacion", label: "Fecha de Creación" },
-          { key: "Fecha_Ultima_Modificacion", label: "Última Modificación" },
-          { key: "Estado", label: "Estado" },
-        ]}
-        actions={{ onView: handleView, onEdit: handleEdit, onToggle: toggleEstado }}
-      />
+      data={filteredData}
+      columns={[
+        { key: "Id_Formulario", label: "ID" },
+        { key: "Nombre_Formulario", label: "Nombre" },
+        { key: "Creado_Por", label: "Creado Por" },
+        { key: "Modificado_Por", label: "Modificado Por" },
+        { key: "Fecha_Creacion", label: "Fecha de Creación" },
+        { key: "Fecha_Ultima_Modificacion", label: "Última Modificación" },
+        { key: "Estado", label: "Estado" },
+      ]}
+      actions={{
+        onView: handleView,
+        onEdit: handleEdit,
+        onToggle: toggleEstado,
+      }}
+    />
 
     {/* Dialogo para mostrar formulario */}
     <DialogComponent
@@ -463,7 +448,6 @@ return (
     >
       {dialogContent}
     </DialogComponent>
-
   </Box>
 );
 };

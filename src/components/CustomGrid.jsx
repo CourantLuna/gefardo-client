@@ -54,12 +54,14 @@ const CustomGrid = ({
             {columns.map((column) => (
               <TableCell
                 key={column.key}
-                sx={{ color: theme.palette.primary.contrastText }}
-              >
+                sx={{
+                  color: theme.palette.primary.contrastText,
+                  textAlign: "center", // Centrar el texto
+                }}              >
                 {column.label}
               </TableCell>
             ))}
-            <TableCell sx={{ color: theme.palette.primary.contrastText }}>
+            <TableCell sx={{ color: theme.palette.primary.contrastText,textAlign: "center" }}>
               Acciones
             </TableCell>
           </TableRow>
@@ -70,9 +72,25 @@ const CustomGrid = ({
           {paginatedData.map((row, index) => (
             <TableRow key={row[idKey] || index} hover>
               {columns.map((column) => (
-                <TableCell key={column.key}>
-                  {row[column.key] || "N/A"}
-                </TableCell>
+               <TableCell
+               key={column.key}
+               sx={{
+                 color:
+                   column.key === "Estado"
+                     ? row[column.key] === true
+                       ? "success.main" // Verde si es true
+                       : "error.main" // Rojo si es false
+                     : "inherit", // Color predeterminado para otros campos
+                 fontWeight: column.key === "Estado" ? "bold" : "normal", // Resaltar el estado
+               }}
+             >
+               {column.key === "Estado"
+                 ? row[column.key] === true
+                   ? "Sí" // Mostrar "Sí" para true
+                   : "No" // Mostrar "No" para false
+                 : row[column.key] || "N/A"}
+             </TableCell>
+             
               ))}
               <TableCell>
                 <Box sx={{ display: "flex", gap: "8px" }}>
@@ -93,13 +111,19 @@ const CustomGrid = ({
                     </IconButton>
                   )}
                   {actions.onToggle && (
+                    
+                    
+                    
                     <Switch
-                      checked={row.Estado === "Activo"}
+                      checked={row.Estado === true}
                       onChange={() => actions.onToggle(row[idKey])}
-                      color={row.Estado === "Activo" ? "success" : "default"}
+                      color={row.Estado === true ? "primary" : "default"}
                       inputProps={{ "aria-label": "toggle switch" }}
+
                     />
                   )}
+
+                
 
                 </Box>
               </TableCell>
