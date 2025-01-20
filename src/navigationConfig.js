@@ -5,9 +5,7 @@ import StoreIcon from '@mui/icons-material/Store';
 import PeopleIcon from '@mui/icons-material/People';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
-import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import PersonSearchIcon from '@mui/icons-material/PersonSearch';
-import AddBusinessIcon from '@mui/icons-material/AddBusiness';
 import DynamicFormIcon from '@mui/icons-material/DynamicForm';
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
@@ -48,12 +46,7 @@ const NAVIGATION = [
           icon: <SettingsIcon />,
           roles: ['Administrador'],
         },
-        {
-          segment: 'crear-servicios',
-          title: 'Crear servicios',
-          icon: <MedicalServicesIcon />,
-          roles: ['Administrador'],
-        },
+        
         {
           segment: 'nuevas-solicitudes',
           title: 'Nueva solicitud',
@@ -99,7 +92,6 @@ const NAVIGATION = [
     roles: ['Administrador'],
     children: [
       { segment: 'ver-farmacias', title: 'Ver farmacias', icon: <StoreIcon />, roles: ['Administrador'] },
-      { segment: 'crear-farmacias', title: 'Crear farmacias', icon: <AddBusinessIcon />, roles: ['Administrador'] },
       { segment: 'ver-licencias', title: 'Ver licencias', icon: <FolderIcon />, roles: ['Administrador'] },
       { segment: 'crear-licencia', title: 'Crear licencia', icon: <CreateNewFolderIcon />, roles: ['Administrador'] },
       { segment: 'ver-sanciones', title: 'Ver sanciones', icon: <HttpsIcon />, roles: ['Administrador'] },
@@ -113,7 +105,6 @@ const NAVIGATION = [
       roles: ['Administrador'],
       children: [
         { segment: 'ver-usuarios', title: 'Ver usuarios', icon: <PersonSearchIcon />, roles: ['Administrador'] },
-        { segment: 'crear-usuario', title: 'Crear usuario', icon: <PersonAddIcon />, roles: ['Administrador'] },
       ],
     },
     { type: 'divider', roles: ['Administrador', 'Inspector', 'Farmaceutico'] },

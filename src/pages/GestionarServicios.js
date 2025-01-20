@@ -6,8 +6,6 @@ import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
 import DialogComponent from "../components/DialogComponent"; // Asegúrate de que la ruta sea correcta
 import DynamicForm from '../components/CustomForm'; 
 
-
-
 import typesRequestService from "../services/typesRequestService";
 
 const GestionarServicios = () => {
@@ -80,14 +78,6 @@ const GestionarServicios = () => {
     alert(`Editar tipo de servicio con ID: ${id}`);
   };
 
-  const handleDelete = (id) => {
-    if (window.confirm("¿Estás seguro de que deseas eliminar este tipo de servicio?")) {
-      setTiposServicios((prevTiposServicios) =>
-        prevTiposServicios.filter((tipo) => tipo.Id_Tipo_Servicio !== id)
-      );
-      alert(`Eliminado tipo de servicio con ID: ${id}`);
-    }
-  };
 
   return (
     <Box
@@ -99,8 +89,7 @@ const GestionarServicios = () => {
     >
       <Box
         sx={{
-          display: "flex",
-          justifyContent: "space-between",
+         display: "flex",
           alignItems: "center",
           marginBottom: "20px",
           gap: "16px",
@@ -138,7 +127,6 @@ const GestionarServicios = () => {
         ]}
         actions={{
           onEdit: handleEdit,
-          onDelete: handleDelete,
         }}
       />
 

@@ -39,7 +39,7 @@ const modelIdNames = {
 };
 
 
-const DynamicForm = ({ formFields, formTitle }) => {
+const DynamicForm = ({ formFields, formTitle, labelButtonOnSubmit="Enviar", handleSendData }) => {
   const [formValues, setFormValues] = useState({});
   const [dynamicOptions, setDynamicOptions] = useState({});
 
@@ -60,6 +60,18 @@ const DynamicForm = ({ formFields, formTitle }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    // Verificar que todos los campos requeridos están validados correctamente
+    const hasErrors = formFields.some(section =>
+      section.fields.some(field =>
+        field.required && (!formValues[field.name] || 
+          (field.type === "id" && formValues[field.name].replace(/\D/g, "").length !== 11))
+      )
+    );
+
+    if (hasErrors) {
+      return;
+    }
+
    // Crear un JSON plano manejando valores anidados
   const plainJson = Object.entries(formValues).reduce((acc, [key, value]) => {
     if (typeof value === 'object' && value !== null) {
@@ -78,6 +90,8 @@ const DynamicForm = ({ formFields, formTitle }) => {
 
     console.log("Datos enviados:", plainJson);
     alert("Formulario enviado correctamente. Revisa la consola para ver los datos.");
+
+    handleSendData(plainJson);
   };
 
   const renderField = (field) => {
@@ -343,14 +357,18 @@ const DynamicForm = ({ formFields, formTitle }) => {
                 />
               </Grid>
             );
-        case "id":
+            case "id": 
             return (
                 <Grid item xs={xs} sm={sm} md={md} key={field.name}>
                     <TextField
                         label={field.label}
                         required={field.required}
-                        error={field.required && !formValues[field.name]} // Marca como error si el campo está vacío
-                        helperText={field.required && !formValues[field.name] ? "campo obligatorio" : ""} // Mensaje de error
+                        error={field.required && (!formValues[field.name] || formValues[field.name].replace(/\D/g, "").length !== 11)} // Marca como error si el campo está vacío o si no tiene 11 dígitos
+                        helperText={
+                            field.required && (!formValues[field.name] || formValues[field.name].replace(/\D/g, "").length !== 11)
+                                ? "Debe tener exactamente 11 dígitos"
+                                : ""
+                        } // Mensaje de error específico
                         fullWidth
                         margin="normal"
                         value={
@@ -449,7 +467,7 @@ const DynamicForm = ({ formFields, formTitle }) => {
 
 
           <form onSubmit={handleSubmit} >
-            <Typography variant="h5" marginY={3}>
+            <Typography variant="h4" marginY={3} textAlign={"center"}>
               {/* Formulario Dinámico con Secciones Wrappables */}
               {formTitle}
 
@@ -467,7 +485,7 @@ const DynamicForm = ({ formFields, formTitle }) => {
 
               style={{ marginTop: "20px", height: "50px" }}
             >
-              Enviar
+              {labelButtonOnSubmit}
             </Button>
           </form>
       </Grid>

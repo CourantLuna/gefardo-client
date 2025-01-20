@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Autocomplete, TextField } from "@mui/material";
 
-const FilterAutocomplete = ({ label, data, filterKey, onFilterChange }) => {
+const FilterAutocomplete = ({ label, data, filterKey, onFilterChange, width = "300px" }) => {
   const [options, setOptions] = useState([]); // Opciones únicas derivadas de `data`
   const [filteredOptions, setFilteredOptions] = useState([]); // Opciones visibles filtradas
   const [value, setValue] = useState("Todos"); // Valor seleccionado o buscado
@@ -72,7 +72,7 @@ const FilterAutocomplete = ({ label, data, filterKey, onFilterChange }) => {
           helperText={data.length === 0 ? "No hay datos disponibles" : ""}
         />
       )}
-      sx={{ width: 300 }}
+      sx={{ width }}
     />
   );
 };

@@ -6,6 +6,8 @@ import CustomDrawer from '../components/CustomDrawer';
 import { Box, CssBaseline, createTheme, ThemeProvider, Typography } from '@mui/material';
 import { AuthContext } from '../context/authContext'; // Importa el AuthContext
 import AuthService from '../services/authService'; // Importa AuthService
+import userService from '../services/userService';
+
 import NAVIGATION from '../navigationConfig';
 
 const drawerWidth = 280;
@@ -63,6 +65,11 @@ function GefardoPage() {
     title: "Inicio",
   });
   const [userRolesPasados = [], setUserRoles] = useState([]); // Cambia userRole a userRoles como array
+  const [userId, setUserId] = useState(null);
+  const [userInfo, setUserInfo] = useState(null);
+
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const navigate = useNavigate();
   const location = useLocation(); // Hook para obtener la ruta actual
@@ -89,6 +96,37 @@ function GefardoPage() {
     };
     setSelectedPage(page);
   }, [location.pathname]); // Se ejecuta cuando cambia la URL
+
+  useEffect(() => {
+    try {
+      const id = AuthService.getUserId();
+      console.log("ID del usuario:", id);
+      setUserId(id); // Guarda el ID en el estado
+
+      const fetchUserInfo = async () => {
+        try {
+          setLoading(true); // Inicia la carga
+          setError(null); // Limpia errores previos
+          const usuario = await userService.getUsuarioById(userId); // Llama al servicio
+          setUserInfo(usuario); // Establece la información del usuario
+          console.log("Información del usuario:", usuario);
+        } catch (err) {
+          setError(err.message); // Maneja el error
+        } finally {
+          setLoading(false); // Finaliza la carga
+        }
+      };
+
+      if (userId) {
+        fetchUserInfo(); // Llama a la función si se proporciona un ID
+
+      }
+    } catch (err) {
+      console.error('Error al obtener el ID del usuario:', err.message);
+    }
+
+    
+  }, [userId]);
 
   // Obtener el rol del usuario cuando la página se carga
   useEffect(() => {
@@ -130,6 +168,7 @@ function GefardoPage() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Box>
+
         {/* Navbar */}
         <CustomNavbar
           appName="Gefardo"
@@ -138,6 +177,8 @@ function GefardoPage() {
           onToggleDarkMode={handleToggleDarkMode}
           selectedPage={selectedPage}
           onLogout={logout} // Usa el logout del contexto
+          NombreUsuario={`${userInfo?.Nombre} ${userInfo?.Apellido}`} // Combina nombre y apellido
+
         />
 
         {/* Drawer */}

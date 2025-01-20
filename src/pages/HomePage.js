@@ -33,7 +33,6 @@ function HomePage() {
           showMenuButton={false} // Oculta el menú hamburguesa
           showProfileButton={false} // Muestra la foto de perfil
           showEnablePharmacyButton={true} // Mostrar el botón Habilitar Farmacia
-
         />
 
         {/* Main Content */}

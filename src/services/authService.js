@@ -49,6 +49,38 @@ const AuthService = {
     }
   },
 
+   // Decodificar el token y devolver su contenido
+   decodeToken: () => {
+    try {
+      const token = sessionStorage.getItem('token');
+      if (!token) throw new Error('Token no encontrado.');
+
+      return jwtDecode(token); // Decodifica y retorna el contenido del token
+    } catch (err) {
+      console.error('Error al decodificar el token:', err.message);
+      return null; // Retorna null si ocurre un error
+    }
+  },
+
+  // Obtener el ID del usuario del token
+  getUserId: () => {
+    try {
+      const token = sessionStorage.getItem('token');
+      if (!token) throw new Error('Token no encontrado.');
+
+      const decodedToken = jwtDecode(token); // Decodifica el token
+      if (decodedToken.id) {
+        return decodedToken.id; // Retorna el ID del usuario si está disponible
+      }
+
+      throw new Error('ID no encontrado en el token.');
+    } catch (err) {
+      console.error('Error al obtener el ID del usuario:', err.message);
+      return null; // Retorna null si ocurre un error
+    }
+  },
+
+
   // Verificar si el token es válido usando el backend
   verifyToken: async () => {
     try {

@@ -15,8 +15,7 @@ import {
 import MenuIcon from '@mui/icons-material/Menu';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
-import Settings from '@mui/icons-material/Settings';
-import Logout from '@mui/icons-material/Logout';
+import LockResetIcon from '@mui/icons-material/LockReset';import Logout from '@mui/icons-material/Logout';
 import Person from '@mui/icons-material/Person';
 
 function CustomNavbar({
@@ -27,6 +26,8 @@ function CustomNavbar({
   onLogout,
   showMenuButton = true, // Default: show the menu button
   showProfileButton = true, // Default: show the profile button
+  NombreUsuario,
+
 }) {
   const [anchorEl, setAnchorEl] = useState(null); // Controla el menú desplegable del perfil
 
@@ -82,13 +83,22 @@ function CustomNavbar({
           {/* Profile Button (Opcional) */}
           {showProfileButton && (
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <Typography sx={{
+                display: {
+                  xs: 'none', // Oculta en pantallas pequeñas
+                  sm: 'flex', // Muestra en pantallas medianas y grandes
+                },
+              }} variant="h6">
+                {NombreUsuario}
+              </Typography>
               <IconButton
-                color="inherit"
+
                 onClick={handleProfileMenuOpen}
                 sx={{
-                  ml: 2,
+                  ml: 1,
                 }}
               >
+
                 <Avatar alt="Profile" src="https://mui.com/static/images/avatar/1.jpg" />
               </IconButton>
 
@@ -117,9 +127,9 @@ function CustomNavbar({
 
                 <MenuItem onClick={handleClose}>
                   <ListItemIcon>
-                    <Settings fontSize="small" />
+                    <LockResetIcon fontSize="small" />
                   </ListItemIcon>
-                  Configuración
+                  Cambiar Contraseña
                 </MenuItem>
                 <MenuItem onClick={handleLogout}>
                   <ListItemIcon>

@@ -11,28 +11,34 @@ import {
   TableCell,
   TableContainer,
   TableRow,
-  Box,
+  Box, Select,
+  MenuItem,
+
 } from "@mui/material";
 import { Edit, Close } from "@mui/icons-material";
+  import AddIcon from "@mui/icons-material/Add";
 
-function UserCard({ usuario, roles, roleConfig, toggleEstado }) {
+function UserCard({ usuario, roles, roleConfig, toggleEstado, handleAddRole, handleDeleteRole }) {
   const [isEditing, setIsEditing] = useState(false);
+
+const [selectedRole, setSelectedRole] = useState("");
+
+  const handleRoleChange = (event) => {
+    setSelectedRole(event.target.value);
+  };
+
 
   const handleEditToggle = () => {
     setIsEditing((prev) => !prev);
   };
 
-  const handleDeleteChip = (rolId) => {
-    alert(`Eliminando rol con ID ${rolId} del usuario ${usuario.Id_Usuario}`);
-    // Lógica de eliminación aquí
-  };
 
   return (
     <Card
       variant="elevation"
       sx={{
-        minHeight: "320px",
-        maxHeight: "320px",
+        Height: "fit-content",
+        minHeight: "380px",
         position: "relative",
       }}
     >
@@ -52,7 +58,7 @@ function UserCard({ usuario, roles, roleConfig, toggleEstado }) {
         {isEditing ? <Close fontSize="small" /> : <Edit fontSize="small" />}
       </IconButton>
       <CardContent>
-        <Typography variant="h6">
+        <Typography variant="h6" maxWidth="80%" textOverflow="clip">
           {usuario.Nombre} {usuario.Apellido}
         </Typography>
 
@@ -68,7 +74,7 @@ function UserCard({ usuario, roles, roleConfig, toggleEstado }) {
                   color={role.color}
                   icon={role.icon}
                   style={{ marginRight: 2, marginBottom: 2 }}
-                  onDelete={isEditing ? () => handleDeleteChip(rolId) : undefined}
+                  onDelete={isEditing ? () => handleDeleteRole(rolId, usuario.Id_Usuario) : undefined}
                 />
               );
             })
@@ -77,6 +83,38 @@ function UserCard({ usuario, roles, roleConfig, toggleEstado }) {
               Sin roles asignados
             </Typography>
           )}
+   
+       {/* Formulario para añadir rol */}
+          {isEditing && (
+            <Box display="flex" alignItems="center" gap={1} marginTop={1}>
+              <Select
+                value={selectedRole}
+                onChange={handleRoleChange}
+                displayEmpty
+                fullWidth
+                size="small"
+              >
+                <MenuItem value="" disabled>
+                  Seleccione un rol
+                </MenuItem>
+                {Object.keys(roleConfig).map((key) => (
+                  <MenuItem key={key} value={key}>
+                    {roleConfig[key].name}
+                  </MenuItem>
+                ))}
+              </Select>
+              <IconButton
+                color="primary"
+                onClick={() => handleAddRole(selectedRole, usuario.Id_Usuario)}
+                disabled={!selectedRole}
+              >
+                <AddIcon />
+              </IconButton>
+            </Box>
+          )}
+
+
+
         </Box>
 
         {/* Mini tabla para Código y Correo */}

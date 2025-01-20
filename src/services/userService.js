@@ -46,6 +46,17 @@ const userService = {
     }
   },
 
+  getUsuarioById: async (idUsuario) => {
+    try {
+      const response = await axiosInstance.get(`${ApiEndpoints.usuarios}/${idUsuario}`);
+      return response.data; // Devuelve la información del usuario
+    } catch (error) {
+      console.error(`Error al obtener información del usuario con ID ${idUsuario}:`, error.response?.data || error.message);
+      throw new Error(error.response?.data?.message || 'No se pudo obtener la información del usuario.');
+    }
+  },
+  
+
 
   toggleEstado: async (id, nuevoEstado) => {
     try {
@@ -74,6 +85,41 @@ const userService = {
         throw error; // Opcional: Propagar el error para manejarlo en el componente
     }
 },
+
+addUser: async (userData) => {
+  try {
+    const response = await axiosInstance.post(ApiEndpoints.usuarios, userData);
+    return response.data;
+  } catch (error) {
+    console.error('Error al añadir usuario:', error.response?.data || error.message);
+    throw new Error(error.response?.data?.message || 'No se pudo añadir el usuario.');
+  }
+},
+
+addRoleToUser: async (userId, roleId) => {
+  try {
+    const response = await axiosInstance.post(`${ApiEndpoints.AllUserRoles}`, {
+      Id_Usuario: userId,
+      Id_Rol: roleId,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error al añadir rol al usuario:", error);
+    throw error;
+  }
+},
+
+deleteRoleFromUser: async (userId, roleId) => {
+  try {
+    const response = await axiosInstance.delete(`${ApiEndpoints.AllUserRoles}/${userId}/${roleId}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error al eliminar el rol ${roleId} del usuario ${userId}:`, error.message);
+    throw new Error(error.response?.data?.message || "No se pudo eliminar el rol.");
+  }
+},
+
+
 
   // Puedes añadir otros métodos aquí, como crear o eliminar usuarios
 };
