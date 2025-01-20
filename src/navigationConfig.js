@@ -43,7 +43,7 @@ const NAVIGATION = [
           roles: ['Administrador'],
         },
         {
-          segment: 'Gestionar-servicios',
+          segment: 'gestionar-servicios',
           title: 'Gestionar servicios',
           icon: <SettingsIcon />,
           roles: ['Administrador'],

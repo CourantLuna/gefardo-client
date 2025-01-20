@@ -12,6 +12,13 @@ import VerUsuarios from "./pages/VerUsuarios";
 import NotFound from "./pages/NotFound";
 import VerFormularios from "./pages/VerFormularios";
 import VerFarmacias from "./pages/VerFarmacias";
+import VerLicencias from "./pages/VerLicencias";
+import VerSanciones from "./pages/VerSanciones";
+import VerInspecciones from "./pages/VerInspecciones";
+import VerSolicitudes from "./pages/VerSolicitudes";
+import GestionarServicios from "./pages/GestionarServicios";
+
+import VerPerfil from "./pages/VerPerfil";
 
 function App() {
   return (
@@ -35,9 +42,19 @@ function App() {
                 }
               >
                 {/* Ruta anidada para ver usuarios */}
+
+                {/* Paginas del rol ADMINISTRADOR */}
                 <Route path="ver-usuarios" element={<VerUsuarios />} />
                 <Route path="ver-formularios" element={ <VerFormularios/>} />
                 <Route path="ver-farmacias" element={ <VerFarmacias/>} />
+                <Route path="ver-licencias" element={ <VerLicencias/>} />
+                <Route path="ver-sanciones" element={ <VerSanciones/>} />
+                <Route path="ver-inspecciones" element={ <VerInspecciones/>} />
+                <Route path="revisar-solicitudes" element={ <VerSolicitudes/>} />
+                <Route path="gestionar-servicios" element={ <GestionarServicios/>} />
+
+                <Route path="ver-perfil" element={<VerPerfil />} />
+
 
 
                 {/* <Route path="otra-pagina" element={<OtraPagina />} /> */}

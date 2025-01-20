@@ -9,7 +9,8 @@ import {
 
 const DialogComponent = ({ open, onClose, title, children }) => {
   return (
-    <Box>
+    <Box
+    >
       <Dialog open={open} onClose={onClose} fullWidth maxWidth="lg">
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>{children}</DialogContent>

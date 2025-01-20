@@ -25,7 +25,7 @@ const modelIdNames = {
     ClasificacionRiesgo: { idFieldName: 'Id_ClasificacionRiesgo', defaultField: 'Nivel' },
     Farmacia: { idFieldName: 'Id_Farmacia', defaultField: 'Nombre' },
     FlujoEstadosServicio: { idFieldName: 'Id_FlujoEstadoServicio', defaultField: 'EstadoActual' },
-    Formulario: { idFieldName: 'Id_Formulario', defaultField: 'Titulo' },
+    Formulario: { idFieldName: 'Id_Formulario', defaultField: 'Nombre_Formulario' },
     Hallazgos: { idFieldName: 'Id_Hallazgo', defaultField: 'Descripcion' },
     HistorialCambio: { idFieldName: 'Id_HistorialCambio', defaultField: 'Cambio' },
     Inspeccion: { idFieldName: 'Id_Inspeccion', defaultField: 'Fecha' },
@@ -37,17 +37,6 @@ const modelIdNames = {
     TipoFarmacia: { idFieldName: 'Id_Tipo_Farmacia', defaultField: 'Descripcion' },
     TipoServicio: { idFieldName: 'Id_TipoServicio', defaultField: 'Descripcion' },
 };
-
-
-// const fetchAllUsuarios = async (model) => {
-//     try {
-//         console.log(`El modelo es ${model}`);
-//         const data = await generalService.getFromTable(`${model}`, `${modelIdNames[model].idFieldName},${modelIdNames[model].defaultField}`);
-//         console.log('Datos obtenidos:', data);
-//       } catch (error) {
-//         console.error('Error al obtener datos:', error.message);
-//       }
-//   };
 
 
 const DynamicForm = ({ formFields, formTitle }) => {
@@ -70,7 +59,24 @@ const DynamicForm = ({ formFields, formTitle }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Datos enviados:", formValues);
+
+   // Crear un JSON plano manejando valores anidados
+  const plainJson = Object.entries(formValues).reduce((acc, [key, value]) => {
+    if (typeof value === 'object' && value !== null) {
+      // Extraer solo el valor interno si es un objeto
+      if (value.value !== undefined) {
+        acc[key] = value.value; // Si tiene un campo `value`, usa ese
+      } else {
+        acc[key] = JSON.stringify(value); // Si no, convierte todo el objeto en string
+      }
+    } else {
+      acc[key] = value; // Agrega el valor directamente si no es un objeto
+    }
+    return acc;
+  }, {});
+
+
+    console.log("Datos enviados:", plainJson);
     alert("Formulario enviado correctamente. Revisa la consola para ver los datos.");
   };
 
@@ -99,6 +105,27 @@ const DynamicForm = ({ formFields, formTitle }) => {
           </Grid>
 
         );
+
+        case "textarea":
+        return (
+          <Grid item xs={xs} sm={sm} md={md} key={field.name}>
+            <TextField
+              key={field.name}
+              label={field.label}
+              required={field.required}
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              multiline
+              rows={field.rows || 4} // Número de filas predeterminado si no se especifica
+              value={formValues[field.name] || ""}
+              onChange={(e) => handleChange(field.name, e.target.value)}
+              error={field.required && !formValues[field.name]} // Marca como error si el campo está vacío
+              helperText={field.required && !formValues[field.name] ? "campo obligatorio" : ""} // Mensaje de error
+            />
+          </Grid>
+        );
+
       case "password":
         return (
             <Grid item xs={xs} sm={sm} md={md} key={field.name}>
@@ -242,6 +269,7 @@ const DynamicForm = ({ formFields, formTitle }) => {
             control={
               <Checkbox
                 checked={formValues[field.name] || false}
+                required={field.required}
                 onChange={(e) => handleChange(field.name, e.target.checked)}
               />
             }
@@ -379,39 +407,6 @@ const DynamicForm = ({ formFields, formTitle }) => {
 
   useEffect(() => {
     
-    // fetchAllUsuarios("Usuarios");
-
-    // const loadDynamicOptions = async () => {
-    //     const optionsData = {};
-    
-    //     // Filtra los campos que tienen `modelOptions` especificado
-    //     const selectFields = formFields
-    //       .flatMap((section) => section.fields)
-    //       .filter((field) => field.type === "select" && field.modelOptions);
-    
-    //     // Carga las opciones para cada campo
-    //     for (const field of selectFields) {
-    //       const model = field.modelOptions;
-    //       if (modelIdNames[model]) {
-    //         try {
-    //           const data = await generalService.getFromTable(
-    //             model,
-    //             `${modelIdNames[model].idFieldName},${modelIdNames[model].defaultField}`
-    //           );
-    //           optionsData[field.name] = data.map((item) => ({
-    //             value: item[modelIdNames[model].idFieldName],
-    //             label: item[modelIdNames[model].defaultField],
-    //           }));
-    //         } catch (error) {
-    //           console.error(`Error al cargar opciones para ${model}:`, error.message);
-    //         }
-    //       } else {
-    //         console.warn(`Modelo ${model} no encontrado en modelIdNames.`);
-    //       }
-    //     }
-    
-    //     setDynamicOptions(optionsData);
-    //   };
     
     const loadDynamicOptions = async () => {
       const optionsData = {};

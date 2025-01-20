@@ -1,17 +1,15 @@
 import React, { useState, useEffect } from "react";
 import {
   Grid,
-  FormControl,
-  Select,
-  MenuItem,
-  InputLabel,
   Snackbar,
   Alert,
-  TextField,
   Box,
+  Paper, Typography
 } from "@mui/material";
 import userService from "../services/userService";
 import UserCard from "../components/UserCard";
+import SearchBar from "../components/SearchBar";
+import FilterAutocomplete from "../components/FilterAutocomplete";
 
 import {
   AdminPanelSettings,
@@ -21,9 +19,10 @@ import {
 
 function VerUsuarios() {
   const [usuarios, setUsuarios] = useState([]);
+  const [filteredUsuarios, setFilteredUsuarios] = useState([]);
+
   const [roles, setRoles] = useState({});
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filterEstado, setFilterEstado] = useState("todos");
+
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
@@ -41,8 +40,10 @@ function VerUsuarios() {
       try {
         const data = await userService.getUsuarios();
         setUsuarios(data);
+        setFilteredUsuarios(data);
 
         const rolesData = await userService.getAllRoles();
+        
         const rolesPorUsuario = rolesData.reduce((acc, { Id_Usuario, Id_Rol }) => {
           if (!acc[Id_Usuario]) acc[Id_Usuario] = [];
           acc[Id_Usuario].push(Id_Rol);
@@ -62,11 +63,16 @@ function VerUsuarios() {
     const nuevoEstado = !estadoActual;
     try {
       await userService.toggleEstado(id, nuevoEstado);
-      setUsuarios((prev) =>
-        prev.map((user) =>
+      setUsuarios((prev) => {
+        const updatedUsuarios = prev.map((user) =>
           user.Id_Usuario === id ? { ...user, Estado: nuevoEstado } : user
-        )
-      );
+        );
+        setFilteredUsuarios(updatedUsuarios); // También actualiza la lista filtrada
+        return updatedUsuarios;
+      });
+      
+
+      
       setSnackbar({
         open: true,
         message: `El estado del usuario ${nombre} se actualizó con éxito.`,
@@ -81,60 +87,79 @@ function VerUsuarios() {
     }
   };
 
+  // Función para manejar el filtro de búsqueda
+  const handleFilterChange = (filteredResults) => {
+    setFilteredUsuarios(filteredResults);
+  };
+
   const handleSnackbarClose = () => setSnackbar({ ...snackbar, open: false });
 
-  const filteredUsuarios = usuarios.filter((usuario) => {
-    const matchesSearch = `${usuario.Nombre} ${usuario.Apellido}`
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
-    const matchesEstado =
-      filterEstado === "todos" ||
-      (filterEstado === "activo" && usuario.Estado) ||
-      (filterEstado === "inactivo" && !usuario.Estado);
-
-    return matchesSearch && matchesEstado;
-  });
-
   return (
-    <div>
-      <Box margin={2} display="flex" gap={2}>
-        <TextField
-          fullWidth
-          label="Buscar usuarios"
-          type="search"
-          variant="outlined"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-
-        <FormControl variant="outlined" sx={{ maxWidth: 200, minWidth: 110 }}>
-          <InputLabel id="filter-estado-label">Estado</InputLabel>
-          <Select
-            labelId="filter-estado-label"
-            value={filterEstado}
-            onChange={(e) => setFilterEstado(e.target.value)}
-            label="Estado"
-          >
-            <MenuItem value="todos">Todos</MenuItem>
-            <MenuItem value="activo">Activos</MenuItem>
-            <MenuItem value="inactivo">Inactivos</MenuItem>
-          </Select>
-        </FormControl>
+    <Box
+      sx={{
+        padding: "20px",
+        borderRadius: "8px",
+        marginLeft: "20px",
+      }}
+    >
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "20px",
+          gap: "16px",
+        }}
+      >
+        {/* SearchBar para buscar por nombre */}
+        <SearchBar
+          data={usuarios}
+          onFilterChange={handleFilterChange}
+          label="Buscar por nombre y apellido o cédula"
+          filterKeys={["Nombre", "Apellido", "Cedula"]} // Filtrar por varios campos
+          />
       </Box>
 
+      {/* Seccion de filtros */}
+      <Paper
+        sx={{
+          display: "flex",
+          flexWrap: "wrap",
+          alignItems: "center",
+          padding: "15px",
+          gap: "15px",
+          fullWidth: "true",
+        }}
+      >
+        <Typography variant="body1"  color="initial">
+          Filtrar por:
+        </Typography>
+        {/* FilterAutocomplete para filtrar por estado */}
+        <FilterAutocomplete
+          label="Estado"
+          data={usuarios}
+          filterKey="Estado"
+          onFilterChange={handleFilterChange}
+        />
+
+      </Paper>
+
+      {/* Cards para usuarios */}
       <Grid container spacing={3} padding={3}>
         {filteredUsuarios.map((usuario) => (
           <Grid item xs={12} sm={6} md={4} key={usuario.Id_Usuario}>
-            <UserCard
-              usuario={usuario}
-              roles={roles}
-              roleConfig={roleConfig}
-              toggleEstado={toggleEstado}
-            />
-          </Grid>
+          <UserCard
+            usuario={{ ...usuario }} // Asegura que el usuario actualizado se pase como nuevo objeto
+            roles={roles}
+            roleConfig={roleConfig}
+            toggleEstado={toggleEstado}
+          />
+        </Grid>
+        
         ))}
       </Grid>
-      
+
+      {/* Snackbar para avisar estado final del cambio de estado */}
       <Snackbar
         open={snackbar.open}
         autoHideDuration={3000}
@@ -142,7 +167,7 @@ function VerUsuarios() {
       >
         <Alert severity={snackbar.severity}>{snackbar.message}</Alert>
       </Snackbar>
-    </div>
+    </Box>
   );
 }
 

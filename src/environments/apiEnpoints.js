@@ -7,4 +7,11 @@ export const ApiEndpoints = {
     AllUserRoles: '/usuarioRoles',
     general: '/general',
     forms: '/formularios',
+    pharmacies: '/farmacias',
+    licenses: '/licencias',
+    provinces: '/provincias',
+    sanctions: '/sanciones',
+    inspections: '/inspecciones',
+    requests: '/servicios',
+    typesRequests: '/tipos-servicio',
   };

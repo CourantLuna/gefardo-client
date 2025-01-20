@@ -31,8 +31,8 @@ function UserCard({ usuario, roles, roleConfig, toggleEstado }) {
     <Card
       variant="elevation"
       sx={{
-        minHeight: "300px",
-        maxHeight: "300px",
+        minHeight: "320px",
+        maxHeight: "320px",
         position: "relative",
       }}
     >
@@ -97,6 +97,14 @@ function UserCard({ usuario, roles, roleConfig, toggleEstado }) {
                   Código
                 </TableCell>
                 <TableCell>{usuario.Id_Usuario}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell
+                  sx={{ fontWeight: "bold", whiteSpace: "nowrap" }}
+                >
+                  Cedula
+                </TableCell>
+                <TableCell>{usuario.Cedula}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell

@@ -56,14 +56,21 @@ const CustomGrid = ({
                 key={column.key}
                 sx={{
                   color: theme.palette.primary.contrastText,
-                  textAlign: "center", // Centrar el texto
                 }}              >
                 {column.label}
               </TableCell>
             ))}
-            <TableCell sx={{ color: theme.palette.primary.contrastText,textAlign: "center" }}>
-              Acciones
-            </TableCell>
+            {(actions.onView || actions.onEdit || actions.onToggle) && (
+              <TableCell
+                sx={{
+                  color: theme.palette.primary.contrastText,
+                  textAlign: "center",
+                }}
+              >
+                Acciones
+              </TableCell>
+            )}
+
           </TableRow>
         </TableHead>
 
@@ -92,41 +99,37 @@ const CustomGrid = ({
              </TableCell>
              
               ))}
-              <TableCell>
-                <Box sx={{ display: "flex", gap: "8px" }}>
-                  {actions.onView && (
-                    <IconButton
-                      color="primary"
-                      onClick={() => actions.onView(row[idKey])}
-                    >
-                      <VisibilityIcon />
-                    </IconButton>
-                  )}
-                  {actions.onEdit && (
-                    <IconButton
-                      color="primary"
-                      onClick={() => actions.onEdit(row[idKey])}
-                    >
-                      <EditIcon />
-                    </IconButton>
-                  )}
-                  {actions.onToggle && (
-                    
-                    
-                    
-                    <Switch
-                      checked={row.Estado === true}
-                      onChange={() => actions.onToggle(row[idKey])}
-                      color={row.Estado === true ? "primary" : "default"}
-                      inputProps={{ "aria-label": "toggle switch" }}
+              {(actions.onView || actions.onEdit || actions.onToggle) && (
+  <TableCell>
+    <Box sx={{ display: "flex", gap: "8px" }}>
+      {actions.onView && (
+        <IconButton
+          color="primary"
+          onClick={() => actions.onView(row[idKey])}
+        >
+          <VisibilityIcon />
+        </IconButton>
+      )}
+      {actions.onEdit && (
+        <IconButton
+          color="primary"
+          onClick={() => actions.onEdit(row[idKey])}
+        >
+          <EditIcon />
+        </IconButton>
+      )}
+      {actions.onToggle && (
+        <Switch
+          checked={row.Estado === true}
+          onChange={() => actions.onToggle(row[idKey])}
+          color={row.Estado === true ? "primary" : "default"}
+          inputProps={{ "aria-label": "toggle switch" }}
+        />
+      )}
+    </Box>
+  </TableCell>
+)}
 
-                    />
-                  )}
-
-                
-
-                </Box>
-              </TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -136,7 +139,7 @@ const CustomGrid = ({
           <TableRow>
             <TablePagination
               rowsPerPageOptions={rowsPerPageOptions}
-              colSpan={columns.length + 1} // Incluye la columna de Acciones
+              colSpan={columns.length + (actions.onView || actions.onEdit || actions.onToggle ? 1 : 0)} // Ajusta dinámicamente
               count={data.length}
               rowsPerPage={rowsPerPage}
               page={page}

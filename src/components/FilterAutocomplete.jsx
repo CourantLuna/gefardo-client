@@ -4,7 +4,7 @@ import { Autocomplete, TextField } from "@mui/material";
 const FilterAutocomplete = ({ label, data, filterKey, onFilterChange }) => {
   const [options, setOptions] = useState([]); // Opciones únicas derivadas de `data`
   const [filteredOptions, setFilteredOptions] = useState([]); // Opciones visibles filtradas
-  const [value, setValue] = useState(""); // Valor seleccionado o buscado
+  const [value, setValue] = useState("Todos"); // Valor seleccionado o buscado
 
   useEffect(() => {
     if (data && filterKey) {
@@ -47,6 +47,14 @@ const FilterAutocomplete = ({ label, data, filterKey, onFilterChange }) => {
     }
   };
 
+  const handleBlur = () => {
+    // Validar si el valor está vacío
+    if (!value || value === "") {
+      setValue("Todos"); // Restablecer a una opción predeterminada
+      onFilterChange(data); // Devolver todos los datos
+    }
+  };
+
   return (
     <Autocomplete
       disablePortal
@@ -54,6 +62,8 @@ const FilterAutocomplete = ({ label, data, filterKey, onFilterChange }) => {
       value={value}
       onInputChange={(event, newValue) => handleInputChange(event, newValue)} // Filtrar dinámicamente
       onChange={handleFilter} // Aplicar filtro final al seleccionar una opción
+      onBlur={handleBlur} // Validar al salir del campo
+
       renderInput={(params) => (
         <TextField
           {...params}
