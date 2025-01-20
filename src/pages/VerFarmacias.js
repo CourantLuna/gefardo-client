@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, Button, Typography, Paper } from "@mui/material";
+import { Box, Button, Typography, Paper, Snackbar, Alert} from "@mui/material";
 import CustomGrid from "../components/CustomGrid";
 import SearchBar from "../components/SearchBar";
 import FilterAutocomplete from "../components/FilterAutocomplete";
@@ -20,40 +20,130 @@ const VerFarmacias = () => {
   const handleDialogOpen = () => setDialogOpen(true);
   const handleDialogClose = () => setDialogOpen(false);
 
-  const farmaciaFormFields = [
+ const farmaciaFormFields = [
     {
-      "sectionTitle": "Información del Tipo de Servicio",
-      "divider": true,
-      "fields": [
+      sectionTitle: "Información General",
+      divider: true,
+      fields: [
         {
-          "name": "Nombre_Servicio",
-          "label": "Nombre del Servicio",
-          "type": "text",
-          "required": true,
-          "md": 12,
-          "value": ""
+          name: "Nombre",
+          label: "Nombre de la Farmacia",
+          type: "text",
+          required: true,
+          xs: 12,
+          sm: 6,
+          md: 4,
         },
         {
-          "name": "Id_Formulario",
-          "label": "Formulario Asociado",
-          "type": "autocomplete",
-          "required": false,
-          "modelOptions": "Formulario",
-          "md": 6,
-          "value": ""
+          name: "Direccion",
+          label: "Dirección",
+          type: "text",
+          required: true,
+          xs: 12,
+          sm: 6,
+          md: 4,
         },
         {
-          "name": "Descripcion",
-          "label": "Descripción del Servicio",
-          "type": "textarea",
-          "required": false,
-          "md": 12,
-          "value": ""
-        }
-      ]
+          name: "Telefono",
+          label: "Teléfono",
+          type: "tel",
+          required: false,
+          xs: 12,
+          sm: 6,
+          md: 4,
+        },
+        {
+          name: "RNC",
+          label: "RNC (Registro Nacional de Contribuyentes)",
+          type: "rnc", // Valida 9 dígitos
+          required: true,
+          xs: 12,
+          sm: 6,
+          md: 4,
+        },
+      ],
     },
-    
-  ]; 
+    {
+      sectionTitle: "Clasificaciones y Ubicación",
+      divider: true,
+      fields: [
+        {
+          name: "Id_Provincia",
+          label: "Provincia",
+          type: "autocomplete",
+          modelOptions: "Provincia", // Se llenará dinámicamente usando el modelo
+          required: true,
+          xs: 12,
+          sm: 6,
+          md: 4,
+        },
+        {
+          name: "Id_Tipo_Farmacia",
+          label: "Tipo de Farmacia",
+          type: "autocomplete", // Usar un campo de autocompletar
+          modelOptions: "TipoFarmacia",
+          required: true,
+          xs: 12,
+          sm: 6,
+          md: 4,
+        },
+        {
+          name: "Id_Clasificacion",
+          label: "Clasificación de Riesgo",
+          type: "select",
+          modelOptions: "ClasificacionRiesgo",
+          required: false,
+          xs: 12,
+          sm: 6,
+          md: 4,
+        },
+      ],
+    },
+    {
+      sectionTitle: "Responsable y Estado",
+      divider: true,
+      fields: [
+        {
+          name: "Responsable_Tecnico",
+          label: "Responsable Técnico",
+          type: "autocomplete",
+          modelOptions: "Usuarios",
+          required: true,
+          xs: 12,
+          sm: 6,
+          md: 4,
+        },
+        {
+          name: "Tamano",
+          label: "Tamaño",
+          type: "text",
+          required: false,
+          xs: 12,
+          sm: 6,
+          md: 4,
+        },
+        {
+          name: "Estado",
+          label: "Activo",
+          type: "checkbox",
+          required: false,
+          xs: 12,
+          sm: 6,
+          md: 4,
+        },
+      ],
+    },
+  ];
+   
+  // Estado para el Snackbar
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success", // "success", "error", "warning", "info"
+  });
+
+  // Función para manejar el cierre del Snackbar
+  const handleSnackbarClose = () => setSnackbar({ ...snackbar, open: false });
 
   useEffect(() => {
     const fetchPharmacies = async () => {
@@ -83,6 +173,34 @@ const VerFarmacias = () => {
 
   const handleEdit = (id) => {
     alert(`Editar farmacia con ID: ${id}`);
+  };
+
+  const handleAddPharmacy = async (pharmacyData) => {
+    console.log('Datos de la farmacia a guardar:', pharmacyData);
+    try {
+      // Llama al método del servicio para guardar los datos
+      const result = await pharmacyService.savePharmacyData(pharmacyData);
+      // Mostrar mensaje de éxito
+      setSnackbar({
+        open: true,
+        message: `El usuario ${pharmacyData.Nombre} se ha creado con éxito.`,
+        severity: "success",
+      });
+  
+      console.log('Datos de la farmacia guardados correctamente:', result);
+  // Actualiza las listas de usuarios y usuarios filtrados
+  setFarmacias((prevFarmacias) => [...prevFarmacias, result]);
+  setFilteredFarmacias((prevFiltered) => [...prevFiltered, result]);
+
+  handleDialogClose();
+    } catch (error) {
+      // Manejo de errores
+      console.error('Error al añadir la farmacia:', error.message);
+      setSnackbar({
+        open: true,
+        message: `Error al crear el usuario ${pharmacyData.Nombre}.`,
+        severity: "error",
+      });    }
   };
 
   const handleToggle = (id) => {
@@ -190,6 +308,7 @@ const VerFarmacias = () => {
           { key: "Nombre_Responsable", label: "Responsable Tecnico" },
           { key: "Telefono", label: "Teléfono" },
           { key: "Estado", label: "Estado" },
+          { key: "Id_Tipo_Farmacia", label: "Tipo de Farmacia" },
         ]}
         actions={{
           onEdit: handleEdit,
@@ -197,6 +316,16 @@ const VerFarmacias = () => {
           onView: handleView,
         }}
       />
+
+
+{/* Snackbar para avisar estado final del cambio de estado */}
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={3000}
+        onClose={handleSnackbarClose}
+      >
+        <Alert severity={snackbar.severity}>{snackbar.message}</Alert>
+      </Snackbar>
 
       <DialogComponent open={isDialogOpen} onClose={handleDialogClose} title="">
         <Box
@@ -207,7 +336,9 @@ const VerFarmacias = () => {
         >
           <DynamicForm
             formFields={farmaciaFormFields}
-            formTitle="Añadir Nuevo Tipo de Servicio"
+            formTitle="Registrando Nueva Farmacia"
+            labelButtonOnSubmit="Registrar Farmacia"
+            handleSendData = {handleAddPharmacy}
           />
         </Box>
       </DialogComponent>

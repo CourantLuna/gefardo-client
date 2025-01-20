@@ -13,8 +13,6 @@ import userService from "../services/userService";
 import UserCard from "../components/UserCard";
 import SearchBar from "../components/SearchBar";
 import FilterAutocomplete from "../components/FilterAutocomplete";
-
-
 import DialogComponent from "../components/DialogComponent"; // Asegúrate de que la ruta sea correcta
 import DynamicForm from '../components/CustomForm'; 
 
@@ -392,7 +390,7 @@ function VerUsuarios() {
         >
           <DynamicForm
             formFields={UsuariosFields}
-            formTitle="Añadir Nuevo Usuario"
+            formTitle="Creando Nuevo Usuario"
             labelButtonOnSubmit="Crear Nuevo Usuario"
             handleSendData = {handleAddUser}
           />

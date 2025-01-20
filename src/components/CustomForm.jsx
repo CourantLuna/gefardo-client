@@ -22,7 +22,7 @@ const modelIdNames = {
     UsuarioRoles: { idFieldName: 'Id_UsuarioRoles', defaultField: 'Id_Rol' },
     Usuarios: { idFieldName: 'Id_Usuario', defaultField: 'Nombre' },
     AccionesSeguimiento: { idFieldName: 'Id_AccionSeguimiento', defaultField: 'Descripcion' },
-    ClasificacionRiesgo: { idFieldName: 'Id_ClasificacionRiesgo', defaultField: 'Nivel' },
+    ClasificacionRiesgo: { idFieldName: 'Id_Clasificacion', defaultField: 'Nivel_Riesgo' },
     Farmacia: { idFieldName: 'Id_Farmacia', defaultField: 'Nombre' },
     FlujoEstadosServicio: { idFieldName: 'Id_FlujoEstadoServicio', defaultField: 'EstadoActual' },
     Formulario: { idFieldName: 'Id_Formulario', defaultField: 'Nombre_Formulario' },
@@ -386,6 +386,37 @@ const DynamicForm = ({ formFields, formTitle, labelButtonOnSubmit="Enviar", hand
                     />
                 </Grid>
             );
+
+            case "rnc":
+    return (
+        <Grid item xs={xs} sm={sm} md={md} key={field.name}>
+            <TextField
+                label={field.label}
+                required={field.required}
+                error={field.required && (!formValues[field.name] || formValues[field.name].replace(/\D/g, "").length !== 9)} // Marca como error si el campo está vacío o no tiene 9 dígitos
+                helperText={
+                    field.required && (!formValues[field.name] || formValues[field.name].replace(/\D/g, "").length !== 9)
+                        ? "Debe tener exactamente 9 dígitos"
+                        : ""
+                } // Mensaje de error específico
+                fullWidth
+                margin="normal"
+                value={
+                    formValues[field.name]
+                        ? formValues[field.name]
+                            .replace(/(\d{3})(\d{5})(\d{0,1})/, "$1-$2-$3") // Formatea como ###-#####-#
+                            .replace(/-$/, "") // Elimina guión final si sobra
+                        : ""
+                }
+                onChange={(e) => {
+                    const rawValue = e.target.value.replace(/\D/g, ""); // Solo dígitos
+                    handleChange(field.name, rawValue.slice(0, 9)); // Limita a 9 dígitos
+                }}
+                inputProps={{ maxLength: 11 }} // Limita la entrada visible (9 dígitos + 2 guiones)
+            />
+        </Grid>
+    );
+
           
 
       default:

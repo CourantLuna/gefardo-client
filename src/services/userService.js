@@ -60,7 +60,7 @@ const userService = {
 
   toggleEstado: async (id, nuevoEstado) => {
     try {
-      await axiosInstance.patch(`${ApiEndpoints.usuarios}/${id}`, { Estado: nuevoEstado });
+      await axiosInstance.put(`${ApiEndpoints.usuarios}/${id}`, { Estado: nuevoEstado });
     } catch (error) {
       console.error('Error al cambiar el estado del usuario:', error.response?.data || error.message);
       throw new Error(error.response?.data?.message || 'No se pudo cambiar el estado del usuario.');

@@ -234,6 +234,8 @@ function GefardoPage() {
           </Typography> */}
           {/* Contenido dinámico */}
           <Outlet />
+          {loading && <p>Cargando información del usuario...</p>}
+      {error && <p style={{ color: 'red' }}>Error: {error}</p>}
           
         </Box>
       </Box>
