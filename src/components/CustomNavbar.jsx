@@ -12,6 +12,8 @@ import {
   Divider,
   Avatar,
 } from '@mui/material';
+import { useNavigate  } from 'react-router-dom';
+
 import MenuIcon from '@mui/icons-material/Menu';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
@@ -27,13 +29,21 @@ function CustomNavbar({
   showMenuButton = true, // Default: show the menu button
   showProfileButton = true, // Default: show the profile button
   NombreUsuario,
-
+  ApellidosUsuario,
+  // VerPerfil
 }) {
   const [anchorEl, setAnchorEl] = useState(null); // Controla el menú desplegable del perfil
+  const navigate = useNavigate();
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
+
+  const NavigateToPerfil = () => {
+   
+    navigate(`/gefardo/ver-perfil`);
+    handleClose();
+};
 
   const handleLogout = () => {
     onLogout(); // Llamamos a la función onLogout pasada como prop
@@ -89,8 +99,7 @@ function CustomNavbar({
                   sm: 'flex', // Muestra en pantallas medianas y grandes
                 },
               }} variant="h6">
-                {NombreUsuario}
-              </Typography>
+                {`${NombreUsuario} ${ApellidosUsuario}`}              </Typography>
               <IconButton
 
                 onClick={handleProfileMenuOpen}
@@ -116,11 +125,11 @@ function CustomNavbar({
                   horizontal: 'right',
                 }}
               >
-                <MenuItem onClick={handleClose}>
+                <MenuItem onClick={NavigateToPerfil}>
                   <ListItemIcon>
                     <Person fontSize="small" />
                   </ListItemIcon>
-                  Perfil
+                  Ver perfil
                 </MenuItem>
 
                 <Divider />
@@ -129,7 +138,7 @@ function CustomNavbar({
                   <ListItemIcon>
                     <LockResetIcon fontSize="small" />
                   </ListItemIcon>
-                  Cambiar Contraseña
+                  Cambiar contraseña
                 </MenuItem>
                 <MenuItem onClick={handleLogout}>
                   <ListItemIcon>

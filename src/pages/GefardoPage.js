@@ -161,6 +161,10 @@ function GefardoPage() {
       navigate(`/gefardo/${page.segment}`);
     }
   };
+  // const NavigateToPerfil = () => {
+   
+  //     navigate(`/gefardo/ver-perfil`);
+  // };
 
   // Encuentra el componente correspondiente para renderizar en el contenido principal
 
@@ -177,8 +181,9 @@ function GefardoPage() {
           onToggleDarkMode={handleToggleDarkMode}
           selectedPage={selectedPage}
           onLogout={logout} // Usa el logout del contexto
-          NombreUsuario={`${userInfo?.Nombre} ${userInfo?.Apellido}`} // Combina nombre y apellido
-
+          NombreUsuario={userInfo?.Nombre || "Invitado"} // Valor predeterminado
+          ApellidosUsuario={userInfo?.Apellido || ""}
+          // VerPerfil={NavigateToPerfil}
         />
 
         {/* Drawer */}
