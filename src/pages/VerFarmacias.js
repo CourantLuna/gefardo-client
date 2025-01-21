@@ -186,8 +186,15 @@ const VerFarmacias = () => {
 
   // Función para manejar las acciones
   const handleView = (id) => {
-    setCurrentForm("view"); // Establece que se abrirá el formulario de "Ver Farmacia"
-    setDialogOpen(true);
+    // Busca la farmacia en el estado `farmacias` usando el ID
+    const farmacia = farmacias.find((f) => f.Id_Farmacia === id);
+    if (farmacia) {
+      setSelectedFarmacia(farmacia); // Guarda la farmacia seleccionada
+      setCurrentForm("view"); // Cambia al formulario de edición
+      setDialogOpen(true); // Abre el diálogo
+    } else {
+      console.error(`No se encontró ninguna farmacia con el ID: ${id}`);
+    }
   };
 
   const handleEdit = (id) => {
@@ -196,16 +203,11 @@ const VerFarmacias = () => {
 
     if (farmacia) {
       setSelectedFarmacia(farmacia); // Guarda la farmacia seleccionada
-      console.log("Farmacia seleccionada:", farmacia);
       setCurrentForm("edit"); // Cambia al formulario de edición
       setDialogOpen(true); // Abre el diálogo
     } else {
       console.error(`No se encontró ninguna farmacia con el ID: ${id}`);
     }
-
-
-    setCurrentForm("edit"); // Establece que se abrirá el formulario de "Ver Farmacia"
-    setDialogOpen(true);
   };
 
 
@@ -467,6 +469,8 @@ const VerFarmacias = () => {
               formTitle="Vista de Farmacia"
               initialValues={selectedFarmacia}
               isDisabled={true} // Deshabilita todos los campos
+              handleSendData={handleAddPharmacy}
+
             />
           )}
 
