@@ -90,8 +90,6 @@ const DynamicForm = ({ formFields, formTitle, labelButtonOnSubmit="Enviar", hand
 
 
     console.log("Datos enviados:", plainJson);
-    alert("Formulario enviado correctamente. Revisa la consola para ver los datos.");
-
     handleSendData(plainJson);
   };
 

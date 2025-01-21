@@ -197,7 +197,7 @@ const VerFarmacias = () => {
 
     if (farmacia) {
       setSelectedFarmacia(farmacia); // Guarda la farmacia seleccionada
-      console.log("Farmacia seleccionada:", selectedFarmacia);
+      console.log("Farmacia seleccionada:", farmacia);
       setCurrentForm("edit"); // Cambia al formulario de edición
       setDialogOpen(true); // Abre el diálogo
     } else {
@@ -209,9 +209,66 @@ const VerFarmacias = () => {
     setDialogOpen(true);
   };
 
-  const handleUpdatePharmacy = (updatedPharmacyData) => {
-    console.log("Datos actualizados de la farmacia:", updatedPharmacyData);
-    // Aquí podrías agregar lógica adicional para enviar estos datos al backend o actualizar el estado local
+
+  const validFields = [
+    "Direccion",
+    "Estado",
+    "Id_Clasificacion",
+    "Id_Farmacia",
+    "Id_Provincia",
+    "Id_Tipo_Farmacia",
+    "Nombre",
+    "RNC",
+    "Responsable_Tecnico",
+    "Tamano",
+    "Telefono",
+  ];
+
+  const filterValidFields = (data) => {
+    return Object.keys(data).reduce((filteredData, key) => {
+      if (validFields.includes(key)) {
+        filteredData[key] = data[key]; // Incluye solo las claves válidas
+      }
+      return filteredData;
+    }, {});
+  };
+  
+  
+
+  const handleUpdatePharmacy = async (updatedPharmacyData) => {
+  
+    const filteredData = filterValidFields(updatedPharmacyData);
+  
+    try {
+      // Envía los datos al backend
+      await pharmacyService.updatePharmacyData(
+        filteredData.Id_Farmacia,
+        filteredData
+      );
+  
+      // Vuelve a cargar las farmacias desde el backend
+      const updatedPharmacies = await pharmacyService.getAllPharmacies();
+      setFarmacias(updatedPharmacies);
+      setFilteredFarmacias(updatedPharmacies);
+      handleDialogClose();
+
+  
+      setSnackbar({
+        open: true,
+        message: `La farmacia ${filteredData.Nombre} se ha actualizado con éxito.`,
+        severity: "success",
+      });
+  
+    } catch (error) {
+      console.error("Error al actualizar la farmacia:", error.message);
+  
+      setSnackbar({
+        open: true,
+        message: `Error al actualizar la farmacia ${filteredData.Nombre}.`,
+        severity: "error",
+      });
+  
+    }
   };
   
 
@@ -219,26 +276,29 @@ const VerFarmacias = () => {
     try {
       // Llama al método del servicio para guardar los datos
       const result = await pharmacyService.savePharmacyData(pharmacyData);
+      
+
+      // Actualiza las listas de usuarios y usuarios filtrados
+      setFarmacias((prevFarmacias) => [...prevFarmacias, result]);
+      setFilteredFarmacias((prevFiltered) => [...prevFiltered, result]);
+
+      handleDialogClose();
+
       // Mostrar mensaje de éxito
       setSnackbar({
         open: true,
-        message: `El usuario ${pharmacyData.Nombre} se ha creado con éxito.`,
+        message: `La farmacia ${pharmacyData.Nombre} se ha creado con éxito.`,
         severity: "success",
       });
-  
-  // Actualiza las listas de usuarios y usuarios filtrados
-  setFarmacias((prevFarmacias) => [...prevFarmacias, result]);
-  setFilteredFarmacias((prevFiltered) => [...prevFiltered, result]);
-
-  handleDialogClose();
     } catch (error) {
       // Manejo de errores
-      console.error('Error al añadir la farmacia:', error.message);
+      console.error("Error al añadir la farmacia:", error.message);
       setSnackbar({
         open: true,
-        message: `Error al crear el usuario ${pharmacyData.Nombre}.`,
+        message: `Error al crear el farmacia ${pharmacyData.Nombre}.`,
         severity: "error",
-      });    }
+      });
+    }
   };
 
   const toggleEstadoFarmacia = async (id) => {
@@ -368,7 +428,8 @@ const VerFarmacias = () => {
           { key: "Nombre_Responsable", label: "Responsable Tecnico" },
           { key: "Telefono", label: "Teléfono" },
           { key: "Estado", label: "Estado" },
-          { key: "Id_Tipo_Farmacia", label: "Tipo de Farmacia" },
+          { key: "Nombre_Tipo_Farmacia", label: "Tipo de Farmacia" },
+          // { key: "Tamano", label: "Tamaño" },
         ]}
         actions={{
           onEdit: handleEdit,
