@@ -25,6 +25,27 @@ const generalService = {
       throw new Error(error.response?.data?.message || `No se pudo obtener datos de la tabla ${table}.`);
     }
   },
+ /**
+ * Obtiene datos de un endpoint y filtra las opciones basándose en el campo especificado.
+ * @param {string} endpointUrl - URL del API para obtener los datos.
+ * @param {string} field - Campo del objeto en el API para las opciones.
+ * @returns {Promise<any[]>} - Una promesa que resuelve un arreglo de valores filtrados.
+ */
+ getOptionsFromApi: async (endpointUrl) => {
+  try {
+    const response = await axios.get(`${environment.apiBaseUrl}/api${endpointUrl}`);
+   
+      return response.data; // Devuelve todos los datos tal cual
+    }
+   catch (error) {
+    console.error('Error al obtener datos del API:', error);
+    throw error;
+  }
+},
+
+
 };
+
+
 
 export default generalService;

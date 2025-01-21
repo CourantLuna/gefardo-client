@@ -17,37 +17,37 @@ import {
 
 import generalService from '../services/generalService';
 
-const modelIdNames = {
-    Roles: { idFieldName: 'Id_Rol', defaultField: 'Nombre' },
-    UsuarioRoles: { idFieldName: 'Id_UsuarioRoles', defaultField: 'Id_Rol' },
-    Usuarios: { idFieldName: 'Id_Usuario', defaultField: 'Nombre' },
-    AccionesSeguimiento: { idFieldName: 'Id_AccionSeguimiento', defaultField: 'Descripcion' },
-    ClasificacionRiesgo: { idFieldName: 'Id_Clasificacion', defaultField: 'Nivel_Riesgo' },
-    Farmacia: { idFieldName: 'Id_Farmacia', defaultField: 'Nombre' },
-    FlujoEstadosServicio: { idFieldName: 'Id_FlujoEstadoServicio', defaultField: 'EstadoActual' },
-    Formulario: { idFieldName: 'Id_Formulario', defaultField: 'Nombre_Formulario' },
-    Hallazgos: { idFieldName: 'Id_Hallazgo', defaultField: 'Descripcion' },
-    HistorialCambio: { idFieldName: 'Id_HistorialCambio', defaultField: 'Cambio' },
-    Inspeccion: { idFieldName: 'Id_Inspeccion', defaultField: 'Fecha' },
-    Licencia: { idFieldName: 'Id_Licencia', defaultField: 'Numero' },
-    ListasVerificacion: { idFieldName: 'Id_ListaVerificacion', defaultField: 'Nombre' },
-    Provincia: { idFieldName: 'Id_Provincia', defaultField: 'Descripcion' },
-    Sancion: { idFieldName: 'Id_Sancion', defaultField: 'Motivo' },
-    Servicio: { idFieldName: 'Id_Servicio', defaultField: 'Descripcion' },
-    TipoFarmacia: { idFieldName: 'Id_Tipo_Farmacia', defaultField: 'Descripcion' },
-    TipoServicio: { idFieldName: 'Id_TipoServicio', defaultField: 'Descripcion' },
-};
+// const modelIdNames = {
+//     Roles: { idFieldName: 'Id_Rol', defaultField: 'Nombre' },
+//     UsuarioRoles: { idFieldName: 'Id_Usuario', defaultField: 'Nombre_Completo' },
+//     Usuarios: { idFieldName: 'Id_Usuario', defaultField: 'Nombre' },
+//     AccionesSeguimiento: { idFieldName: 'Id_AccionSeguimiento', defaultField: 'Descripcion' },
+//     ClasificacionRiesgo: { idFieldName: 'Id_Clasificacion', defaultField: 'Nivel_Riesgo' },
+//     Farmacia: { idFieldName: 'Id_Farmacia', defaultField: 'Nombre' },
+//     FlujoEstadosServicio: { idFieldName: 'Id_FlujoEstadoServicio', defaultField: 'EstadoActual' },
+//     Formulario: { idFieldName: 'Id_Formulario', defaultField: 'Nombre_Formulario' },
+//     Hallazgos: { idFieldName: 'Id_Hallazgo', defaultField: 'Descripcion' },
+//     HistorialCambio: { idFieldName: 'Id_HistorialCambio', defaultField: 'Cambio' },
+//     Inspeccion: { idFieldName: 'Id_Inspeccion', defaultField: 'Fecha' },
+//     Licencia: { idFieldName: 'Id_Licencia', defaultField: 'Numero' },
+//     ListasVerificacion: { idFieldName: 'Id_ListaVerificacion', defaultField: 'Nombre' },
+//     Provincia: { idFieldName: 'Id_Provincia', defaultField: 'Descripcion' },
+//     Sancion: { idFieldName: 'Id_Sancion', defaultField: 'Motivo' },
+//     Servicio: { idFieldName: 'Id_Servicio', defaultField: 'Descripcion' },
+//     TipoFarmacia: { idFieldName: 'Id_Tipo_Farmacia', defaultField: 'Descripcion' },
+//     TipoServicio: { idFieldName: 'Id_TipoServicio', defaultField: 'Descripcion' },
+// };
 
 
 const DynamicForm = ({ formFields, formTitle, labelButtonOnSubmit="Enviar", handleSendData }) => {
   const [formValues, setFormValues] = useState({});
   const [dynamicOptions, setDynamicOptions] = useState({});
-
+  
   const handleChange = (name, value) => {
-    setFormValues({
-      ...formValues,
+    setFormValues((prevValues) => ({
+      ...prevValues,
       [name]: value,
-    });
+    }));
   };
 
   const handleFileChange = (name, files) => {
@@ -56,7 +56,7 @@ const DynamicForm = ({ formFields, formTitle, labelButtonOnSubmit="Enviar", hand
       [name]: files[0],
     });
   };
-
+ 
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -72,7 +72,7 @@ const DynamicForm = ({ formFields, formTitle, labelButtonOnSubmit="Enviar", hand
       return;
     }
 
-   // Crear un JSON plano manejando valores anidados
+ // Crear un JSON plano manejando valores anidados
   const plainJson = Object.entries(formValues).reduce((acc, [key, value]) => {
     if (typeof value === 'object' && value !== null) {
       // Extraer solo el valor interno si es un objeto
@@ -207,28 +207,27 @@ const DynamicForm = ({ formFields, formTitle, labelButtonOnSubmit="Enviar", hand
 
         );
         case "select":
-            return (
-              <Grid item xs={xs} sm={sm} md={md} key={field.name}>
-                <FormControl key={field.name} fullWidth margin="normal">
-                  <InputLabel>{field.label}</InputLabel>
-                  <Select
-                    value={formValues[field.name] || ""}
-                    onChange={(e) => handleChange(field.name, e.target.value)}
-                    required={field.required}
-                    error={field.required && !formValues[field.name]} // Marca como error si el campo está vacío
-                    helperText={field.required && !formValues[field.name] ? "campo obligatorio" : ""} // Mensaje de error
-                  >
-                    {dynamicOptions[field.name]?.map((option, index) => (
-                      <MenuItem key={index} value={option.value}>
-                        {option.label}
-                      </MenuItem>
-                    )) || (
-                      <MenuItem disabled>Cargando opciones...</MenuItem>
-                    )}
-                  </Select>
-                </FormControl>
-              </Grid>
-            );
+  return (
+    <Grid item xs={xs} sm={sm} md={md} key={field.name}>
+      <FormControl key={field.name} fullWidth margin="normal">
+        <InputLabel>{field.label}</InputLabel>
+        <Select
+          value={formValues[field.name]?.value || ""} // Usa el value del estado
+          onChange={(e) => handleChange(field.name, { value: e.target.value, label: e.target.innerText })}
+          required={field.required}
+        >
+          {dynamicOptions[field.name]?.map((option, index) => (
+            <MenuItem key={index} value={option.value}>
+              {option.label}
+            </MenuItem>
+          )) || (
+            <MenuItem disabled>Cargando opciones...</MenuItem>
+          )}
+        </Select>
+      </FormControl>
+    </Grid>
+  );
+
 
       case "autocomplete":
         return (
@@ -240,7 +239,9 @@ const DynamicForm = ({ formFields, formTitle, labelButtonOnSubmit="Enviar", hand
               value={formValues[field.name] || null}
               onChange={( event, newValue) => handleChange(field.name, newValue || "")}
               renderInput={(params) => 
-                <TextField {...params} label={field.label}
+                <TextField 
+                {...params}
+                 label={field.label}
                   required={field.required}
                   error={field.required && !formValues[field.name]} // Marca como error si el campo está vacío
                   helperText={field.required && !formValues[field.name] ? "campo obligatorio" : ""} // Mensaje de error
@@ -440,7 +441,7 @@ const DynamicForm = ({ formFields, formTitle, labelButtonOnSubmit="Enviar", hand
               justifyContent: "flex-start",
               alignItems: "center",
               flexWrap: "wrap   ",
-              gap: "0px 20px", padding:"0px 15px",
+              gap: "20px 20px", padding:"15px",
             }}
           >
             
@@ -454,42 +455,96 @@ const DynamicForm = ({ formFields, formTitle, labelButtonOnSubmit="Enviar", hand
   );
   
 
+  // useEffect(() => {
+    
+    
+  //   const loadDynamicOptions = async () => {
+  //     const optionsData = {};
+  
+  //     // Filtra los campos que tienen `modelOptions` especificado
+  //     const dynamicFields = formFields
+  //       .flatMap((section) => section.fields)
+  //       .filter((field) => (field.type === "select" || field.type === "autocomplete") && field.modelOptions);
+  
+  //     // Carga las opciones para cada campo
+  //     for (const field of dynamicFields) {
+  //       const model = field.modelOptions;
+  //       if (modelIdNames[model]) {
+  //         try {
+  //           const data = await generalService.getFromTable(
+  //             model,
+  //             `${modelIdNames[model].idFieldName},${modelIdNames[model].defaultField}`
+  //           );
+  //           optionsData[field.name] = data.map((item) => ({
+  //             value: item[modelIdNames[model].idFieldName],
+  //             label: item[modelIdNames[model].defaultField],
+  //           }));
+  //         } catch (error) {
+  //           console.error(`Error al cargar opciones para ${model}:`, error.message);
+  //         }
+  //       } else {
+  //         console.warn(`Modelo ${model} no encontrado en modelIdNames.`);
+  //       }
+  //     }
+  
+  //     setDynamicOptions(optionsData);
+  //   };
+  //     loadDynamicOptions();
+  // }, [formFields]);
+
+
   useEffect(() => {
-    
-    
-    const loadDynamicOptions = async () => {
+    const initializeFormValues = async () => {
+      const initialValues = {};
       const optionsData = {};
   
-      // Filtra los campos que tienen `modelOptions` especificado
+      // Filtrar campos de tipo select/autocomplete
       const dynamicFields = formFields
         .flatMap((section) => section.fields)
-        .filter((field) => (field.type === "select" || field.type === "autocomplete") && field.modelOptions);
+        .filter((field) => field.type === "select" || field.type === "autocomplete");
   
-      // Carga las opciones para cada campo
+      // Cargar las opciones para cada campo dinámico
       for (const field of dynamicFields) {
-        const model = field.modelOptions;
-        if (modelIdNames[model]) {
-          try {
-            const data = await generalService.getFromTable(
-              model,
-              `${modelIdNames[model].idFieldName},${modelIdNames[model].defaultField}`
-            );
-            optionsData[field.name] = data.map((item) => ({
-              value: item[modelIdNames[model].idFieldName],
-              label: item[modelIdNames[model].defaultField],
-            }));
-          } catch (error) {
-            console.error(`Error al cargar opciones para ${model}:`, error.message);
+        const { apiOptions, name, IdFieldName, filterField } = field;
+  
+        try {
+          const response = await generalService.getOptionsFromApi(apiOptions);
+  
+          // Mapea las opciones dinámicas con sus valores y etiquetas
+          optionsData[name] = response.map((item) => ({
+            value: item[IdFieldName],
+            label: item[filterField],
+          }));
+  
+          // Si el campo tiene un value inicial, busca su correspondiente label
+          if (field.value !== undefined) {
+            const matchedOption = optionsData[name].find((option) => option.value === field.value);
+            if (matchedOption) {
+              initialValues[name] = matchedOption; // Asigna el objeto completo { value, label }
+            }
           }
-        } else {
-          console.warn(`Modelo ${model} no encontrado en modelIdNames.`);
+        } catch (error) {
+          console.error(`Error al cargar opciones para ${name}:`, error.message);
         }
       }
   
+      // Inicializa otros campos con value
+      formFields.forEach((section) => {
+        section.fields.forEach((field) => {
+          if (!dynamicFields.includes(field) && field.value !== undefined) {
+            initialValues[field.name] = field.value; // Asigna directamente el value
+          }
+        });
+      });
+  
       setDynamicOptions(optionsData);
+      setFormValues(initialValues);
     };
-      loadDynamicOptions();
+  
+    initializeFormValues();
   }, [formFields]);
+  
+  
 
   return (
     <Box sx={{ flexGrow: 1, }}>

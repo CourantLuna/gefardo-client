@@ -30,6 +30,7 @@ const VerFarmacias = () => {
           label: "Nombre de la Farmacia",
           type: "text",
           required: true,
+          value: "Farmaciaa del Señor",
           xs: 12,
           sm: 6,
           md: 4,
@@ -71,8 +72,11 @@ const VerFarmacias = () => {
           name: "Id_Provincia",
           label: "Provincia",
           type: "autocomplete",
-          modelOptions: "Provincia", // Se llenará dinámicamente usando el modelo
+          apiOptions: "/provincias", // Ruta del API
+          filterField: "Descripcion",
+          IdFieldName: "Id_Provincia",
           required: true,
+          value: 5,
           xs: 12,
           sm: 6,
           md: 4,
@@ -81,7 +85,9 @@ const VerFarmacias = () => {
           name: "Id_Tipo_Farmacia",
           label: "Tipo de Farmacia",
           type: "autocomplete", // Usar un campo de autocompletar
-          modelOptions: "TipoFarmacia",
+          apiOptions: "/tipos-farmacia", // Ruta del API
+          filterField: "Descripcion",
+          IdFieldName: "Id_Tipo_Farmacia",
           required: true,
           xs: 12,
           sm: 6,
@@ -90,8 +96,10 @@ const VerFarmacias = () => {
         {
           name: "Id_Clasificacion",
           label: "Clasificación de Riesgo",
-          type: "select",
-          modelOptions: "ClasificacionRiesgo",
+          type: "autocomplete",
+          apiOptions: "/clasificaciones-riesgo", // Ruta del API
+          filterField: "Nivel_Riesgo",
+          IdFieldName: "Id_Clasificacion",
           required: false,
           xs: 12,
           sm: 6,
@@ -107,7 +115,9 @@ const VerFarmacias = () => {
           name: "Responsable_Tecnico",
           label: "Responsable Técnico",
           type: "autocomplete",
-          modelOptions: "Usuarios",
+          apiOptions: "/usuarioRoles/4", // Ruta del API
+          filterField: "Nombre_Completo",
+          IdFieldName: "Id_Usuario",
           required: true,
           xs: 12,
           sm: 6,
@@ -203,19 +213,40 @@ const VerFarmacias = () => {
       });    }
   };
 
-  const handleToggle = (id) => {
-    setFarmacias((prevFarmacias) =>
-      prevFarmacias.map((farmacia) =>
-        farmacia.Id_Farmacia === id
-          ? {
-              ...farmacia,
-              Estado: farmacia.Estado === true ? false : true,
-            }
-          : farmacia
-      )
-    );
-    alert(`Toggle Estado de la farmacia con ID: ${id}`);
+  const toggleEstadoFarmacia = async (id) => {
+    const farmacia = farmacias.find((f) => f.Id_Farmacia === id);
+    const nuevoEstado = !farmacia.Estado;
+    console.log(`Estado nuevo de la farmacia ${farmacia.Id_Farmacia}:`, nuevoEstado);
+    try {
+      // Llama al servicio correspondiente para actualizar el estado de la farmacia
+      await pharmacyService.toggleEstado(id, nuevoEstado);
+  
+      // Actualiza el estado local de farmacias
+      setFarmacias((prev) => {
+        const updatedFarmacias = prev.map((farmacia) =>
+          farmacia.Id_Farmacia === id ? { ...farmacia, Estado: nuevoEstado } : farmacia
+        );
+        setFilteredFarmacias(updatedFarmacias); // También actualiza la lista filtrada
+        return updatedFarmacias;
+      });
+  
+      // Muestra un Snackbar con éxito
+      setSnackbar({
+        open: true,
+        message: `El estado de la farmacia ${farmacia.Nombre} se actualizó con éxito.`,
+        severity: "success",
+      });
+    } catch (error) {
+      console.error("Error al actualizar el estado de la farmacia:", error.message);
+      // Muestra un Snackbar con error
+      setSnackbar({
+        open: true,
+        message: `Error al actualizar el estado de la farmacia ${farmacia.Nombre}.`,
+        severity: "error",
+      });
+    }
   };
+  
 
   return (
     <Box
@@ -312,7 +343,7 @@ const VerFarmacias = () => {
         ]}
         actions={{
           onEdit: handleEdit,
-          onToggle: handleToggle,
+          onToggle: toggleEstadoFarmacia,
           onView: handleView,
         }}
       />

@@ -75,6 +75,16 @@ const pharmacyService = {
     }
   },
 
+  toggleEstado: async (id, estado) => {
+    try {
+      const response = await axiosInstance.put(`/${id}`, { Estado: estado });
+      return response.data;
+    } catch (error) {
+      console.error("Error al cambiar el estado de la farmacia:", error.response?.data || error.message);
+      throw new Error("No se pudo actualizar el estado de la farmacia.");
+    }
+  },
+
   // Actualiza los datos de una farmacia existente
   updatePharmacyData: async (pharmacyId, pharmacyData) => {
     try {
@@ -84,18 +94,6 @@ const pharmacyService = {
       console.error('Error al actualizar los datos de la farmacia:', error.response?.data || error.message);
       throw new Error(
         error.response?.data?.message || 'No se pudieron actualizar los datos de la farmacia.'
-      );
-    }
-  },
-
-  // Borra una farmacia por su ID
-  deletePharmacy: async (pharmacyId) => {
-    try {
-      await axiosInstance.delete(`/${pharmacyId}`);
-    } catch (error) {
-      console.error('Error al borrar la farmacia:', error.response?.data || error.message);
-      throw new Error(
-        error.response?.data?.message || 'No se pudo borrar la farmacia.'
       );
     }
   },

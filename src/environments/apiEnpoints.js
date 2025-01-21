@@ -4,6 +4,7 @@ export const ApiEndpoints = {
     register: '/auth/register',
     usuarios: '/usuarios',
     RolesByUsuarioId: '/usuarioRoles/usuario/roles',
+    getAllUsersByRolId: '/usuarioRoles/rol',
     AllUserRoles: '/usuarioRoles',
     general: '/general',
     forms: '/formularios',
@@ -14,4 +15,5 @@ export const ApiEndpoints = {
     inspections: '/inspecciones',
     requests: '/servicios',
     typesRequests: '/tipos-servicio',
+
   };
