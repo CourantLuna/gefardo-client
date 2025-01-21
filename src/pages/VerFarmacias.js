@@ -186,7 +186,6 @@ const VerFarmacias = () => {
 
   // Función para manejar las acciones
   const handleView = (id) => {
-    alert(`Ver farmacia con ID: ${id}`);
     setCurrentForm("view"); // Establece que se abrirá el formulario de "Ver Farmacia"
     setDialogOpen(true);
   };
@@ -277,7 +276,6 @@ const VerFarmacias = () => {
       // Llama al método del servicio para guardar los datos
       const result = await pharmacyService.savePharmacyData(pharmacyData);
       
-
       // Actualiza las listas de usuarios y usuarios filtrados
       setFarmacias((prevFarmacias) => [...prevFarmacias, result]);
       setFilteredFarmacias((prevFiltered) => [...prevFiltered, result]);
@@ -467,7 +465,8 @@ const VerFarmacias = () => {
             <DynamicForm
               formFields={farmaciaFormFields}
               formTitle="Vista de Farmacia"
-              labelButtonOnSubmit="" // No se necesita botón de enviar
+              initialValues={selectedFarmacia}
+              isDisabled={true} // Deshabilita todos los campos
             />
           )}
 
