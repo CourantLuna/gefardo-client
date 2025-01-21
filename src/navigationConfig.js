@@ -11,7 +11,6 @@ import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import EventIcon from '@mui/icons-material/Event';
 import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
-import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
 import FolderIcon from '@mui/icons-material/Folder';
 import EnhancedEncryptionIcon from '@mui/icons-material/EnhancedEncryption';
 import HttpsIcon from '@mui/icons-material/Https';
@@ -93,7 +92,6 @@ const NAVIGATION = [
     children: [
       { segment: 'ver-farmacias', title: 'Ver farmacias', icon: <StoreIcon />, roles: ['Administrador'] },
       { segment: 'ver-licencias', title: 'Ver licencias', icon: <FolderIcon />, roles: ['Administrador'] },
-      { segment: 'crear-licencia', title: 'Crear licencia', icon: <CreateNewFolderIcon />, roles: ['Administrador'] },
       { segment: 'ver-sanciones', title: 'Ver sanciones', icon: <HttpsIcon />, roles: ['Administrador'] },
       { segment: 'aplicar-sanciones', title: 'Aplicar sanciones', icon: <EnhancedEncryptionIcon />, roles: ['Administrador'] },
     ],

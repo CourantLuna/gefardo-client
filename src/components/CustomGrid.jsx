@@ -82,19 +82,18 @@ const CustomGrid = ({
                <TableCell
                key={column.key}
                sx={{
-                 color:
-                   column.key === "Estado"
-                     ? row[column.key] === true
-                       ? "success.main" // Verde si es true
-                       : "error.main" // Rojo si es false
-                     : "inherit", // Color predeterminado para otros campos
-                 fontWeight: column.key === "Estado" ? "bold" : "normal", // Resaltar el estado
+                 color: column.isBoolean
+                   ? row[column.key]
+                     ? "success.main"
+                     : "error.main"
+                   : "inherit",
+                 fontWeight: column.isBoolean ? "bold" : "normal",
                }}
              >
-               {column.key === "Estado"
-                 ? row[column.key] === true
-                   ? "Sí" // Mostrar "Sí" para true
-                   : "No" // Mostrar "No" para false
+               {column.isBoolean
+                 ? row[column.key]
+                   ? "Sí"
+                   : "No"
                  : row[column.key] || "N/A"}
              </TableCell>
              

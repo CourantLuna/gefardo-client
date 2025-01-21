@@ -427,7 +427,7 @@ const VerFarmacias = () => {
           { key: "Nombre_Provincia", label: "Provincia" },
           { key: "Nombre_Responsable", label: "Responsable Tecnico" },
           { key: "Telefono", label: "Teléfono" },
-          { key: "Estado", label: "Estado" },
+          { key: "Estado", label: "Estado" , isBoolean: true },
           { key: "Nombre_Tipo_Farmacia", label: "Tipo de Farmacia" },
           // { key: "Tamano", label: "Tamaño" },
         ]}

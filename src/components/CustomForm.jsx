@@ -17,28 +17,6 @@ import {
 
 import generalService from '../services/generalService';
 
-// const modelIdNames = {
-//     Roles: { idFieldName: 'Id_Rol', defaultField: 'Nombre' },
-//     UsuarioRoles: { idFieldName: 'Id_Usuario', defaultField: 'Nombre_Completo' },
-//     Usuarios: { idFieldName: 'Id_Usuario', defaultField: 'Nombre' },
-//     AccionesSeguimiento: { idFieldName: 'Id_AccionSeguimiento', defaultField: 'Descripcion' },
-//     ClasificacionRiesgo: { idFieldName: 'Id_Clasificacion', defaultField: 'Nivel_Riesgo' },
-//     Farmacia: { idFieldName: 'Id_Farmacia', defaultField: 'Nombre' },
-//     FlujoEstadosServicio: { idFieldName: 'Id_FlujoEstadoServicio', defaultField: 'EstadoActual' },
-//     Formulario: { idFieldName: 'Id_Formulario', defaultField: 'Nombre_Formulario' },
-//     Hallazgos: { idFieldName: 'Id_Hallazgo', defaultField: 'Descripcion' },
-//     HistorialCambio: { idFieldName: 'Id_HistorialCambio', defaultField: 'Cambio' },
-//     Inspeccion: { idFieldName: 'Id_Inspeccion', defaultField: 'Fecha' },
-//     Licencia: { idFieldName: 'Id_Licencia', defaultField: 'Numero' },
-//     ListasVerificacion: { idFieldName: 'Id_ListaVerificacion', defaultField: 'Nombre' },
-//     Provincia: { idFieldName: 'Id_Provincia', defaultField: 'Descripcion' },
-//     Sancion: { idFieldName: 'Id_Sancion', defaultField: 'Motivo' },
-//     Servicio: { idFieldName: 'Id_Servicio', defaultField: 'Descripcion' },
-//     TipoFarmacia: { idFieldName: 'Id_Tipo_Farmacia', defaultField: 'Descripcion' },
-//     TipoServicio: { idFieldName: 'Id_TipoServicio', defaultField: 'Descripcion' },
-// };
-
-
 const DynamicForm = ({
    formFields, 
    formTitle, 
@@ -475,45 +453,6 @@ const DynamicForm = ({
 
   );
 
-
-  // useEffect(() => {
-
-
-  //   const loadDynamicOptions = async () => {
-  //     const optionsData = {};
-
-  //     // Filtra los campos que tienen `modelOptions` especificado
-  //     const dynamicFields = formFields
-  //       .flatMap((section) => section.fields)
-  //       .filter((field) => (field.type === "select" || field.type === "autocomplete") && field.modelOptions);
-
-  //     // Carga las opciones para cada campo
-  //     for (const field of dynamicFields) {
-  //       const model = field.modelOptions;
-  //       if (modelIdNames[model]) {
-  //         try {
-  //           const data = await generalService.getFromTable(
-  //             model,
-  //             `${modelIdNames[model].idFieldName},${modelIdNames[model].defaultField}`
-  //           );
-  //           optionsData[field.name] = data.map((item) => ({
-  //             value: item[modelIdNames[model].idFieldName],
-  //             label: item[modelIdNames[model].defaultField],
-  //           }));
-  //         } catch (error) {
-  //           console.error(`Error al cargar opciones para ${model}:`, error.message);
-  //         }
-  //       } else {
-  //         console.warn(`Modelo ${model} no encontrado en modelIdNames.`);
-  //       }
-  //     }
-
-  //     setDynamicOptions(optionsData);
-  //   };
-  //     loadDynamicOptions();
-  // }, [formFields]);
-
-
   useEffect(() => {
     const initializeFormValues = async () => {
       const initialFormValues = { ...initialValues }; // Prioriza los valores de initialValues si existen
@@ -577,40 +516,34 @@ const DynamicForm = ({
   }, [formFields, initialValues]);
 
 
-
-
-
   return (
     <Box sx={{ flexGrow: 1, }}>
 
       <Grid container spacing={1} >
 
-
         <form onSubmit={handleSubmit} >
+
           <Typography variant="h4" marginY={3} textAlign={"center"}>
             {/* Formulario Dinámico con Secciones Wrappables */}
             {formTitle}
-
           </Typography>
-          <Box
 
-          >
+          <Box>
             {formFields.map((section) => renderSection(section))}
           </Box>
 
           {!isDisabled && labelButtonOnSubmit && ( // Renderizar botón solo si no está deshabilitado y labelButtonOnSubmit está definido
-
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            fullWidth
-
-            style={{ marginTop: "20px", height: "50px" }}
-          >
-            {labelButtonOnSubmit}
-          </Button>
-            )}
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              fullWidth
+              style={{ marginTop: "20px", height: "50px" }}
+            >
+              {labelButtonOnSubmit}
+            </Button>
+          )}
+          
         </form>
       </Grid>
     </Box>

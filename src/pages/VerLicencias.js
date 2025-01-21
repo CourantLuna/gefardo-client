@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { Box } from "@mui/material";
+import { Box, Button, Paper } from "@mui/material";
 import CustomGrid from "../components/CustomGrid";
 import SearchBar from "../components/SearchBar";
 import FilterAutocomplete from "../components/FilterAutocomplete";
 
 import licenseService from '../services/licenseService';
+import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
 
 const VerLicencias = () => {
   const [licencias, setLicencias] = useState([]);
   const [filteredLicencias, setFilteredLicencias] = useState([]);
+  const [isDialogOpen, setDialogOpen] = useState(false);
+  const [currentForm, setCurrentForm] = useState(null);
+  const [selectedFarmacia, setSelectedFarmacia] = useState(null);
 
   useEffect(() => {
     const fetchLicenses = async () => {
@@ -25,6 +29,24 @@ const VerLicencias = () => {
     
     fetchLicenses();
   }, []);
+
+  const handleDialogOpen = () => {
+    setCurrentForm("add"); // Establece que se abrirá el formulario de "Añadir Farmacia"
+    setDialogOpen(true);
+  };
+
+  const handleView = (id) => {
+    // Busca la farmacia en el estado `farmacias` usando el ID
+    const licencia = licencias.find((f) => f.Id_Farmacia === id);
+    alert(`La entidad de ID ${id} va a ser vista`);
+    if (licencia) {
+    //   setSelectedFarmacia(farmacia); // Guarda la farmacia seleccionada
+      setCurrentForm("view"); // Cambia al formulario de edición
+      setDialogOpen(true); // Abre el diálogo
+    } else {
+      console.error(`No se encontró ninguna farmacia con el ID: ${id}`);
+    }
+  };
 
   // Función para manejar el filtro de búsqueda
   const handleFilterChange = (filteredResults) => {
@@ -58,7 +80,7 @@ const VerLicencias = () => {
         marginLeft: "20px",
       }}
     >
-      <Box 
+      <Box
         sx={{
           display: "flex",
           justifyContent: "space-between",
@@ -75,14 +97,40 @@ const VerLicencias = () => {
           filterKey="Numero_Licencia" // Filtra por el campo "Numero_Licencia"
         />
 
+        {/* Botón para añadir un nuevo tipo de servicio */}
+        <Box>
+          <Button
+            variant="contained"
+            color="primary"
+            size="large"
+            startIcon={<CreateNewFolderIcon />}
+            onClick={handleDialogOpen}
+          >
+            Licencia
+          </Button>
+        </Box>
+      </Box>
+
+      {/* Seccion de filtros */}
+      <Paper
+        sx={{
+          display: "flex",
+          flexWrap: "wrap",
+          alignItems: "center",
+          padding: "15px",
+          gap: "15px",
+          fullWidth: "true",
+          marginBottom: "20px",
+        }}
+      >
         {/* FilterAutocomplete para filtrar por estado */}
         <FilterAutocomplete
           label="Estado"
           data={licencias}
-          filterKey="Estado"
+          filterKey="Estado_Licencia"
           onFilterChange={handleFilterChange}
         />
-      </Box>
+      </Paper>
 
       {/* Tabla de licencias */}
       <CustomGrid
@@ -92,11 +140,13 @@ const VerLicencias = () => {
           { key: "Numero_Licencia", label: "Número de Licencia" },
           { key: "Fecha_Emision", label: "Fecha de Emisión" },
           { key: "Fecha_Vencimiento", label: "Fecha de Vencimiento" },
-          { key: "Estado", label: "Estado" },
+          { key: "Estado_Licencia", label: "Estado", isBoolean: false },
         ]}
         actions={{
           onEdit: handleEdit,
           onToggle: handleToggle,
+          onView: handleView,
+
         }}
       />
     </Box>
