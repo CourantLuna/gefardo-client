@@ -39,9 +39,10 @@ import generalService from '../services/generalService';
 // };
 
 
-const DynamicForm = ({ formFields, formTitle, labelButtonOnSubmit="Enviar", handleSendData }) => {
-  const [formValues, setFormValues] = useState({});
+const DynamicForm = ({ formFields, formTitle, labelButtonOnSubmit="Enviar", handleSendData, initialValues = {} }) => {
+  const [formValues, setFormValues] = useState(initialValues);
   const [dynamicOptions, setDynamicOptions] = useState({});
+
   
   const handleChange = (name, value) => {
     setFormValues((prevValues) => ({
@@ -495,7 +496,7 @@ const DynamicForm = ({ formFields, formTitle, labelButtonOnSubmit="Enviar", hand
 
   useEffect(() => {
     const initializeFormValues = async () => {
-      const initialValues = {};
+      const initialFormValues = { ...initialValues }; // Prioriza los valores de initialValues si existen
       const optionsData = {};
   
       // Filtrar campos de tipo select/autocomplete
@@ -516,11 +517,21 @@ const DynamicForm = ({ formFields, formTitle, labelButtonOnSubmit="Enviar", hand
             label: item[filterField],
           }));
   
-          // Si el campo tiene un value inicial, busca su correspondiente label
-          if (field.value !== undefined) {
-            const matchedOption = optionsData[name].find((option) => option.value === field.value);
+          // Manejar initialValues para campos select/autocomplete
+          if (initialValues[name] !== undefined) {
+            const matchedOption = optionsData[name].find(
+              (option) => option.value === initialValues[name] // Busca la opción correspondiente al valor en initialValues
+            );
             if (matchedOption) {
-              initialValues[name] = matchedOption; // Asigna el objeto completo { value, label }
+              initialFormValues[name] = matchedOption; // Asigna el objeto completo { value, label }
+            }
+          } else if (field.value !== undefined) {
+            // Si no hay initialValues, usa el valor por defecto en el campo
+            const matchedOption = optionsData[name].find(
+              (option) => option.value === field.value
+            );
+            if (matchedOption) {
+              initialFormValues[name] = matchedOption; // Asigna el objeto completo { value, label }
             }
           }
         } catch (error) {
@@ -528,21 +539,24 @@ const DynamicForm = ({ formFields, formTitle, labelButtonOnSubmit="Enviar", hand
         }
       }
   
-      // Inicializa otros campos con value
+      // Inicializa otros campos que no son select/autocomplete
       formFields.forEach((section) => {
         section.fields.forEach((field) => {
-          if (!dynamicFields.includes(field) && field.value !== undefined) {
-            initialValues[field.name] = field.value; // Asigna directamente el value
+          if (!dynamicFields.includes(field)) {
+            // Usa el valor de initialValues si existe, de lo contrario usa field.value
+            initialFormValues[field.name] = initialValues[field.name] ?? field.value;
           }
         });
       });
   
       setDynamicOptions(optionsData);
-      setFormValues(initialValues);
+      setFormValues(initialFormValues);
     };
   
     initializeFormValues();
-  }, [formFields]);
+  }, [formFields, initialValues]);
+  
+  
   
   
 

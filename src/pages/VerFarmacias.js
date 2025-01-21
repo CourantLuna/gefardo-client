@@ -16,8 +16,15 @@ const VerFarmacias = () => {
   const [farmacias, setFarmacias] = useState([]);
   const [filteredFarmacias, setFilteredFarmacias] = useState([]);
   const [isDialogOpen, setDialogOpen] = useState(false);
+  const [currentForm, setCurrentForm] = useState(null);
+  const [selectedFarmacia, setSelectedFarmacia] = useState(null);
 
-  const handleDialogOpen = () => setDialogOpen(true);
+
+  const handleDialogOpen = () => {
+    setCurrentForm("add"); // Establece que se abrirá el formulario de "Añadir Farmacia"
+    setDialogOpen(true);
+  };
+  
   const handleDialogClose = () => setDialogOpen(false);
 
  const farmaciaFormFields = [
@@ -30,7 +37,7 @@ const VerFarmacias = () => {
           label: "Nombre de la Farmacia",
           type: "text",
           required: true,
-          value: "Farmaciaa del Señor",
+          value: "La milagrosa",
           xs: 12,
           sm: 6,
           md: 4,
@@ -47,6 +54,7 @@ const VerFarmacias = () => {
         {
           name: "Telefono",
           label: "Teléfono",
+          value: "8295124461",
           type: "tel",
           required: false,
           xs: 12,
@@ -115,7 +123,7 @@ const VerFarmacias = () => {
           name: "Responsable_Tecnico",
           label: "Responsable Técnico",
           type: "autocomplete",
-          apiOptions: "/usuarioRoles/4", // Ruta del API
+          apiOptions: "/usuarioRoles/5", // Ruta del API
           filterField: "Nombre_Completo",
           IdFieldName: "Id_Usuario",
           required: true,
@@ -144,7 +152,8 @@ const VerFarmacias = () => {
       ],
     },
   ];
-   
+
+ 
   // Estado para el Snackbar
   const [snackbar, setSnackbar] = useState({
     open: false,
@@ -159,7 +168,6 @@ const VerFarmacias = () => {
     const fetchPharmacies = async () => {
       try {
         const pharmacies = await pharmacyService.getAllPharmacies();
-        console.log("Farmacias:", pharmacies);
 
         setFarmacias(pharmacies);
         setFilteredFarmacias(pharmacies);
@@ -179,14 +187,35 @@ const VerFarmacias = () => {
   // Función para manejar las acciones
   const handleView = (id) => {
     alert(`Ver farmacia con ID: ${id}`);
+    setCurrentForm("view"); // Establece que se abrirá el formulario de "Ver Farmacia"
+    setDialogOpen(true);
   };
 
   const handleEdit = (id) => {
-    alert(`Editar farmacia con ID: ${id}`);
+    // Busca la farmacia en el estado `farmacias` usando el ID
+    const farmacia = farmacias.find((f) => f.Id_Farmacia === id);
+
+    if (farmacia) {
+      setSelectedFarmacia(farmacia); // Guarda la farmacia seleccionada
+      console.log("Farmacia seleccionada:", selectedFarmacia);
+      setCurrentForm("edit"); // Cambia al formulario de edición
+      setDialogOpen(true); // Abre el diálogo
+    } else {
+      console.error(`No se encontró ninguna farmacia con el ID: ${id}`);
+    }
+
+
+    setCurrentForm("edit"); // Establece que se abrirá el formulario de "Ver Farmacia"
+    setDialogOpen(true);
   };
 
+  const handleUpdatePharmacy = (updatedPharmacyData) => {
+    console.log("Datos actualizados de la farmacia:", updatedPharmacyData);
+    // Aquí podrías agregar lógica adicional para enviar estos datos al backend o actualizar el estado local
+  };
+  
+
   const handleAddPharmacy = async (pharmacyData) => {
-    console.log('Datos de la farmacia a guardar:', pharmacyData);
     try {
       // Llama al método del servicio para guardar los datos
       const result = await pharmacyService.savePharmacyData(pharmacyData);
@@ -197,7 +226,6 @@ const VerFarmacias = () => {
         severity: "success",
       });
   
-      console.log('Datos de la farmacia guardados correctamente:', result);
   // Actualiza las listas de usuarios y usuarios filtrados
   setFarmacias((prevFarmacias) => [...prevFarmacias, result]);
   setFilteredFarmacias((prevFiltered) => [...prevFiltered, result]);
@@ -216,7 +244,6 @@ const VerFarmacias = () => {
   const toggleEstadoFarmacia = async (id) => {
     const farmacia = farmacias.find((f) => f.Id_Farmacia === id);
     const nuevoEstado = !farmacia.Estado;
-    console.log(`Estado nuevo de la farmacia ${farmacia.Id_Farmacia}:`, nuevoEstado);
     try {
       // Llama al servicio correspondiente para actualizar el estado de la farmacia
       await pharmacyService.toggleEstado(id, nuevoEstado);
@@ -308,7 +335,8 @@ const VerFarmacias = () => {
           width="200px"
         />
         <Typography variant="body1">O</Typography>
-
+        
+        {/* FilterAutocomplete para filtrar por Provincia */}
         <FilterAutocomplete
           label="Provincia"
           data={farmacias}
@@ -318,7 +346,8 @@ const VerFarmacias = () => {
         />
 
         <Typography variant="body1">O</Typography>
-
+        
+        {/* FilterAutocomplete para filtrar por Responsable Tecnico */}
         <FilterAutocomplete
           label="Responsable Tecnico"
           data={farmacias}
@@ -348,8 +377,7 @@ const VerFarmacias = () => {
         }}
       />
 
-
-{/* Snackbar para avisar estado final del cambio de estado */}
+      {/* Snackbar para avisar estado final del cambio de estado */}
       <Snackbar
         open={snackbar.open}
         autoHideDuration={3000}
@@ -365,12 +393,33 @@ const VerFarmacias = () => {
             margin: "0 auto", // Centra automáticamente horizontalmente
           }}
         >
-          <DynamicForm
+          {currentForm === "add" && (
+            <DynamicForm
+              formFields={farmaciaFormFields}
+              formTitle="Registrando Nueva Farmacia"
+              labelButtonOnSubmit="Registrar Farmacia"
+              handleSendData={handleAddPharmacy}
+            />
+          )}
+
+          {currentForm === "view" && (
+            <DynamicForm
+              formFields={farmaciaFormFields}
+              formTitle="Vista de Farmacia"
+              labelButtonOnSubmit="" // No se necesita botón de enviar
+            />
+          )}
+
+          {currentForm === "edit" && (
+            <DynamicForm
             formFields={farmaciaFormFields}
-            formTitle="Registrando Nueva Farmacia"
-            labelButtonOnSubmit="Registrar Farmacia"
-            handleSendData = {handleAddPharmacy}
+            formTitle="Editando Farmacia"
+            labelButtonOnSubmit="Guardar Cambios"
+            initialValues={selectedFarmacia}
+            handleSendData={handleUpdatePharmacy}
           />
+          
+          )}
         </Box>
       </DialogComponent>
     </Box>

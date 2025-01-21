@@ -36,7 +36,7 @@ const VerFormularios = () => {
   
     fetchAllForms();
 
-  }, []);
+  }, [formularios]);
 
   // Actualiza los datos filtrados
   const handleFilterChange = (filteredResults) => {
