@@ -7,6 +7,8 @@ import {
   Paper,
   IconButton,
   Divider,
+  useTheme, 
+
 } from "@mui/material";
 import EmailIcon from "@mui/icons-material/Email";
 import PhoneIcon from "@mui/icons-material/Phone";
@@ -19,6 +21,8 @@ const VerPerfil = () => {
   const [userId, setUserId] = useState();
   const [userInfo, setUserInfo] = useState({});
   const [rolUser, setRolUser] = useState({});
+    const theme = useTheme();
+  
 
   useEffect(() => {
     const id = AuthService.getUserId();
@@ -61,7 +65,7 @@ const VerPerfil = () => {
           borderRadius: "12px",
           maxWidth: "1200px",
           width: "100%",
-          boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
+          boxShadow: theme.shadows[8] // Niveles de 0 a 24
         }}
       >
         <Grid container spacing={5}>
@@ -70,20 +74,21 @@ const VerPerfil = () => {
               <Avatar
                 alt={userInfo.Nombre}
                 src={userInfo.avatarUrl}
-                sx={{ width: 200, height: 200 }}
+                sx={{ width: 200, height: 200                    
+                  ,boxShadow: theme.shadows[7] // Niveles de 0 a 24
+                }}
+                
               />
               <IconButton
                 aria-label="Cambiar foto de perfil"
                 sx={{
+                  backgroundColor: theme.palette.background.paper,
                   position: "absolute",
                   bottom: 10,
                   right: 10,
-                  backgroundColor: "#ffffff",
-                  border: "2px solid #3f51b5",
+                  borderColor: theme.palette.contrastThreshold,
                   zIndex: 1,
-                  '&:hover': {
-                    backgroundColor: "#f0f0f0",
-                  },
+                  boxShadow: theme.shadows[4] // Niveles de 0 a 24
                 }}
               >
                 <CameraAltIcon color="primary" />
