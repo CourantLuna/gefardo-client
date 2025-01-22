@@ -139,45 +139,65 @@ const VerPerfil = () => {
             <Divider orientation="vertical" flexItem sx={{ height: '100%' }} />
           </Grid>
 
-          <Grid item xs={12} md={5} display="flex" flexDirection="column" alignItems="center" justifyContent="center">
-            <Box display="flex" flexDirection="column" alignItems="center" mb={5}>
-              <BadgeIcon color="primary" sx={{ mr: 2 }} />
-              <Typography variant="h4" align="center">
-                <strong>Estado:</strong>
-              </Typography>
-              <Typography variant="body1" align="center">
-                {userInfo.Estado === 0 ? "Cuenta inactiva" : "Cuenta activa"}
-              </Typography>
+          <Grid item xs={12} md={5} display="flex" flexDirection="column" alignItems="flex-start" justifyContent="center">
+            {/* Estado */}
+            <Box display="flex" alignItems="center" mb={5} width="100%">
+              <Box sx={{ width: 40, display: "flex", justifyContent: "center" }}> 
+                <BadgeIcon color="primary" />
+              </Box>
+              <Box ml={2}> 
+                <Typography variant="h4">
+                  <strong>Estado:</strong>
+                </Typography>
+                <Typography variant="body1">
+                  {userInfo.Estado === 0 ? "Cuenta inactiva" : "Cuenta activa"}
+                </Typography>
+              </Box>
             </Box>
 
-            <Box display="flex" flexDirection="column" alignItems="center" mb={5}>
-              <BadgeIcon color="primary" sx={{ mr: 2 }} />
-              <Typography variant="h4" align="center">
-                <strong>Cédula:</strong>
-              </Typography>
-              <Typography variant="body1" align="center">
-                {userInfo.Cedula || "No disponible"}
-              </Typography>
+            {/* Cédula */}
+            <Box display="flex" alignItems="center" mb={5} width="100%">
+              <Box sx={{ width: 40, display: "flex", justifyContent: "center" }}> 
+                <BadgeIcon color="primary" />
+              </Box>
+              <Box ml={2}> 
+                <Typography variant="h4">
+                  <strong>Cédula:</strong>
+                </Typography>
+                <Typography variant="body1">
+                  {userInfo.Cedula || "No disponible"}
+                </Typography>
+              </Box>
             </Box>
 
-            <Box display="flex" flexDirection="column" alignItems="center" mb={5}>
-              <EmailIcon color="primary" sx={{ mr: 2 }} />
-              <Typography variant="h4" align="center">
-                <strong>Email:</strong>
-              </Typography>
-              <Typography variant="body1" align="center">
-                {userInfo.Correo_Electronico || "No disponible"}
-              </Typography>
+            {/* Email */}
+            <Box display="flex" alignItems="center" mb={5} width="100%">
+              <Box sx={{ width: 40, display: "flex", justifyContent: "center" }}> 
+                <EmailIcon color="primary" />
+              </Box>
+              <Box ml={2}> 
+                <Typography variant="h4" textAlign={"left"}>
+                  <strong>Email:</strong>
+                </Typography>
+                <Typography variant="body1">
+                  {userInfo.Correo_Electronico || "No disponible"}
+                </Typography>
+              </Box>
             </Box>
 
-            <Box display="flex" flexDirection="column" alignItems="center" mb={5}>
-              <PhoneIcon color="primary" sx={{ mr: 2 }} />
-              <Typography variant="h4" align="center">
-                <strong>Teléfono:</strong>
-              </Typography>
-              <Typography variant="body1" align="center">
-                {userInfo.Telefono || "No disponible"}
-              </Typography>
+            {/* Teléfono */}
+            <Box display="flex" alignItems="center" mb={5} width="100%">
+              <Box sx={{ width: 40, display: "flex", justifyContent: "center" }}> 
+                <PhoneIcon color="primary" />
+              </Box>
+              <Box ml={2}> 
+                <Typography variant="h4">
+                  <strong>Teléfono:</strong>
+                </Typography>
+                <Typography variant="body1">
+                  {userInfo.Telefono || "No disponible"}
+                </Typography>
+              </Box>
             </Box>
           </Grid>
         </Grid>
