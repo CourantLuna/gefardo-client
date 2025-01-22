@@ -1,9 +1,9 @@
 import React from "react";
-import { Box, Button, Typography, Grid } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 
 const Toolbox = ({ handleDragStart }) => {
-  // Lista de componentes disponibles
   const components = [
+    { type: "section", label: "Nueva Sección" },
     { type: "text", label: "Text Field" },
     { type: "textarea", label: "Text Area" },
     { type: "password", label: "Password" },
@@ -27,33 +27,36 @@ const Toolbox = ({ handleDragStart }) => {
   ];
 
   return (
+    <Box>
+        <Typography variant="h5" textAlign={"left"} paddingLeft={2} gutterBottom>
+        Componentes
+      </Typography>
     <Box
+    fullWidth
       sx={{
-        width: "100%",
-        padding: "5px",
+        
+        borderBottom: "1px solid #ddd",
+        padding: "16px",
         display: "flex",
-        flexWrap: "wrap", // Permite que los botones se acomoden automáticamente
+        flexDirection: "row",
+        flexWrap: "wrap",
         gap: "8px",
-        borderRight: "1px solid #ddd",
       }}
     >
-      <Typography variant="h6" gutterBottom>
-        Componentes Disponibles
-      </Typography>
-      <Grid container spacing={2}>
-        {components.map((component) => (
-          <Grid item xs={12} sm={4} md={4} key={component.type}>
-            <Button
-              variant="outlined"
-              fullWidth
-              draggable
-              onDragStart={(e) => handleDragStart(e, component.type)}
-            >
-              {component.label}
-            </Button>
-          </Grid>
-        ))}
-      </Grid>
+      
+      {components.map((component) => (
+        <Button
+          key={component.type}
+          variant="outlined"
+          
+          draggable
+          onDragStart={(e) => handleDragStart(e, component.type)}
+          sx={{ marginBottom: "8px", width: "200px" }}
+        >
+          {component.label}
+        </Button>
+      ))}
+    </Box>
     </Box>
   );
 };

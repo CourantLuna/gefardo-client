@@ -1,29 +1,41 @@
 import React, { useState } from "react";
-import { Box, Grid, Container } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 import Toolbox from "../components/ToolBox";
 import Canvas from "../components/Canvas";
 import PropertiesPanel from "../components/PropertiesPanel";
 import JSONView from "../components/JSONView";
 
 const CreateForm = () => {
-  const [formFields, setFormFields] = useState([]);
+  const [formFields, setFormFields] = useState([
+    {
+      sectionTitle: "Sección Inicial",
+      divider: true,
+      fields: [],
+    },
+  ]);
+  const [isPropertiesPanelOpen, setIsPropertiesPanelOpen] = useState(false); // Controla la visibilidad del panel
   const [selectedIndex, setSelectedIndex] = useState(null);
-  const [showPropertiesPanel, setShowPropertiesPanel] = useState(true);
 
   const handleDragStart = (e, type) => {
     e.dataTransfer.setData("type", type);
   };
 
-  const handleDrop = ({ sectionIndex, fieldType }) => {
+  const handleDrop = (e, sectionIndex = null) => {
+    e.preventDefault();
+    e.stopPropagation(); // Detiene la propagación del evento para evitar duplicados.
+    const fieldType = e.dataTransfer.getData("type");
+
     if (fieldType === "section") {
+      // Agregar una nueva sección si se arrastra una sección
       setFormFields((prev) => [
         ...prev,
-        { sectionTitle: "Nueva Sección", divider: false, fields: [] },
+        { sectionTitle: "Nueva Sección", divider: true, fields: [] },
       ]);
-    } else {
+    } else if (sectionIndex !== null) {
+      // Agregar un campo dentro de una sección específica
       setFormFields((prev) =>
-        prev.map((section, idx) =>
-          idx === sectionIndex
+        prev.map((section, index) =>
+          index === sectionIndex
             ? {
                 ...section,
                 fields: [
@@ -39,86 +51,109 @@ const CreateForm = () => {
 
   const handleRemoveField = ({ sectionIndex, fieldIndex }) => {
     setFormFields((prev) =>
-      prev.map((section, idx) =>
-        idx === sectionIndex
-          ? { ...section, fields: section.fields.filter((_, i) => i !== fieldIndex) }
-          : section
-      )
-    );
-    setSelectedIndex(null);
-  };
-
-  const handleRemoveSection = (sectionIndex) => {
-    setFormFields((prev) => prev.filter((_, idx) => idx !== sectionIndex));
-  };
-
-  const handleFieldChange = (key, value) => {
-    const { sectionIndex, fieldIndex } = selectedIndex;
-    setFormFields((prev) =>
-      prev.map((section, idx) =>
-        idx === sectionIndex
+      prev.map((section, index) =>
+        index === sectionIndex
           ? {
               ...section,
-              fields: section.fields.map((field, i) =>
-                i === fieldIndex ? { ...field, [key]: value } : field
-              ),
+              fields: section.fields.filter((_, i) => i !== fieldIndex),
             }
           : section
       )
     );
   };
 
-  const onSelectField = (index) => {
-    setSelectedIndex(index);
-    setShowPropertiesPanel(true);
+  const handleRemoveSection = (sectionIndex) => {
+    setFormFields((prev) => prev.filter((_, index) => index !== sectionIndex));
   };
 
-  const togglePropertiesPanel = () => {
-    setShowPropertiesPanel((prev) => !prev);
+  const handleFieldChange = (key, value) => {
+    const { sectionIndex, fieldIndex } = selectedIndex;
+
+    setFormFields((prev) =>
+      prev.map((section, index) => {
+        if (index === sectionIndex) {
+          // Si fieldIndex es null o undefined, estamos editando una sección
+          if (fieldIndex === undefined) {
+            return { ...section, [key]: value };
+          }
+
+          // Caso contrario, estamos editando un campo dentro de la sección
+          return {
+            ...section,
+            fields: section.fields.map((field, idx) =>
+              idx === fieldIndex ? { ...field, [key]: value } : field
+            ),
+          };
+        }
+        return section;
+      })
+    );
   };
 
   return (
-    <Container maxWidth="xl" sx={{ height: "100vh", display: "flex", flexDirection: "column" }}>
-      <Grid container spacing={2} sx={{ marginBottom: "16px", borderBottom: "1px solid #ccc" }}>
-        {/* ToolBox */}
-        <Grid item xs={12} sm={6} md={6}>
+    <Box display="flex" flexDirection="column" height="100vh">
+      {/* Fila 1: Toolbox ocupa todo el ancho */}
+      <Grid container spacing={2} sx={{ flex: "0 0 auto", padding: "16px" }}>
+        <Grid item xs={12}>
           <Toolbox handleDragStart={handleDragStart} />
-        </Grid>
-
-        {/* PropertiesPanel */}
-        <Grid item xs={12} sm={6} md={6}>
-          {showPropertiesPanel && (
-            <PropertiesPanel
-              selectedField={
-                selectedIndex
-                  ? formFields[selectedIndex.sectionIndex]?.fields[selectedIndex.fieldIndex]
-                  : null
-              }
-              handleFieldChange={handleFieldChange}
-              onClose={togglePropertiesPanel}
-            />
-          )}
         </Grid>
       </Grid>
 
-      <Grid container spacing={2} sx={{ flexGrow: 1 }}>
-        {/* Canvas */}
-        <Grid item xs={12} sm={8} md={8}>
+      {/* Fila 2: Canvas, PropertiesPanel y JSONView */}
+      <Grid container spacing={2} sx={{ flex: "1 1 auto", overflow: "hidden" }}>
+        <Grid item xs={12} md={7}>
           <Canvas
             formFields={formFields}
             handleDrop={handleDrop}
             handleRemoveField={handleRemoveField}
             handleRemoveSection={handleRemoveSection}
-            onSelectField={onSelectField}
+            onSelectField={(index) => {
+              if (index.fieldIndex === undefined) {
+                setSelectedIndex({ sectionIndex: index.sectionIndex });
+              } else {
+                setSelectedIndex(index);
+              }
+              setIsPropertiesPanelOpen(true); // Abre el panel al seleccionar un campo
+            }}
           />
         </Grid>
-
-        {/* JSONView */}
-        <Grid item xs={12} sm={4} md={4}>
-          <JSONView formFields={formFields} />
+        <Grid item xs={12} md={5}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              height: "100%",
+            }}
+          >
+            {isPropertiesPanelOpen && (
+              <Box sx={{ flex: "1 1 auto", overflow: "auto" }}>
+                <PropertiesPanel
+                  selectedField={
+                    selectedIndex
+                      ? selectedIndex.fieldIndex === undefined
+                        ? formFields[selectedIndex.sectionIndex]
+                        : formFields[selectedIndex.sectionIndex].fields[
+                            selectedIndex.fieldIndex
+                          ]
+                      : null
+                  }
+                  handleFieldChange={handleFieldChange}
+                  onClose={() => setIsPropertiesPanelOpen(false)} // Cierra el panel
+                />
+              </Box>
+            )}
+            <Box
+              sx={{
+                flex: isPropertiesPanelOpen ? "1 1 auto" : "1 0 auto", // Ocupa todo el alto si no está abierto
+                overflow: "auto",
+              }}
+            >
+              <JSONView formFields={formFields} />
+            </Box>
+          </Box>
         </Grid>
       </Grid>
-    </Container>
+    </Box>
   );
 };
 
