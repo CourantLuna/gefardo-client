@@ -69,7 +69,7 @@ const VerPerfil = () => {
         }}
       >
         <Grid container spacing={5}>
-          <Grid item xs={12} md={6} display="flex" flexDirection="column" alignItems="center">
+          <Grid item xs={12} md={6} display="flex" flexDirection="column" alignItems="center" justifyContent={"center"}>
             <Box sx={{ position: "relative", display: "inline-block", mb: 4 }}>
               <Avatar
                 alt={userInfo.Nombre}
@@ -107,32 +107,44 @@ const VerPerfil = () => {
             <Divider orientation="vertical" flexItem sx={{ height: '100%' }} />
           </Grid>
 
-          <Grid item xs={12} md={5} display="flex" flexDirection="column" alignItems="flex-start" justifyContent="center">
-            <Box display="flex" alignItems="center" mb={5}>
+          <Grid item xs={12} md={5} display="flex" flexDirection="column" alignItems="center" justifyContent="center">
+            <Box display="flex" flexDirection="column" alignItems="center" mb={5}>
               <BadgeIcon color="primary" sx={{ mr: 2 }} />
-              <Typography variant="h5">
-                <strong>Estado:</strong> {userInfo.Estado || "No disponible"}
+              <Typography variant="h4" align="center">
+                <strong>Estado:</strong>
+              </Typography>
+              <Typography variant="body1" align="center">
+                {userInfo.Estado || "No disponible"}
               </Typography>
             </Box>
 
-            <Box display="flex" alignItems="center" mb={5}>
+            <Box display="flex" flexDirection="column" alignItems="center" mb={5}>
               <BadgeIcon color="primary" sx={{ mr: 2 }} />
-              <Typography variant="h5">
-                <strong>Cédula:</strong> {userInfo.Cedula || "No disponible"}
+              <Typography variant="h4" align="center">
+                <strong>Cédula:</strong>
+              </Typography>
+              <Typography variant="body1" align="center">
+                {userInfo.Cedula || "No disponible"}
               </Typography>
             </Box>
 
-            <Box display="flex" alignItems="center" mb={5}>
+            <Box display="flex" flexDirection="column" alignItems="center" mb={5}>
               <EmailIcon color="primary" sx={{ mr: 2 }} />
-              <Typography variant="h5">
-                <strong>Email:</strong> {userInfo.Correo_Electronico || "No disponible"}
+              <Typography variant="h4" align="center">
+                <strong>Email:</strong>
+              </Typography>
+              <Typography variant="body1" align="center">
+                {userInfo.Correo_Electronico || "No disponible"}
               </Typography>
             </Box>
 
-            <Box display="flex" alignItems="center" mb={5}>
+            <Box display="flex" flexDirection="column" alignItems="center" mb={5}>
               <PhoneIcon color="primary" sx={{ mr: 2 }} />
-              <Typography variant="h5">
-                <strong>Teléfono:</strong> {userInfo.Telefono || "No disponible"}
+              <Typography variant="h4" align="center">
+                <strong>Teléfono:</strong>
+              </Typography>
+              <Typography variant="body1" align="center">
+                {userInfo.Telefono || "No disponible"}
               </Typography>
             </Box>
           </Grid>
