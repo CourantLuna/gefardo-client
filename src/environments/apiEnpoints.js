@@ -3,6 +3,7 @@ export const ApiEndpoints = {
     Authentication: '/auth/secure',
     register: '/auth/register',
     usuarios: '/usuarios',
+    uploadProfilePicture: '/usuarios/upload-profile-picture',
     RolesByUsuarioId: '/usuarioRoles/usuario/roles',
     getAllUsersByRolId: '/usuarioRoles/rol',
     AllUserRoles: '/usuarioRoles',
