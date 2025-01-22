@@ -17,6 +17,7 @@ import VerSanciones from "./pages/VerSanciones";
 import VerInspecciones from "./pages/VerInspecciones";
 import VerSolicitudes from "./pages/VerSolicitudes";
 import GestionarServicios from "./pages/GestionarServicios";
+import CrearFormulario from "./pages/CrearFormulario";
 
 import VerPerfil from "./pages/VerPerfil";
 
@@ -52,6 +53,9 @@ function App() {
                 <Route path="ver-inspecciones" element={ <VerInspecciones/>} />
                 <Route path="revisar-solicitudes" element={ <VerSolicitudes/>} />
                 <Route path="gestionar-servicios" element={ <GestionarServicios/>} />
+
+
+                <Route path="crear-formularios" element={ <CrearFormulario/>} />
 
                 <Route path="ver-perfil" element={<VerPerfil />} />
 

@@ -286,7 +286,16 @@ function VerUsuarios() {
       });
     }
   };
-  
+
+  const getEmptyInitialValues = () => ({
+    Id_Usuario: null,
+    Estado: false,
+    Nombre: "", 
+    Apellido: "", 
+    Correo_Electronico: "", 
+    Clave: "", 
+    Cedula: "",
+  });
 
   // Función para manejar el filtro de búsqueda
   const handleFilterChange = (filteredResults) => {
@@ -393,6 +402,8 @@ function VerUsuarios() {
             formTitle="Creando Nuevo Usuario"
             labelButtonOnSubmit="Crear Nuevo Usuario"
             handleSendData = {handleAddUser}
+            initialValues={getEmptyInitialValues()}
+
           />
         </Box>
       </DialogComponent>
