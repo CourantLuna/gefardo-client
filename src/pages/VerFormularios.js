@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from "react";
 import {
   Box,
+  Button,
+  Paper,
+  Snackbar,
+  Alert
 } from "@mui/material";
 
 import formService from '../services/formService';
+import authService from '../services/authService';
 
 import CustomGrid from "../components/CustomGrid";
 import SearchBar from "../components/SearchBar";
@@ -11,22 +16,29 @@ import FilterAutocomplete from "../components/FilterAutocomplete";
 import DialogComponent from "../components/DialogComponent";
 import DynamicForm from '../components/CustomForm'; 
 
+import NoteAddIcon from '@mui/icons-material/NoteAdd';
+
+
+
 const VerFormularios = () => {
   const [formularios, setFormularios] = useState([]); // Datos de formularios
   const [filteredData, setFilteredData] = useState([]); // Datos filtrados
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [userId, setUserId] = useState(null);
+
+
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogContent, setDialogContent] = useState("");
 
+  const [currentForm, setCurrentForm] = useState(null);
+  const [selectedSancion, setSelectedSancion] = useState(null);
 
   useEffect(() => {
-
+    const id = authService.getUserId();
+    setUserId(id);
     const fetchAllForms = async () => {
       try {
         const forms = await formService.getAllForms(); // Llama al servicio para obtener los formularios reales
-        console.log('Lista de formularios:', forms);
         setFormularios(forms); // Almacena los datos en el estado
         setFilteredData(forms); // Inicializa los datos filtrados
       } catch (error) {
@@ -36,48 +48,131 @@ const VerFormularios = () => {
   
     fetchAllForms();
 
-  }, [formularios]);
+  }, []);
+
+  const formFieldsFormularios = [
+    {
+      sectionTitle: "Información General",
+      divider: true,
+      fields: [
+        {
+          name: "Nombre_Formulario",
+          label: "Nombre del Formulario",
+          type: "text",
+          required: true,
+          xs: 12,
+          sm: 6,
+          md: 6,
+        },
+        {
+          name: "Creado_Por",
+          label: "Creado Por",
+          apiOptions: "/usuarioRoles/3", // Ruta para obtener los usuarios
+          filterField: "Nombre_Completo", // Campo a mostrar en el autocompletado
+          IdFieldName: "Id_Usuario",
+          "IsThisFieldDisabled": true,
+          value: userId,
+          type: "autocomplete",
+          required: false,
+          xs: 12,
+          sm: 6,
+          md: 6,
+        },
+        // {
+        //   name: "Modificado_Por",
+        //   label: "Modificado Por",
+        //   type: "autocomplete",
+        //   apiOptions: "/usuarioRoles/3", // Ruta para obtener los usuarios
+        //   filterField: "Nombre_Completo", // Campo a mostrar en el autocompletado
+        //   IdFieldName: "Id_Usuario",
+        //   "IsThisFieldDisabled": true,
+        //   required: false,
+        //   xs: 12,
+        //   sm: 6,
+        //   md: 6,
+        // },
+      ],
+    },
+    {
+      sectionTitle: "Campos del Formulario",
+      divider: true,
+      fields: [
+        {
+          name: "Campos_Formulario",
+          label: "Definición de Campos",
+          type: "textarea",
+          required: true,
+          rows: 6,
+          xs: 12,
+          sm: 12,
+          md: 12,
+        },
+      ],
+    },
+  ];
+  
+
+  // Estado para manejar el Snackbar
+const [snackbar, setSnackbar] = useState({
+  open: false,
+  message: "",
+  severity: "info",
+});
+
+// Cerrar el Snackbar
+const handleSnackbarClose = () => {
+  setSnackbar({ ...snackbar, open: false });
+};
 
   // Actualiza los datos filtrados
   const handleFilterChange = (filteredResults) => {
     setFilteredData(filteredResults);
   };
 
-  // Ajustar paginación para que funcione con los datos filtrados
-  const paginatedFormularios = filteredData.slice(
-    page * rowsPerPage,
-    page * rowsPerPage + rowsPerPage
-  );
-
-  useEffect(() => {
-    if (page > 0 && paginatedFormularios.length === 0) {
-      setPage(0); // Reinicia la página si el filtro cambia y no hay datos en la página actual
-    }
-  }, [filteredData, page, paginatedFormularios.length]);
 
   const toggleEstado = (id) => {
-    setFormularios((prevFormularios) =>
-      prevFormularios.map((formulario) =>
-        formulario.Id_Formulario === id
-          ? {
-              ...formulario,
-              Estado: formulario.Estado === "Activo" ? "Inactivo" : "Activo",
-            }
-          : formulario
-      )
-    );
-    alert(`La entidad de ID ${id} va a ser ${
-      formularios.find((f) => f.Id_Formulario === id).Estado === "Activo"
-        ? "deshabilitada"
-        : "habilitada"
-    }`);
+    const formulario = formularios.find((f) => f.Id_Formulario === id);
+  };
+
+  const generateInitialValues = (formFields) => {
+    const initialValues = {};
+  
+    formFields.forEach((section) => {
+      section.fields.forEach((field) => {
+        if (field.type === "text" || field.type === "date") {
+          // Para textos y fechas, el valor vacío es ""
+          initialValues[field.name] = field.value || "";
+        } else if (field.type === "number") {
+          // Para números, el valor vacío es null
+          initialValues[field.name] = field.value || null;
+        } else if (field.type === "autocomplete" || field.type === "select") {
+          // Para autocomplete/select, el valor vacío es null
+          initialValues[field.name] = field.value || null;
+        } else if (field.type === "checkbox" || field.type === "radio") {
+          // Para checkbox/radio, el valor vacío es false
+          initialValues[field.name] = field.value || false;
+        } else {
+          // Valor genérico si no se especifica un tipo
+          initialValues[field.name] = field.value || null;
+        }
+      });
+    });
+  
+    return initialValues;
   };
 
   const handleView = (id) => {
+    setCurrentForm("view"); // Establece que se abrirá el formulario de "Añadir Licencia"
+
     const formulario = formularios.find((f) => f.Id_Formulario === id);
     try {
       const jsonFields = JSON.parse(formulario.Campos_Formulario);
-  
+      // Registra correctamente el objeto initialValues
+      const initialValues = generateInitialValues(
+        jsonFields
+      );
+
+      console.log("initialValues:", initialValues);
       // Asegúrate de que jsonFields es un array
       if (Array.isArray(jsonFields)) {
         setDialogContent(
@@ -85,6 +180,39 @@ const VerFormularios = () => {
             <DynamicForm
               formFields={jsonFields}
               formTitle={formulario.Nombre_Formulario}
+              labelButtonOnSubmit={`Enviar Solicitud para ${formulario.Nombre_Formulario}`}
+              initialValues={initialValues}
+            />
+          </Box>
+        );
+        setDialogOpen(true);
+      } else {
+        console.error("Campos_Formulario no es un array válido.");
+        alert("Los campos del formulario no tienen el formato esperado.");
+      }
+    } catch (error) {
+      console.error("Error al parsear Campos_Formulario:", error.message);
+      alert("Error al cargar los campos del formulario.");
+    }
+  };
+
+  
+
+  const handleAddForm = (id) => {
+    setCurrentForm("add"); // Establece que se abrirá el formulario de "Añadir Licencia"
+    try {
+      const jsonFields = formFieldsFormularios;
+      const initialValues = generateInitialValues(
+        jsonFields
+      )
+      if (Array.isArray(jsonFields)) {
+        setDialogContent(
+          <Box>
+            <DynamicForm
+              formFields={jsonFields}
+              formTitle="Añadiendo nuevo formulario"
+              labelButtonOnSubmit={`Añadir Formulario`}
+              initialValues={initialValues}
             />
           </Box>
         );
@@ -100,6 +228,31 @@ const VerFormularios = () => {
   };
 
   const handleEdit = (id) => {
+    const formulario = formularios.find((f) => f.Id_Formulario === id);
+    try {
+      const jsonFields = JSON.parse(formulario.Campos_Formulario);
+  
+      // Asegúrate de que jsonFields es un array
+      if (Array.isArray(jsonFields)) {
+        setDialogContent(
+          <Box>
+            <DynamicForm
+              formFields={jsonFields}
+              formTitle={formulario.Nombre_Formulario}
+              isDisabled={true} // Deshabilita todos los campos
+
+            />
+          </Box>
+        );
+        setDialogOpen(true);
+      } else {
+        console.error("Campos_Formulario no es un array válido.");
+        alert("Los campos del formulario no tienen el formato esperado.");
+      }
+    } catch (error) {
+      console.error("Error al parsear Campos_Formulario:", error.message);
+      alert("Error al cargar los campos del formulario.");
+    }
     alert(`La entidad de ID ${id} va a ser editada`);
   };
 
@@ -129,6 +282,33 @@ return (
         filterKey="Nombre_Formulario"
       />
 
+      {/* Botón para añadir un nuevo tipo de servicio */}
+      <Box>
+        <Button
+          variant="contained"
+          color="primary"
+          size="large"
+          startIcon={<NoteAddIcon />}
+          onClick={handleAddForm}
+        >
+          Formulario
+        </Button>
+      </Box>
+    </Box>
+
+    {/* Seccion de filtros */}
+    <Paper
+      sx={{
+        display: "flex",
+        flexWrap: "wrap",
+        alignItems: "center",
+        padding: "15px",
+        gap: "15px",
+        fullWidth: "true",
+        marginBottom: "20px",
+      }}
+    >
+      Filtrar por:
       {/* FilterAutocomplete para filtrar por estado */}
       <FilterAutocomplete
         label="Estado"
@@ -136,7 +316,14 @@ return (
         filterKey="Estado"
         onFilterChange={handleFilterChange}
       />
-    </Box>
+      O{/* FilterAutocomplete para filtrar por Modificado Por */}
+      <FilterAutocomplete
+        label="Modificado Por"
+        data={formularios}
+        filterKey="Modificado_Por"
+        onFilterChange={handleFilterChange}
+      />
+    </Paper>
 
     {/* Tabla de resultados */}
     <CustomGrid
@@ -148,7 +335,7 @@ return (
         { key: "Modificado_Por", label: "Modificado Por" },
         { key: "Fecha_Creacion", label: "Fecha de Creación" },
         { key: "Fecha_Ultima_Modificacion", label: "Última Modificación" },
-        { key: "Estado", label: "Estado" },
+        { key: "Estado", label: "Estado", isBoolean: true },
       ]}
       actions={{
         onView: handleView,
@@ -157,6 +344,14 @@ return (
       }}
     />
 
+    {/* Snackbar para avisar estado final del cambio de estado */}
+    <Snackbar
+      open={snackbar.open}
+      autoHideDuration={3000}
+      onClose={handleSnackbarClose}
+    >
+      <Alert severity={snackbar.severity}>{snackbar.message}</Alert>
+    </Snackbar>
     <Box
       sx={{
         width: "fit-content", // Tamaño ajustado al contenido
@@ -169,7 +364,15 @@ return (
         onClose={() => setDialogOpen(false)}
         title="Vista del Formulario"
       >
-        {dialogContent}
+        <Box
+          sx={{
+            width: "fit-content", // Tamaño ajustado al contenido
+            margin: "0 auto", // Centra automáticamente horizontalmente
+          }}
+        >
+                  {dialogContent}
+
+        </Box>
       </DialogComponent>
     </Box>
   </Box>

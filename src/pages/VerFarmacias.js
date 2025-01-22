@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect  } from "react";
 import { Box, Button, Typography, Paper, Snackbar, Alert} from "@mui/material";
 import CustomGrid from "../components/CustomGrid";
 import SearchBar from "../components/SearchBar";
@@ -211,6 +211,20 @@ const VerFarmacias = () => {
   };
 
 
+  const getEmptyInitialValues = () => ({
+    Direccion: "", // Cadena vacía para texto
+    Estado: false, // Booleano inicializado como falso (checkbox)
+    Id_Clasificacion: null, // Relación inicializada como null
+    Id_Farmacia: null, // ID inicializada como null
+    Id_Provincia: null, // Relación inicializada como null
+    Id_Tipo_Farmacia: null, // Relación inicializada como null
+    Nombre: "", // Cadena vacía para texto
+    RNC: "", // Cadena vacía para RNC
+    Responsable_Tecnico: null, // Relación inicializada como null
+    Tamano: "", // Cadena vacía para texto
+    Telefono: "", // Cadena vacía para teléfono
+  });
+
   const validFields = [
     "Direccion",
     "Estado",
@@ -278,9 +292,11 @@ const VerFarmacias = () => {
       // Llama al método del servicio para guardar los datos
       const result = await pharmacyService.savePharmacyData(pharmacyData);
       
-      // Actualiza las listas de usuarios y usuarios filtrados
-      setFarmacias((prevFarmacias) => [...prevFarmacias, result]);
-      setFilteredFarmacias((prevFiltered) => [...prevFiltered, result]);
+      // Vuelve a cargar las farmacias desde el backend
+      const updatedPharmacies = await pharmacyService.getAllPharmacies();
+      setFarmacias(updatedPharmacies);
+      setFilteredFarmacias(updatedPharmacies);
+      handleDialogClose();
 
       handleDialogClose();
 
@@ -460,6 +476,7 @@ const VerFarmacias = () => {
               formTitle="Registrando Nueva Farmacia"
               labelButtonOnSubmit="Registrar Farmacia"
               handleSendData={handleAddPharmacy}
+              initialValues={getEmptyInitialValues()} // Valores iniciales vacíos
             />
           )}
 

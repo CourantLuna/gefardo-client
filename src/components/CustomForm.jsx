@@ -98,7 +98,7 @@ const DynamicForm = ({
               value={formValues[field.name] || ""}
               onChange={(e) => handleChange(field.name, e.target.value)}
               error={field.required && !formValues[field.name]} // Marca como error si el campo está vacío
-              disabled={isDisabled} // Campo deshabilitado si isDisabled es true
+              disabled={field.IsThisFieldDisabled ?? isDisabled} // Aplica el valor de IsThisFieldDisabled o isDisabled
               helperText={field.required && !formValues[field.name] ? "campo obligatorio" : ""} // Mensaje de error
             />
           </Grid>
@@ -121,7 +121,7 @@ const DynamicForm = ({
               onChange={(e) => handleChange(field.name, e.target.value)}
               error={field.required && !formValues[field.name]} // Marca como error si el campo está vacío
               helperText={field.required && !formValues[field.name] ? "campo obligatorio" : ""} // Mensaje de error
-              disabled={isDisabled} // Campo deshabilitado si isDisabled es true
+              disabled={field.IsThisFieldDisabled ?? isDisabled} // Aplica el valor de IsThisFieldDisabled o isDisabled
 
             />
           </Grid>
@@ -142,7 +142,7 @@ const DynamicForm = ({
               onChange={(e) => handleChange(field.name, e.target.value)}
               error={field.required && !formValues[field.name]} // Marca como error si el campo está vacío
               helperText={field.required && !formValues[field.name] ? "campo obligatorio" : ""} // Mensaje de error
-              disabled={isDisabled} // Campo deshabilitado si isDisabled es true
+              disabled={field.IsThisFieldDisabled ?? isDisabled} // Aplica el valor de IsThisFieldDisabled o isDisabled
 
             />
           </Grid>
@@ -159,9 +159,10 @@ const DynamicForm = ({
           <Grid item xs={xs} sm={sm} md={md} key={field.name}>
 
             <TextField
+            slotProps={{ inputLabel: { shrink: true } }}
               key={field.name}
               type={field.type}
-              disabled={isDisabled} // Campo deshabilitado si isDisabled es true
+              disabled={field.IsThisFieldDisabled ?? isDisabled} // Aplica el valor de IsThisFieldDisabled o isDisabled
               label={field.label}
               required={field.required}
               fullWidth
@@ -170,6 +171,7 @@ const DynamicForm = ({
               onChange={(e) => handleChange(field.name, e.target.value)}
               error={field.required && !formValues[field.name]} // Marca como error si el campo está vacío
               helperText={field.required && !formValues[field.name] ? "campo obligatorio" : ""} // Mensaje de error
+            
             />
           </Grid>
 
@@ -182,7 +184,7 @@ const DynamicForm = ({
             <TextField
               key={field.name}
               type="number"
-              disabled={isDisabled} // Campo deshabilitado si isDisabled es true
+              disabled={field.IsThisFieldDisabled ?? isDisabled} // Aplica el valor de IsThisFieldDisabled o isDisabled
               label={field.label}
               required={field.required}
               fullWidth
@@ -201,8 +203,8 @@ const DynamicForm = ({
             <FormControl key={field.name} fullWidth margin="normal">
               <InputLabel>{field.label}</InputLabel>
               <Select
-                disabled={isDisabled} // Campo deshabilitado si isDisabled es true
-                value={formValues[field.name]?.value || ""} // Usa el value del estado
+              disabled={field.IsThisFieldDisabled ?? isDisabled} // Aplica el valor de IsThisFieldDisabled o isDisabled
+              value={formValues[field.name]?.value || ""} // Usa el value del estado
                 onChange={(e) => handleChange(field.name, { value: e.target.value, label: e.target.innerText })}
                 required={field.required}
               >
@@ -223,7 +225,7 @@ const DynamicForm = ({
         return (
           <Grid item xs={xs} sm={sm} md={md} key={field.name}>
             <Autocomplete
-            disabled={isDisabled}
+              disabled={field.IsThisFieldDisabled ?? isDisabled} // Aplica el valor de IsThisFieldDisabled o isDisabled
               disablePortal
               options={dynamicOptions[field.name] || []} // Usa las opciones dinámicas cargadas
               getOptionLabel={(option) => option.label || ""}
@@ -253,7 +255,7 @@ const DynamicForm = ({
 
             <TextField
               key={field.name}
-              disabled={isDisabled} // Campo deshabilitado si isDisabled es true
+              disabled={field.IsThisFieldDisabled ?? isDisabled} // Aplica el valor de IsThisFieldDisabled o isDisabled
               type="file"
               label={field.label}
               InputLabelProps={{ shrink: true }}
@@ -267,6 +269,8 @@ const DynamicForm = ({
           </Grid>
 
         );
+
+
       case "checkbox":
         return (
           <Grid item xs={xs} sm={sm} md={md} key={field.name}>
@@ -275,8 +279,8 @@ const DynamicForm = ({
               key={field.name}
               control={
                 <Checkbox
-                disabled={isDisabled} // Campo deshabilitado si isDisabled es true
-                  checked={formValues[field.name] || false}
+                disabled={field.IsThisFieldDisabled ?? isDisabled} // Aplica el valor de IsThisFieldDisabled o isDisabled
+                checked={formValues[field.name] || false}
                   required={field.required}
                   onChange={(e) => handleChange(field.name, e.target.checked)}
                 />
@@ -299,7 +303,7 @@ const DynamicForm = ({
               >
                 {field.options.map((option, index) => (
                   <FormControlLabel
-                  disabled={isDisabled} // Campo deshabilitado si isDisabled es true
+                  disabled={field.IsThisFieldDisabled ?? isDisabled} // Aplica el valor de IsThisFieldDisabled o isDisabled
                   key={index}
                     value={option}
                     control={<Radio />}
@@ -317,7 +321,7 @@ const DynamicForm = ({
 
             <Button
               key={field.name}
-              disabled={isDisabled} // Campo deshabilitado si isDisabled es true
+              disabled={field.IsThisFieldDisabled ?? isDisabled} // Aplica el valor de IsThisFieldDisabled o isDisabled
               variant="contained"
               color="primary"
               onClick={() => alert(`${field.label} presionado`)}
@@ -334,7 +338,7 @@ const DynamicForm = ({
           <Grid item xs={xs} sm={sm} md={md} key={field.name}>
             <TextField
               label={field.label}
-              disabled={isDisabled} // Campo deshabilitado si isDisabled es true
+              disabled={field.IsThisFieldDisabled ?? isDisabled} // Aplica el valor de IsThisFieldDisabled o isDisabled
               required={field.required}
               error={field.required && !formValues[field.name]} // Marca como error si el campo está vacío
               helperText={field.required && !formValues[field.name] ? "campo obligatorio" : ""} // Mensaje de error
@@ -359,7 +363,7 @@ const DynamicForm = ({
         return (
           <Grid item xs={xs} sm={sm} md={md} key={field.name}>
             <TextField
-              disabled={isDisabled} // Campo deshabilitado si isDisabled es true
+              disabled={field.IsThisFieldDisabled ?? isDisabled} // Aplica el valor de IsThisFieldDisabled o isDisabled
               label={field.label}
               required={field.required}
               error={field.required && (!formValues[field.name] || formValues[field.name].replace(/\D/g, "").length !== 11)} // Marca como error si el campo está vacío o si no tiene 11 dígitos
@@ -390,7 +394,7 @@ const DynamicForm = ({
         return (
           <Grid item xs={xs} sm={sm} md={md} key={field.name}>
             <TextField
-            disabled={isDisabled} // Campo deshabilitado si isDisabled es true
+              disabled={field.IsThisFieldDisabled ?? isDisabled} // Aplica el valor de IsThisFieldDisabled o isDisabled
               label={field.label}
               required={field.required}
               error={field.required && (!formValues[field.name] || formValues[field.name].replace(/\D/g, "").length !== 9)} // Marca como error si el campo está vacío o no tiene 9 dígitos
@@ -484,29 +488,30 @@ const DynamicForm = ({
             if (matchedOption) {
               initialFormValues[name] = matchedOption; // Asigna el objeto completo { value, label }
             }
-          } else if (field.value !== undefined) {
-            // Si no hay initialValues, usa el valor por defecto en el campo
-            const matchedOption = optionsData[name].find(
-              (option) => option.value === field.value
-            );
-            if (matchedOption) {
-              initialFormValues[name] = matchedOption; // Asigna el objeto completo { value, label }
-            }
           }
-        } catch (error) {
+          }
+         catch (error) {
           console.error(`Error al cargar opciones para ${name}:`, error.message);
+          optionsData[name] = []; // Asigna un array vacío para evitar errores
         }
       }
 
       // Inicializa otros campos que no son select/autocomplete
-      formFields.forEach((section) => {
-        section.fields.forEach((field) => {
-          if (!dynamicFields.includes(field)) {
-            // Usa el valor de initialValues si existe, de lo contrario usa field.value
-            initialFormValues[field.name] = initialValues[field.name] ?? field.value;
-          }
-        });
-      });
+      // formFields.forEach((section) => {
+      //   section.fields.forEach((field) => {
+      //     if (!dynamicFields.includes(field)) {
+      //       // Usa el valor de initialValues si existe, de lo contrario usa field.value
+      //        // Usa initialValues, field.value o valores predeterminados según el tipo
+      // initialFormValues[field.name] =
+      // initialValues[field.name] ??
+      // (field.type === "checkbox"
+      //   ? false
+      //   : field.type === "select" || field.type === "autocomplete"
+      //   ? null
+      //   : ""); // Valores predeterminados
+      //     }
+      //   });
+      // });
 
       setDynamicOptions(optionsData);
       setFormValues(initialFormValues);
