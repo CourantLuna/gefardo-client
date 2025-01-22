@@ -50,41 +50,48 @@ const PropertiesPanel = ({ selectedField, handleFieldChange, onClose }) => {
                 </>
             ) : (
                 <>
-                    {/* Propiedades para el campo */}
-                    <TextField
-                        label="Nombre del Campo"
-                        value={selectedField.name || ""}
-                        onChange={(e) => handleFieldChange("name", e.target.value)}
-                        fullWidth
-                        sx={{ marginBottom: "16px" }}
-                    />
-                    <TextField
-                        label="Etiqueta"
-                        value={selectedField.label || ""}
-                        onChange={(e) => handleFieldChange("label", e.target.value)}
-                        fullWidth
-                        sx={{ marginBottom: "16px" }}
-                    />
-                    {selectedField.type === "select" && (
-                        <TextField
-                            label="Opciones (separadas por comas)"
-                            value={selectedField.options?.map((opt) => opt.label).join(",") || ""}
-                            onChange={(e) =>
-                                handleFieldChange(
-                                    "options",
-                                    e.target.value.split(",").map((opt) => ({ label: opt, value: opt }))
-                                )
-                            }
-                            fullWidth
-                            sx={{ marginBottom: "16px" }}
-                        />
-                    )}
-                    <Switch
-                        checked={!!selectedField.required}
-                        onChange={(e) => handleFieldChange("required", e.target.checked)}
-                    />
-                    <Typography>Requerido</Typography>
-                </>
+                   {/* Propiedades para el campo */}
+    <TextField
+      label="Nombre del Campo"
+      value={selectedField.name || ""}
+      onChange={(e) => handleFieldChange("name", e.target.value)}
+      fullWidth
+      sx={{ marginBottom: "16px" }}
+    />
+    <TextField
+      label="Etiqueta"
+      value={selectedField.label || ""}
+      onChange={(e) => handleFieldChange("label", e.target.value)}
+      fullWidth
+      sx={{ marginBottom: "16px" }}
+    />
+    {selectedField.type === "select" && (
+      <TextField
+        label="Opciones (separadas por comas)"
+        value={selectedField.options?.map((opt) => opt.label).join(",") || ""}
+        onChange={(e) =>
+          handleFieldChange(
+            "options",
+            e.target.value.split(",").map((opt) => ({ label: opt, value: opt }))
+          )
+        }
+        fullWidth
+        sx={{ marginBottom: "16px" }}
+      />
+    )}
+    <TextField
+      label="Valor"
+      value={selectedField.value || ""} // Si no hay valor, se muestra vacío
+      onChange={(e) => handleFieldChange("value", e.target.value)} // Cambia el valor
+      fullWidth
+      sx={{ marginBottom: "16px" }}
+    />
+    <Switch
+      checked={!!selectedField.required}
+      onChange={(e) => handleFieldChange("required", e.target.checked)}
+    />
+    <Typography>Requerido</Typography>
+  </>
             )}
 
             <Divider sx={{ marginY: "16px" }} />

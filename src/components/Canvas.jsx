@@ -8,7 +8,7 @@ import {
     Checkbox,
     RadioGroup,
     Radio,
-
+useTheme
 
 } from "@mui/material";
 
@@ -19,14 +19,19 @@ const Canvas = ({
     handleRemoveSection,
     onSelectField, Switch
 }) => {
+        const theme = useTheme();
+    
     return (
         <Box
             sx={{
                 flex: 1,
+                marginLeft: "15px",
                 padding: "16px",
                 border: "1px dashed #ccc",
                 minHeight: "500px",
-                backgroundColor: "#f9f9f9",
+                backgroundColor: theme.palette.mode === "dark" ? "#333" : theme.palette.background.default,
+                boxShadow: theme.shadows[5], // Niveles de 0 a 24
+
                 position: "relative",
             }}
             onDragOver={(e) => e.preventDefault()}
@@ -50,8 +55,9 @@ const Canvas = ({
                         border: "1px solid #ddd",
                         padding: "16px",
                         borderRadius: "8px",
-                        backgroundColor: "#fff",
-                    }}
+                        backgroundColor: theme.palette.mode === "dark" ? "#333" : theme.palette.background.default,
+                        boxShadow: theme.shadows[2], // Niveles de 0 a 24
+                            }}
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={(e) => handleDrop(e, sectionIndex)} // Permite drop dentro de la sección
 
@@ -94,6 +100,8 @@ const Canvas = ({
                                         position: "relative",
                                         cursor: "pointer",
                                         border: "1px solid #ddd",
+                                        maxHeight: "120px",
+                                        minHeight: "120px",
                                     }}
                                     onClick={() => onSelectField({ sectionIndex, fieldIndex, field })}
                                 >

@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Paper, Typography, useTheme } from "@mui/material";
 
 const Toolbox = ({ handleDragStart }) => {
   const components = [
@@ -25,16 +25,19 @@ const Toolbox = ({ handleDragStart }) => {
     { type: "id", label: "ID Field" },
     { type: "rnc", label: "RNC Field" },
   ];
+            const theme = useTheme();
 
   return (
     <Box>
         <Typography variant="h5" textAlign={"left"} paddingLeft={2} gutterBottom>
         Componentes
       </Typography>
-    <Box
+    <Paper
     fullWidth
       sx={{
-        
+        boxShadow: theme.shadows[5], // Niveles de 0 a 24
+
+        // backgroundColor: theme.palette.mode === "dark" ? "#333" : "#f5f5f5",
         borderBottom: "1px solid #ddd",
         padding: "16px",
         display: "flex",
@@ -56,7 +59,7 @@ const Toolbox = ({ handleDragStart }) => {
           {component.label}
         </Button>
       ))}
-    </Box>
+    </Paper>
     </Box>
   );
 };

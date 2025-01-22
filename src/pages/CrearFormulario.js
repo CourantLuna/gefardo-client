@@ -91,7 +91,7 @@ const CreateForm = () => {
   };
 
   return (
-    <Box display="flex" flexDirection="column" height="100vh">
+    <Box display="flex" flexDirection="column" height="fit-content">
       {/* Fila 1: Toolbox ocupa todo el ancho */}
       <Grid container spacing={2} sx={{ flex: "0 0 auto", padding: "16px" }}>
         <Grid item xs={12}>
@@ -101,7 +101,7 @@ const CreateForm = () => {
 
       {/* Fila 2: Canvas, PropertiesPanel y JSONView */}
       <Grid container spacing={2} sx={{ flex: "1 1 auto", overflow: "hidden" }}>
-        <Grid item xs={12} md={7}>
+        <Grid item xs={12} md={7} >
           <Canvas
             formFields={formFields}
             handleDrop={handleDrop}
@@ -145,7 +145,6 @@ const CreateForm = () => {
             <Box
               sx={{
                 flex: isPropertiesPanelOpen ? "1 1 auto" : "1 0 auto", // Ocupa todo el alto si no está abierto
-                overflow: "auto",
               }}
             >
               <JSONView formFields={formFields} />
