@@ -183,6 +183,7 @@ function GefardoPage() {
           onLogout={logout} // Usa el logout del contexto
           NombreUsuario={userInfo?.Nombre || "Invitado"} // Valor predeterminado
           ApellidosUsuario={userInfo?.Apellido || ""}
+          FotoPerfil={userInfo?.Foto_Perfil || ""}
           // VerPerfil={NavigateToPerfil}
         />
 

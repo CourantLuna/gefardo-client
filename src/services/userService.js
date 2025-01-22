@@ -119,6 +119,23 @@ deleteRoleFromUser: async (userId, roleId) => {
   }
 },
 
+uploadProfilePicture: async (userId, formData) => {
+  try {
+    const response = await axiosInstance.post(
+      `${ApiEndpoints.uploadProfilePicture}/${userId}`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error al subir la foto de perfil:', error.response?.data || error.message);
+    throw new Error(error.response?.data?.message || 'No se pudo subir la foto de perfil.');
+  }
+},
 
 
   // Puedes añadir otros métodos aquí, como crear o eliminar usuarios
