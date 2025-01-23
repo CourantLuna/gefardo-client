@@ -1,11 +1,18 @@
-import React, { useState } from "react";
-import { Box, Grid } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import { Box, Grid, TextField, Button } from "@mui/material";
 import Toolbox from "../components/ToolBox";
 import Canvas from "../components/Canvas";
 import PropertiesPanel from "../components/PropertiesPanel";
 import JSONView from "../components/JSONView";
 
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import SaveIcon from "@mui/icons-material/Save";
+
+import authService from '../services/authService';
+import userService from "../services/userService";
+
 const CreateForm = () => {
+  const [currentUser, setCurrentUser] = useState(null);
   const [formFields, setFormFields] = useState([
     {
       sectionTitle: "Sección Inicial",
@@ -15,6 +22,39 @@ const CreateForm = () => {
   ]);
   const [isPropertiesPanelOpen, setIsPropertiesPanelOpen] = useState(false); // Controla la visibilidad del panel
   const [selectedIndex, setSelectedIndex] = useState(null);
+
+  useEffect(() => {
+    
+
+    const fetchCurrentUser = async () => {
+      try {
+        const id = authService.getUserId();
+        //  setUserId(id);
+        const result = await userService.getUsuarioById(id); // 
+        setCurrentUser(result); //
+        console.log("Información del usuario:", result);
+      } catch (error) {
+        console.error('Error al obtener formularios:', error.message);
+      }
+    };
+  
+    fetchCurrentUser();
+    
+
+  }, []);
+
+  const getCleanedFormFields = () => {
+    return formFields.map((section) => ({
+      ...section,
+      fields: section.fields.map(({ options, ...field }) => field), // Excluye `options`
+    }));
+  };
+  
+  const handleVisualize = () => {
+    const cleanedData = getCleanedFormFields();
+    console.log("JSON limpio:", JSON.stringify(cleanedData, null, 2));
+  };
+  
 
   const handleDragStart = (e, type) => {
     e.dataTransfer.setData("type", type);
@@ -92,8 +132,76 @@ const CreateForm = () => {
 
   return (
     <Box display="flex" flexDirection="column" height="fit-content">
+      <Grid
+        container
+        spacing={2}
+        sx={{ flex: "0 0 auto", padding: "0 0px 15px 15px" }}
+      >
+        <Grid item xs={12}>
+          <TextField
+            key="formTitle"
+            name="Nombre_Formulario"
+            type="text"
+            label="Nombre del Formulario"
+            required={true}
+            variant="standard"
+            fullWidth
+            margin="normal" 
+          />
+        </Grid>
+        
+      </Grid>
+      <Grid
+      container
+      spacing={2}
+      sx={{ flex: "0 0 auto", padding: "0 0px 15px 15px", alignItems: "center", }}
+    >
+            <Grid item xs={4}>
+            <TextField
+            key="formTitle"
+            name="Creado_Por"
+            label="Creado Por"
+            value={currentUser ? `${currentUser.Nombre} ${currentUser.Apellido}` : "Desconocido"}
+            required={true}
+            disabled={true}
+            variant="standard"
+            fullWidth
+            margin="normal" 
+          />
+            </Grid>
+
+      <Grid item xs={4}>
+        <Button
+          variant="outlined"
+          color="primary"
+          startIcon={<VisibilityIcon />}
+          fullWidth
+          onClick={handleVisualize} // Conecta la función al botón
+
+          sx={{ height: "50px" }}
+        >
+          Visualizar
+        </Button>
+      </Grid>
+      <Grid item xs={4}>
+        <Button
+          sx={{ height: "50px" }}
+          variant="contained"
+          color="primary"
+          startIcon={<SaveIcon />}
+          fullWidth
+        >
+          Guardar
+        </Button>
+      </Grid>
+    </Grid>
+
       {/* Fila 1: Toolbox ocupa todo el ancho */}
-      <Grid container spacing={2} sx={{ flex: "0 0 auto", padding: "16px" }}>
+      <Grid
+        container
+        spacing={2}
+        sx={{ flex: "0 0 auto", padding: "0 0px 15px 15px" }}
+      >
         <Grid item xs={12}>
           <Toolbox handleDragStart={handleDragStart} />
         </Grid>
@@ -101,7 +209,7 @@ const CreateForm = () => {
 
       {/* Fila 2: Canvas, PropertiesPanel y JSONView */}
       <Grid container spacing={2} sx={{ flex: "1 1 auto", overflow: "hidden" }}>
-        <Grid item xs={12} md={7} >
+        <Grid item xs={12} md={7}>
           <Canvas
             formFields={formFields}
             handleDrop={handleDrop}

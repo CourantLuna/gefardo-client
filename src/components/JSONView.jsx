@@ -3,7 +3,12 @@ import { Box, Typography, useTheme } from "@mui/material";
 
 const JSONView = ({ formFields }) => {
             const theme = useTheme();
-    
+  const getCleanedFormFields = () => {
+  return formFields.map((section) => ({
+    ...section,
+    fields: section.fields.map(({ options, ...field }) => field), // Excluye `options`
+  }));
+};
   return (
     <Box
       sx={{
@@ -18,7 +23,7 @@ const JSONView = ({ formFields }) => {
       }}
     >
       <Typography variant="body1">JSON Generado</Typography>
-      <pre>{JSON.stringify(formFields, null, 2)}</pre>
+      <pre>{JSON.stringify(getCleanedFormFields(), null, 2)}</pre>
     </Box>
   );
 };

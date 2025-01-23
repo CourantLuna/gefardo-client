@@ -8,7 +8,9 @@ import {
     Checkbox,
     RadioGroup,
     Radio,
-useTheme
+    useTheme,
+    Switch,
+    Autocomplete
 
 } from "@mui/material";
 
@@ -17,20 +19,21 @@ const Canvas = ({
     handleDrop,
     handleRemoveField,
     handleRemoveSection,
-    onSelectField, Switch
+    onSelectField,
 }) => {
-        const theme = useTheme();
+    const theme = useTheme();
     
+
     return (
         <Box
             sx={{
                 flex: 1,
                 marginLeft: "15px",
-                padding: "16px",
                 border: "1px dashed #ccc",
-                minHeight: "500px",
+                minHeight: "700px",
                 backgroundColor: theme.palette.mode === "dark" ? "#333" : theme.palette.background.default,
                 boxShadow: theme.shadows[5], // Niveles de 0 a 24
+                overflowX: "hidden", // Elimina scroll horizontal
 
                 position: "relative",
             }}
@@ -39,7 +42,7 @@ const Canvas = ({
                 e.preventDefault();
                 e.stopPropagation(); // Evita duplicados.
                 handleDrop(e);
-              }}
+            }}
         >
             {formFields.length === 0 && (
                 <Typography variant="body1" align="center" sx={{ color: "#999" }}>
@@ -48,16 +51,15 @@ const Canvas = ({
             )}
 
             {formFields.map((section, sectionIndex) => (
-                <Box
+                <Paper
                     key={sectionIndex}
                     sx={{
-                        marginBottom: "24px",
-                        border: "1px solid #ddd",
+                        marginBottom: "20px",
                         padding: "16px",
                         borderRadius: "8px",
                         backgroundColor: theme.palette.mode === "dark" ? "#333" : theme.palette.background.default,
                         boxShadow: theme.shadows[2], // Niveles de 0 a 24
-                            }}
+                    }}
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={(e) => handleDrop(e, sectionIndex)} // Permite drop dentro de la sección
 
@@ -74,7 +76,9 @@ const Canvas = ({
                         <Button
                             onClick={() => onSelectField({ sectionIndex, section })} // Pasa la sección como `selectedField`
                         >
-                            <Typography variant="h6">{section.sectionTitle || "Nueva Sección"}</Typography>
+                            <Typography variant="h6" gutterBottom paddingTop={1} display={"flex"} justifyContent={"center"} alignContent={"center"}>
+                                {section.sectionTitle || "Nueva Sección"}
+                            </Typography>
                         </Button>
 
                         <Button
@@ -91,29 +95,34 @@ const Canvas = ({
 
                     {section.divider && <Divider sx={{ marginY: "16px" }} />}
 
-                    <Grid container spacing={2}>
-                        {section.fields.map((field, fieldIndex) => (
-                            <Grid item xs={12} sm={6} md={4} key={fieldIndex}>
+                    <Grid container spacing={1} sx={{ padding: "15px" }}>
+                        {section.fields.map((field, fieldIndex) =>{
+                                const xs = field.xs || 12; // Tamaño predeterminado
+                                const sm = field.sm || 6;
+                                const md = field.md || 4;
+                            return (
+                                <Grid item xs={xs} sm={sm} md={md} key={fieldIndex}>
+
                                 <Paper
-                                    sx={{
-                                        padding: "16px",
-                                        position: "relative",
-                                        cursor: "pointer",
-                                        border: "1px solid #ddd",
-                                        maxHeight: "120px",
-                                        minHeight: "120px",
-                                    }}
-                                    onClick={() => onSelectField({ sectionIndex, fieldIndex, field })}
+                                sx={{
+                                    padding: "16px",
+                                    position: "relative",
+                                    cursor: "pointer",
+                                    minHeight: "120px",
+                                }}
+                                onClick={() => onSelectField({ sectionIndex, fieldIndex, field })}
+                            >
+                                <Typography
+                                    variant="body1"
+                                    sx={{ marginBottom: "8px", fontWeight: "bold" }}
                                 >
-                                    <Typography
-                                        variant="body1"
-                                        sx={{ marginBottom: "8px", fontWeight: "bold" }}
-                                    >
-                                        {field.label || "Campo sin Nombre"}
-                                    </Typography>
+                                    {field.label || "Campo sin Nombre"}
+                                </Typography>
+                                
 
                                     {/* Renderiza el campo dinámicamente */}
                                     {(() => {
+                                        
                                         switch (field.type) {
                                             case "text":
                                                 return (
@@ -121,7 +130,12 @@ const Canvas = ({
                                                         fullWidth
                                                         variant="outlined"
                                                         label={field.label}
-                                                        placeholder={field.label || "Texto"}
+                                                        error={field.required } // Marca como error si el campo está vacío
+
+                                                        disabled={field.IsThisFieldDisabled} // Aplica el valor de IsThisFieldDisabled o isDisabled
+                                                        helperText={field.required  ? "campo obligatorio" : ""} // Mensaje de error
+
+
                                                     />
                                                 );
 
@@ -133,8 +147,56 @@ const Canvas = ({
                                                         rows={4}
                                                         variant="outlined"
                                                         label={field.label}
-                                                        placeholder={field.label || "Área de texto"}
+                                                        disabled={field.IsThisFieldDisabled}
+                                                        error={field.required } // Marca como error si el campo está vacío
+
                                                     />
+                                                );
+
+                                            case "password":
+                                                return (
+
+                                                    <TextField
+                                                        key={field.name}
+                                                        type="password"
+                                                        label={field.label}
+                                                        required={field.required}
+                                                        fullWidth
+                                                        margin="normal"
+                                                        error={field.required } // Marca como error si el campo está vacío
+                                                        disabled={field.IsThisFieldDisabled} // Aplica el valor de IsThisFieldDisabled o isDisabled
+                                                        helperText={field.required  ? "campo obligatorio" : ""} // Mensaje de error
+
+
+                                                    />
+
+                                                );
+
+                                            case "date":
+                                            case "time":
+                                            case "week":
+                                            case "month":
+                                            case "datetime-local":
+                                            case "email":
+                                                return (
+                                                    // <Grid item xs={xs} sm={sm} md={md} key={field.name}>
+
+                                                    <TextField
+                                                        slotProps={{ inputLabel: { shrink: true } }}
+                                                        key={field.name}
+                                                        type={field.type}
+                                                        disabled={field.IsThisFieldDisabled} // Aplica el valor de IsThisFieldDisabled o isDisabled
+                                                        label={field.label}
+                                                        required={field.required}
+                                                        fullWidth
+                                                        margin="normal"
+                                                        error={field.required } // Marca como error si el campo está vacío
+                                                        helperText={field.required  ? "campo obligatorio" : ""} // Mensaje de error
+
+
+                                                    />
+                                                    // </Grid>
+
                                                 );
 
                                             case "number":
@@ -144,13 +206,19 @@ const Canvas = ({
                                                         type="number"
                                                         variant="outlined"
                                                         label={field.label}
-                                                        placeholder={field.label || "Número"}
+                                                        disabled={field.IsThisFieldDisabled}
+                                                        defaultValue={field.value}
+                                                        error={field.required } // Marca como error si el campo está vacío
+                                                        helperText={field.required  ? "campo obligatorio" : ""} // Mensaje de error
+
                                                     />
                                                 );
 
                                             case "select":
                                                 return (
-                                                    <Select fullWidth defaultValue="">
+                                                    <Select
+                                                        fullWidth
+                                                        defaultValue="">
                                                         <MenuItem value="" disabled>
                                                             {field.label || "Seleccionar"}
                                                         </MenuItem>
@@ -159,8 +227,41 @@ const Canvas = ({
                                                                 {option.label}
                                                             </MenuItem>
                                                         ))}
+                                                        
                                                     </Select>
                                                 );
+
+                                                case "autocomplete":
+                                                        return (
+                                                        //   <Grid item xs={xs} sm={sm} md={md} key={field.name}>
+                                                            <Autocomplete
+                                                            disabled={field.IsThisFieldDisabled} // Aplica el valor de IsThisFieldDisabled o isDisabled
+                                                                options={field.options || []}
+                                                                getOptionLabel={(option) => option.label || ""}
+                                                                renderInput={(params) => <TextField {...params} label={field.label} />}
+
+                                                                sx={{ width: "100%" }}
+                                                            />
+                                                            //   </Grid>
+                                                        );
+
+                                                        case "file":
+                                                                return (
+                                                        
+                                                                    <TextField
+                                                                    key={field.name}
+                                                                    disabled={field.IsThisFieldDisabled} // Aplica el valor de IsThisFieldDisabled o isDisabled
+                                                                    type="file"
+                                                                    label={field.label}
+                                                                    InputLabelProps={{ shrink: true }}
+                                                                    required={field.required}
+                                                                    fullWidth
+                                                                    margin="normal"
+                                                                    error={field.required } // Marca como error si el campo está vacío
+                                                                    helperText={field.required ? "campo obligatorio" : ""} // Mensaje de error
+                                                                    />
+                                                        
+                                                                );
 
                                             case "checkbox":
                                                 return (
@@ -175,6 +276,7 @@ const Canvas = ({
                                                     <RadioGroup>
                                                         {field.options?.map((option, i) => (
                                                             <FormControlLabel
+                                                            disabled={field.IsThisFieldDisabled } // Aplica el valor de IsThisFieldDisabled o isDisabled
                                                                 key={i}
                                                                 value={option.value}
                                                                 control={<Radio />}
@@ -184,27 +286,76 @@ const Canvas = ({
                                                     </RadioGroup>
                                                 );
 
-                                            case "date":
-                                                return (
-                                                    <TextField
-                                                        fullWidth
-                                                        type="date"
-                                                        variant="outlined"
-                                                        label={field.label || "Fecha"}
-                                                    />
-                                                );
+                                            
 
                                             case "switch":
                                                 return (
                                                     <FormControlLabel
+                                                    label={field.label || "Switch"}
+
                                                         control={
                                                             <Switch
                                                                 checked={field.value} onChange={(e) => onSelectField({ sectionIndex, fieldIndex, field: { ...field, value: e.target.checked } })} name={field.name}
                                                             />
                                                         }
-                                                        label={field.label || "Switch"}
                                                     />
                                                 );
+
+                                                case "tel":
+                                                        return (
+                                                            <TextField
+                                                              label={field.label}
+                                                              type="tel"
+                                                              disabled={field.IsThisFieldDisabled} // Aplica el valor de IsThisFieldDisabled o isDisabled
+                                                              required={field.required}
+                                                              error={field.required} // Marca como error si el campo está vacío
+                                                              helperText={field.required ? "campo obligatorio" : ""} // Mensaje de error
+                                                              fullWidth
+                                                              margin="normal"
+                                                    
+                                                              inputProps={{ maxLength: 10 }} // Limita la entrada visible (incluyendo guiones)
+                                                            />
+                                                        );
+
+                                                        case "id":
+                                                                return (
+                                                                    <TextField
+                                                                      disabled={field.IsThisFieldDisabled } // Aplica el valor de IsThisFieldDisabled o isDisabled
+                                                                      label={field.label}
+                                                                      required={field.required}
+                                                                      error={field.required } // Marca como error si el campo está vacío o si no tiene 11 dígitos
+                                                                      helperText={
+                                                                        field.required 
+                                                                          ? "Debe tener exactamente 11 dígitos"
+                                                                          : ""
+                                                                      } // Mensaje de error específico
+                                                                      fullWidth
+                                                                      margin="normal"
+                                                                     
+                                                                      inputProps={{ maxLength: 11 }} // Limita la entrada visible (11 dígitos + 2 guiones)
+                                                                    />
+                                                                );
+
+                                                                case "rnc":
+                                                                        return (
+                                                                         
+                                                                            <TextField
+                                                                              disabled={field.IsThisFieldDisabled} // Aplica el valor de IsThisFieldDisabled o isDisabled
+                                                                              label={field.label}
+                                                                              required={field.required}
+                                                                              error={field.required } 
+                                                                              helperText={
+                                                                                field.required 
+                                                                                  ? "Debe tener exactamente 9 dígitos"
+                                                                                  : ""
+                                                                              } // Mensaje de error específico
+                                                                              fullWidth
+                                                                              margin="normal"
+                                                                              
+                                                                              inputProps={{ maxLength: 11 }} // Limita la entrada visible (9 dígitos + 2 guiones)
+                                                                            />
+                                                                         
+                                                                        );
 
                                             default:
                                                 return <Typography color="error">Tipo no soportado</Typography>;
@@ -223,12 +374,20 @@ const Canvas = ({
                                     >
                                         X
                                     </Button>
-                                </Paper>
+                                
+
+                            </Paper>
                             </Grid>
-                        ))}
+
+                            );
+                        } 
+                            
+                               
+                        )}
                     </Grid>
 
-                </Box>
+
+                </Paper>
             ))}
         </Box>
     );

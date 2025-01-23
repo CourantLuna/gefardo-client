@@ -13,14 +13,14 @@ const Toolbox = ({ handleDragStart }) => {
     { type: "month", label: "Month Picker" },
     { type: "datetime-local", label: "DateTime Picker" },
     { type: "email", label: "Email Field" },
-    { type: "search", label: "Search Field" },
     { type: "number", label: "Number Field" },
     { type: "select", label: "Select Field" },
     { type: "autocomplete", label: "Autocomplete" },
     { type: "file", label: "File Upload" },
     { type: "checkbox", label: "Checkbox" },
     { type: "radio", label: "Radio Buttons" },
-    { type: "button", label: "Button" },
+    { type: "switch", label: "Switch" },
+    // { type: "button", label: "Button" },
     { type: "tel", label: "Telephone Field" },
     { type: "id", label: "ID Field" },
     { type: "rnc", label: "RNC Field" },
@@ -29,7 +29,7 @@ const Toolbox = ({ handleDragStart }) => {
 
   return (
     <Box>
-        <Typography variant="h5" textAlign={"left"} paddingLeft={2} gutterBottom>
+        <Typography variant="h5" textAlign={"left"}  gutterBottom>
         Componentes
       </Typography>
     <Paper
@@ -39,7 +39,7 @@ const Toolbox = ({ handleDragStart }) => {
 
         // backgroundColor: theme.palette.mode === "dark" ? "#333" : "#f5f5f5",
         borderBottom: "1px solid #ddd",
-        padding: "16px",
+        padding: "15px",
         display: "flex",
         flexDirection: "row",
         flexWrap: "wrap",

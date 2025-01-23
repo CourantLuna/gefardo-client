@@ -95,7 +95,7 @@ const DynamicForm = ({
               variant="outlined"
               fullWidth
               margin="normal"
-              value={formValues[field.name] || ""}
+              defaultValue={formValues[field.name] || ""}
               onChange={(e) => handleChange(field.name, e.target.value)}
               error={field.required && !formValues[field.name]} // Marca como error si el campo está vacío
               disabled={field.IsThisFieldDisabled ?? isDisabled} // Aplica el valor de IsThisFieldDisabled o isDisabled
