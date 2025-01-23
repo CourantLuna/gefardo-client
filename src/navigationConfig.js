@@ -9,7 +9,6 @@ import PersonSearchIcon from '@mui/icons-material/PersonSearch';
 import DynamicFormIcon from '@mui/icons-material/DynamicForm';
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
-import EventIcon from '@mui/icons-material/Event';
 import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
 import FolderIcon from '@mui/icons-material/Folder';
 import HttpsIcon from '@mui/icons-material/Https';
@@ -67,7 +66,6 @@ const NAVIGATION = [
         children: [
           { segment: 'ver-asignadas', title: 'Ver asignadas', icon: <AssignmentTurnedInIcon />, roles: ['Inspector'] },
           { segment: 'ver-inspecciones', title: 'Ver inspecciones', icon: <AssignmentTurnedInIcon />, roles: ['Administrador'] },
-          { segment: 'programar-inspecciones', title: 'Programar inspecciones', icon: <EventIcon />, roles: ['Administrador'] },
           { segment: 'completar-inspecciones', title: 'Completar inspecciones', icon: <EventAvailableIcon />, roles: ['Inspector'] },
         ],
      },

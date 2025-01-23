@@ -48,6 +48,15 @@ const typesRequestService = {
       );
     }
   },
+  toggleEstado: async (id, estado) => {
+    try {
+      const response = await axiosInstance.put(`/${id}`, { Estado: estado });
+      return response.data;
+    } catch (error) {
+      console.error("Error al cambiar el estado de la farmacia:", error.response?.data || error.message);
+      throw new Error("No se pudo actualizar el estado de la farmacia.");
+    }
+  },
 
   // Obtiene los detalles de un tipo de servicio por su ID
   getTypeRequestById: async (typeRequestId) => {
