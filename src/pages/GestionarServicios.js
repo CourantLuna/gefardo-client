@@ -5,7 +5,7 @@ import SearchBar from "../components/SearchBar";
 import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
 import DialogComponent from "../components/DialogComponent"; // Asegúrate de que la ruta sea correcta
 import DynamicForm from '../components/CustomForm'; 
-
+import FilterAutocomplete from "../components/FilterAutocomplete";
 import typesRequestService from "../services/typesRequestService";
 
 const GestionarServicios = () => {
@@ -249,7 +249,11 @@ const handleUpdateTipoServicio = async (updatedTipoServicioData) => {
   }
 };
 
+const AddFlowStatus = async (id) => {
+  // Busca la sanción en el estado `sanciones` usando el ID
+  const tipoServicio = tiposServicios.find((f) => f.Id_Tipo_Servicio === id);
 
+}
 
   return (
     <Box
@@ -289,6 +293,29 @@ const handleUpdateTipoServicio = async (updatedTipoServicioData) => {
         </Box>
       </Box>
 
+       {/* Seccion de filtros */}
+    <Paper
+      sx={{
+        display: "flex",
+        flexWrap: "wrap",
+        alignItems: "center",
+        padding: "15px",
+        gap: "15px",
+        fullWidth: "true",
+        marginBottom: "20px",
+      }}
+    >
+      Filtrar por:
+      {/* FilterAutocomplete para filtrar por estado */}
+      <FilterAutocomplete
+        label="Formulario Asociado"
+        data={tiposServicios}
+        filterKey="Nombre_Formulario"
+        onFilterChange={handleFilterChange}
+      />
+     
+    </Paper>
+
       {/* Tabla de tipos de servicio */}
       <CustomGrid
         data={filteredTiposServicios}
@@ -303,7 +330,7 @@ const handleUpdateTipoServicio = async (updatedTipoServicioData) => {
           onEdit: handleEdit,
           onView: handleView,
           onToggle: toggleEstadoTipoServicio,
-
+          
         }}
       />
 

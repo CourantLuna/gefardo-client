@@ -189,7 +189,7 @@ const VerSanciones = () => {
 
     try {
       // Llama al método del servicio para guardar los datos
-      const result = await sanctionService.createSanction(sanctionData);
+       await sanctionService.createSanction(sanctionData);
   
       // Vuelve a cargar las sanciones desde el backend
       const updatedSanctions = await sanctionService.getAllSanctions();

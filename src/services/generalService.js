@@ -44,6 +44,23 @@ const generalService = {
 },
 
 
+filterByField: async (table, field, value) => {
+  try {
+    const url = `/filter/${table}?field=${field}&value=${value}`;
+    const response = await axiosInstance.get(url);
+    return response.data;
+  } catch (error) {
+    console.error(
+      `Error al filtrar datos en la tabla ${table} por el campo ${field}:`,
+      error.response?.data || error.message
+    );
+    throw new Error(
+      error.response?.data?.message ||
+        `No se pudo filtrar datos en la tabla ${table} por el campo ${field}.`
+    );
+  }
+},
+
 };
 
 

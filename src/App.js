@@ -19,6 +19,7 @@ import VerSolicitudes from "./pages/VerSolicitudes";
 import GestionarServicios from "./pages/GestionarServicios";
 import CrearFormulario from "./pages/CrearFormulario";
 
+import InspeccionesAsignadas from "./pages/InspeccionesAsignadas";
 import VerPerfil from "./pages/VerPerfil";
 import EditarFormulario from "./pages/EditarFormulario";
 
@@ -54,12 +55,15 @@ function App() {
                 <Route path="ver-inspecciones" element={ <VerInspecciones/>} />
                 <Route path="revisar-solicitudes" element={ <VerSolicitudes/>} />
                 <Route path="gestionar-servicios" element={ <GestionarServicios/>} />
-
-
                 <Route path="crear-formularios" element={ <CrearFormulario/>} />
                 <Route path="editar-formularios/:id" element={ <EditarFormulario/>} />
 
+                {/* Paginas del rol Inspectores */}
+                <Route path="ver-asignadas" element={ <InspeccionesAsignadas/>} />
 
+
+
+                {/* Paginas de acceso con autorizacion */}
                 <Route path="ver-perfil" element={<VerPerfil />} />
 
 
