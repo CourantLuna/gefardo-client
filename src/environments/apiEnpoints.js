@@ -16,5 +16,6 @@ export const ApiEndpoints = {
     inspections: '/inspecciones',
     requests: '/servicios',
     typesRequests: '/tipos-servicio',
+    checklists: '/listas-verificacion',
 
   };

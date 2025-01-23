@@ -66,7 +66,7 @@ const NAVIGATION = [
         children: [
           { segment: 'ver-asignadas', title: 'Ver asignadas', icon: <AssignmentTurnedInIcon />, roles: ['Inspector'] },
           { segment: 'ver-inspecciones', title: 'Ver inspecciones', icon: <AssignmentTurnedInIcon />, roles: ['Administrador'] },
-          { segment: 'completar-inspecciones', title: 'Completar inspecciones', icon: <EventAvailableIcon />, roles: ['Inspector'] },
+          { segment: 'gestionar-listas-verificacion', title: 'Gestionar listas verificacion', icon: <EventAvailableIcon />, roles: ['Inspector'] },
         ],
      },
      {
@@ -85,8 +85,9 @@ const NAVIGATION = [
     segment: 'farmacias',
     title: 'Farmacias',
     icon: <StoreIcon />,
-    roles: ['Administrador'],
+    roles: ['Administrador', 'farmaceutico'],
     children: [
+      { segment: 'ver-mis-farmacias', title: 'Ver farmacias', icon: <StoreIcon />, roles: ['farmaceutico'] },
       { segment: 'ver-farmacias', title: 'Ver farmacias', icon: <StoreIcon />, roles: ['Administrador'] },
       { segment: 'ver-licencias', title: 'Ver licencias', icon: <FolderIcon />, roles: ['Administrador'] },
       { segment: 'ver-sanciones', title: 'Ver sanciones', icon: <HttpsIcon />, roles: ['Administrador'] },

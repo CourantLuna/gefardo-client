@@ -249,11 +249,7 @@ const handleUpdateTipoServicio = async (updatedTipoServicioData) => {
   }
 };
 
-const AddFlowStatus = async (id) => {
-  // Busca la sanción en el estado `sanciones` usando el ID
-  const tipoServicio = tiposServicios.find((f) => f.Id_Tipo_Servicio === id);
 
-}
 
   return (
     <Box

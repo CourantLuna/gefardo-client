@@ -18,10 +18,12 @@ import VerInspecciones from "./pages/VerInspecciones";
 import VerSolicitudes from "./pages/VerSolicitudes";
 import GestionarServicios from "./pages/GestionarServicios";
 import CrearFormulario from "./pages/CrearFormulario";
-
 import InspeccionesAsignadas from "./pages/InspeccionesAsignadas";
 import VerPerfil from "./pages/VerPerfil";
 import EditarFormulario from "./pages/EditarFormulario";
+import ListasVerificacionView from "./pages/ListasVerificacionView";
+import GestionarListasVerificacion from "./pages/GestionarListasVerificacion";
+
 
 function App() {
   return (
@@ -57,16 +59,14 @@ function App() {
                 <Route path="gestionar-servicios" element={ <GestionarServicios/>} />
                 <Route path="crear-formularios" element={ <CrearFormulario/>} />
                 <Route path="editar-formularios/:id" element={ <EditarFormulario/>} />
-
+                
+                <Route path="listas-verificacion" element={ <ListasVerificacionView/>} />
                 {/* Paginas del rol Inspectores */}
                 <Route path="ver-asignadas" element={ <InspeccionesAsignadas/>} />
-
-
+                <Route path="gestionar-listas-verificacion" element={ <GestionarListasVerificacion/>} />
 
                 {/* Paginas de acceso con autorizacion */}
                 <Route path="ver-perfil" element={<VerPerfil />} />
-
-
 
                 {/* <Route path="otra-pagina" element={<OtraPagina />} /> */}
                 <Route path="*" element={<NotFound />} />

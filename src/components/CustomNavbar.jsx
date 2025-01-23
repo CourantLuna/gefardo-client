@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   AppBar,
   Toolbar,
@@ -10,10 +10,12 @@ import {
   Fab,
   ListItemIcon,
   Divider,
-  Avatar,
+  Avatar,  useTheme
+
 } from '@mui/material';
 import { useNavigate  } from 'react-router-dom';
-
+import userService
+ from "../services/userService";
 import MenuIcon from '@mui/icons-material/Menu';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
@@ -30,11 +32,14 @@ function CustomNavbar({
   showProfileButton = true, // Default: show the profile button
   NombreUsuario,
   ApellidosUsuario,
-  FotoPerfil
+  FotoPerfil,
   // VerPerfil
 }) {
   const [anchorEl, setAnchorEl] = useState(null); // Controla el menú desplegable del perfil
   const navigate = useNavigate();
+   const [userId, setUserId] = useState();
+    const [userInfo, setUserInfo] = useState({});
+  const theme = useTheme();
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -54,6 +59,22 @@ function CustomNavbar({
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const usuario = await userService.getUsuarioById(userId); // Llama al servicio
+        setUserInfo(usuario); // Establece la información del usuario
+        console.log("Información del usuario:", usuario);
+      } catch (error) {
+        console.error("Error al obtener la información del usuario:", error);
+      }
+    };
+  
+    if (userId) {
+      fetchUserInfo(); // Llama a la función si se proporciona un ID
+    }
+  }, [userId])
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%', height: '64px' }}>
@@ -109,7 +130,9 @@ function CustomNavbar({
                 }}
               >
 
-                <Avatar alt="Profile" src={FotoPerfil || "https://mui.com/static/images/avatar/1.jpg"} />
+                <Avatar  alt={userInfo.Nombre} 
+                src={userInfo.Foto_Perfil}
+                 />
               </IconButton>
 
               {/* Profile Menu */}
