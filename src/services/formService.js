@@ -64,9 +64,9 @@ getAllForms: async () => {
   },
 
   // Guarda los datos de un formulario
-  saveFormData: async (formId, formData) => {
+  saveFormData: async (formData) => {
     try {
-      const response = await axiosInstance.post(`/${formId}`, formData);
+      const response = await axiosInstance.post('/', formData);
       return response.data;
     } catch (error) {
       console.error('Error al guardar los datos del formulario:', error.response?.data || error.message);
@@ -86,6 +86,16 @@ getAllForms: async () => {
       throw new Error(
         error.response?.data?.message || 'No se pudieron actualizar los datos del formulario.'
       );
+    }
+  },
+
+  toggleEstado: async (id, estado) => {
+    try {
+      const response = await axiosInstance.put(`/${id}`, { Estado: estado });
+      return response.data;
+    } catch (error) {
+      console.error("Error al cambiar el estado del formulario:", error.response?.data || error.message);
+      throw new Error("No se pudo actualizar el estado del formulario.");
     }
   },
 

@@ -8,19 +8,24 @@ const FilterAutocomplete = ({ label, data, filterKey, onFilterChange, width = "3
 
   useEffect(() => {
     if (data && filterKey) {
-      // Extraer opciones únicas basadas en el campo `filterKey`
+      // Extraer opciones únicas basadas en el campo `filterKey`, ignorando valores null o undefined
       const uniqueOptions = Array.from(
-        new Set(data.map((item) => {
-          if (filterKey === "Estado") {
-            return item[filterKey] === true ? "Activo" : "Inactivo";
-          }
-          return item[filterKey];
-        }))
+        new Set(
+          data
+            .map((item) => {
+              if (filterKey === "Estado") {
+                return item[filterKey] === true ? "Activo" : "Inactivo";
+              }
+              return item[filterKey];
+            })
+            .filter((value) => value !== null && value !== undefined) // Ignorar valores null o undefined
+        )
       );
       setOptions(["Todos", ...uniqueOptions]); // Agregar opción "Todos"
       setFilteredOptions(["Todos", ...uniqueOptions]); // Inicializar opciones filtradas
     }
   }, [data, filterKey]);
+  
 
   const handleInputChange = (event, newValue) => {
     // Filtrar las opciones dinámicamente según el input del usuario

@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from "react";
 import {
   Box,
-  Button,
   Paper,
   Snackbar,
   Alert
 } from "@mui/material";
 
 import formService from '../services/formService';
-import authService from '../services/authService';
 
 import CustomGrid from "../components/CustomGrid";
 import SearchBar from "../components/SearchBar";
@@ -16,26 +14,22 @@ import FilterAutocomplete from "../components/FilterAutocomplete";
 import DialogComponent from "../components/DialogComponent";
 import DynamicForm from '../components/CustomForm'; 
 
-import NoteAddIcon from '@mui/icons-material/NoteAdd';
+import { useNavigate } from "react-router-dom";
 
 
 
 const VerFormularios = () => {
+  const navigate = useNavigate();
+
   const [formularios, setFormularios] = useState([]); // Datos de formularios
   const [filteredData, setFilteredData] = useState([]); // Datos filtrados
-  const [userId, setUserId] = useState(null);
-
-
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogContent, setDialogContent] = useState("");
 
-  const [currentForm, setCurrentForm] = useState(null);
-  const [selectedSancion, setSelectedSancion] = useState(null);
+
 
   useEffect(() => {
-    const id = authService.getUserId();
-    setUserId(id);
     const fetchAllForms = async () => {
       try {
         const forms = await formService.getAllForms(); // Llama al servicio para obtener los formularios reales
@@ -50,67 +44,69 @@ const VerFormularios = () => {
 
   }, []);
 
-  const formFieldsFormularios = [
-    {
-      sectionTitle: "Información General",
-      divider: true,
-      fields: [
-        {
-          name: "Nombre_Formulario",
-          label: "Nombre del Formulario",
-          type: "text",
-          required: true,
-          xs: 12,
-          sm: 6,
-          md: 6,
-        },
-        {
-          name: "Creado_Por",
-          label: "Creado Por",
-          apiOptions: "/usuarioRoles/3", // Ruta para obtener los usuarios
-          filterField: "Nombre_Completo", // Campo a mostrar en el autocompletado
-          IdFieldName: "Id_Usuario",
-          "IsThisFieldDisabled": true,
-          value: userId,
-          type: "autocomplete",
-          required: false,
-          xs: 12,
-          sm: 6,
-          md: 6,
-        },
-        // {
-        //   name: "Modificado_Por",
-        //   label: "Modificado Por",
-        //   type: "autocomplete",
-        //   apiOptions: "/usuarioRoles/3", // Ruta para obtener los usuarios
-        //   filterField: "Nombre_Completo", // Campo a mostrar en el autocompletado
-        //   IdFieldName: "Id_Usuario",
-        //   "IsThisFieldDisabled": true,
-        //   required: false,
-        //   xs: 12,
-        //   sm: 6,
-        //   md: 6,
-        // },
-      ],
-    },
-    {
-      sectionTitle: "Campos del Formulario",
-      divider: true,
-      fields: [
-        {
-          name: "Campos_Formulario",
-          label: "Definición de Campos",
-          type: "textarea",
-          required: true,
-          rows: 6,
-          xs: 12,
-          sm: 12,
-          md: 12,
-        },
-      ],
-    },
-  ];
+  // const formFieldsFormularios = [
+  //   {
+  //     sectionTitle: "Información General",
+  //     divider: true,
+  //     fields: [
+  //       {
+  //         name: "Nombre_Formulario",
+  //         label: "Nombre del Formulario",
+  //         type: "text",
+  //         required: true,
+  //         xs: 12,
+  //         sm: 6,
+  //         md: 6,
+  //       },
+  //       {
+  //         name: "Creado_Por",
+  //         label: "Creado Por",
+  //         apiOptions: "/usuarioRoles/3", // Ruta para obtener los usuarios
+  //         filterField: "Nombre_Completo", // Campo a mostrar en el autocompletado
+  //         IdFieldName: "Id_Usuario",
+  //         "IsThisFieldDisabled": true,
+  //         value: userId,
+  //         type: "autocomplete",
+  //         required: false,
+  //         xs: 12,
+  //         sm: 6,
+  //         md: 6,
+  //       },
+  //       // {
+  //       //   name: "Modificado_Por",
+  //       //   label: "Modificado Por",
+  //       //   type: "autocomplete",
+  //       //   apiOptions: "/usuarioRoles/3", // Ruta para obtener los usuarios
+  //       //   filterField: "Nombre_Completo", // Campo a mostrar en el autocompletado
+  //       //   IdFieldName: "Id_Usuario",
+  //       //   "IsThisFieldDisabled": true,
+  //       //   required: false,
+  //       //   xs: 12,
+  //       //   sm: 6,
+  //       //   md: 6,
+  //       // },
+  //     ],
+  //   },
+  //   {
+  //     sectionTitle: "Campos del Formulario",
+  //     divider: true,
+  //     fields: [
+  //       {
+  //         name: "Campos_Formulario",
+  //         label: "Definición de Campos",
+  //         type: "textarea",
+  //         required: true,
+  //         rows: 6,
+  //         xs: 12,
+  //         sm: 12,
+  //         md: 12,
+  //       },
+  //     ],
+  //   },
+  // ];
   
+
+
 
   // Estado para manejar el Snackbar
 const [snackbar, setSnackbar] = useState({
@@ -130,8 +126,37 @@ const handleSnackbarClose = () => {
   };
 
 
-  const toggleEstado = (id) => {
+  const toggleEstado = async (id) => {
     const formulario = formularios.find((f) => f.Id_Formulario === id);
+    const nuevoEstado = !formulario.Estado;
+    try {
+      // Llama al servicio correspondiente para actualizar el estado de la farmacia
+      await formService.toggleEstado(id, nuevoEstado);
+  
+      // Actualiza el estado local de farmacias
+      setFormularios((prev) => {
+        const updatedFormularios = prev.map((formulario) =>
+          formulario.Id_Formulario === id ? { ...formulario, Estado: nuevoEstado } : formulario
+        );
+        setFilteredData(updatedFormularios); // También actualiza la lista filtrada
+        return updatedFormularios;
+      });
+  
+      // Muestra un Snackbar con éxito
+      setSnackbar({
+        open: true,
+        message: `El estado de la farmacia ${formulario.Nombre_Formulario} se actualizó con éxito.`,
+        severity: "success",
+      });
+    } catch (error) {
+      console.error("Error al actualizar el estado de la farmacia:", error.message);
+      // Muestra un Snackbar con error
+      setSnackbar({
+        open: true,
+        message: `Error al actualizar el estado de la farmacia ${formulario.Nombre_Formulario}.`,
+        severity: "error",
+      });
+    }
   };
 
   const generateInitialValues = (formFields) => {
@@ -162,7 +187,6 @@ const handleSnackbarClose = () => {
   };
 
   const handleView = (id) => {
-    setCurrentForm("view"); // Establece que se abrirá el formulario de "Añadir Licencia"
 
     const formulario = formularios.find((f) => f.Id_Formulario === id);
     try {
@@ -196,64 +220,37 @@ const handleSnackbarClose = () => {
     }
   };
 
-  
 
-  const handleAddForm = (id) => {
-    setCurrentForm("add"); // Establece que se abrirá el formulario de "Añadir Licencia"
-    try {
-      const jsonFields = formFieldsFormularios;
-      const initialValues = generateInitialValues(
-        jsonFields
-      )
-      if (Array.isArray(jsonFields)) {
-        setDialogContent(
-          <Box>
-            <DynamicForm
-              formFields={jsonFields}
-              formTitle="Añadiendo nuevo formulario"
-              labelButtonOnSubmit={`Añadir Formulario`}
-              initialValues={initialValues}
-            />
-          </Box>
-        );
-        setDialogOpen(true);
-      } else {
-        console.error("Campos_Formulario no es un array válido.");
-        alert("Los campos del formulario no tienen el formato esperado.");
-      }
-    } catch (error) {
-      console.error("Error al parsear Campos_Formulario:", error.message);
-      alert("Error al cargar los campos del formulario.");
-    }
-  };
+  // const validFields = [
+  //   "Id_Formulario",
+  //   "Nombre_Formulario",
+  //   "Creado_Por",
+  //   "Modificado_Por",
+  //   "Fecha_Creacion",
+  //   "Fecha_Ultima_Modificacion",
+  //   "Campos_Formulario",
+  // ];
+
+  // const filterValidFields = (data) => {
+  //   return Object.keys(data).reduce((filteredData, key) => {
+  //     if (validFields.includes(key)) {
+  //       filteredData[key] = data[key]; // Incluye solo las claves válidas
+  //     }
+  //     return filteredData;
+  //   }, {});
+  // };
+
 
   const handleEdit = (id) => {
     const formulario = formularios.find((f) => f.Id_Formulario === id);
-    try {
-      const jsonFields = JSON.parse(formulario.Campos_Formulario);
-  
-      // Asegúrate de que jsonFields es un array
-      if (Array.isArray(jsonFields)) {
-        setDialogContent(
-          <Box>
-            <DynamicForm
-              formFields={jsonFields}
-              formTitle={formulario.Nombre_Formulario}
-              isDisabled={true} // Deshabilita todos los campos
+    const parsedForm = {
+      ...formulario,
+      Campos_Formulario: JSON.parse(formulario.Campos_Formulario),
+    };
 
-            />
-          </Box>
-        );
-        setDialogOpen(true);
-      } else {
-        console.error("Campos_Formulario no es un array válido.");
-        alert("Los campos del formulario no tienen el formato esperado.");
-      }
-    } catch (error) {
-      console.error("Error al parsear Campos_Formulario:", error.message);
-      alert("Error al cargar los campos del formulario.");
-    }
-    alert(`La entidad de ID ${id} va a ser editada`);
+    // Navega a la página de edición con los datos del formulario
+    navigate(`/gefardo/editar-formularios/${formulario.Id_Formulario}`, { state: parsedForm })
+    
   };
 
 return (
@@ -282,18 +279,7 @@ return (
         filterKey="Nombre_Formulario"
       />
 
-      {/* Botón para añadir un nuevo tipo de servicio */}
-      <Box>
-        <Button
-          variant="contained"
-          color="primary"
-          size="large"
-          startIcon={<NoteAddIcon />}
-          onClick={handleAddForm}
-        >
-          Formulario
-        </Button>
-      </Box>
+      
     </Box>
 
     {/* Seccion de filtros */}
@@ -316,11 +302,18 @@ return (
         filterKey="Estado"
         onFilterChange={handleFilterChange}
       />
-      O{/* FilterAutocomplete para filtrar por Modificado Por */}
+      O{/* FilterAutocomplete para filtrar por Creado Por */}
       <FilterAutocomplete
         label="Modificado Por"
         data={formularios}
-        filterKey="Modificado_Por"
+        filterKey="Nombre_Completo_Modificador"
+        onFilterChange={handleFilterChange}
+      />
+      O{/* FilterAutocomplete para filtrar por Modificado Por */}
+      <FilterAutocomplete
+        label="Creado_Por"
+        data={formularios}
+        filterKey="Nombre_Completo_Creador"
         onFilterChange={handleFilterChange}
       />
     </Paper>
@@ -331,8 +324,8 @@ return (
       columns={[
         { key: "Id_Formulario", label: "ID" },
         { key: "Nombre_Formulario", label: "Nombre" },
-        { key: "Creado_Por", label: "Creado Por" },
-        { key: "Modificado_Por", label: "Modificado Por" },
+        { key: "Nombre_Completo_Creador", label: "Creado Por" },
+        { key: "Nombre_Completo_Modificador", label: "Modificado Por" },
         { key: "Fecha_Creacion", label: "Fecha de Creación" },
         { key: "Fecha_Ultima_Modificacion", label: "Última Modificación" },
         { key: "Estado", label: "Estado", isBoolean: true },

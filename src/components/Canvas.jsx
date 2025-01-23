@@ -49,8 +49,8 @@ const Canvas = ({
                     Arrastra una sección aquí para empezar
                 </Typography>
             )}
-
-            {formFields.map((section, sectionIndex) => (
+{Array.isArray(formFields) && formFields.length > 0 ? (
+            formFields.map((section, sectionIndex) => (
                 <Paper
                     key={sectionIndex}
                     sx={{
@@ -388,7 +388,11 @@ const Canvas = ({
 
 
                 </Paper>
-            ))}
+            )))
+
+: (
+  <Typography> No hay secciones disponibles.</Typography>
+)}
         </Box>
     );
 };

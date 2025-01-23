@@ -20,6 +20,7 @@ import GestionarServicios from "./pages/GestionarServicios";
 import CrearFormulario from "./pages/CrearFormulario";
 
 import VerPerfil from "./pages/VerPerfil";
+import EditarFormulario from "./pages/EditarFormulario";
 
 function App() {
   return (
@@ -56,6 +57,8 @@ function App() {
 
 
                 <Route path="crear-formularios" element={ <CrearFormulario/>} />
+                <Route path="editar-formularios/:id" element={ <EditarFormulario/>} />
+
 
                 <Route path="ver-perfil" element={<VerPerfil />} />
 
