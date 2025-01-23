@@ -261,7 +261,7 @@ return (
       marginLeft: "20px",
     }}
   >
-    {/* Barra de búsqueda y filtro inline */}
+    {/* Barra de búsqueda */}
     <Box
       sx={{
         display: "flex",

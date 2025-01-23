@@ -62,6 +62,16 @@ const inspectionsService = {
     }
   },
 
+  toggleEstado: async (id, estado) => {
+    try {
+      const response = await axiosInstance.put(`/${id}`, { Estado: estado });
+      return response.data;
+    } catch (error) {
+      console.error("Error al cambiar el estado de la inspección:", error.response?.data || error.message);
+      throw new Error("No se pudo actualizar el estado de la inspección.");
+    }
+  },
+
   // Crea una nueva inspección
   createInspection: async (inspectionData) => {
     try {

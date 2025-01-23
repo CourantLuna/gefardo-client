@@ -227,11 +227,11 @@ const VerSanciones = () => {
         Fecha_Sancion: new Date(sancion.Fecha_Sancion).toISOString().split("T")[0],
       };
   
-      setSelectedSancion(formattedSanction); // Guarda la licencia seleccionada
+      setSelectedSancion(formattedSanction); // Guarda la sanción seleccionada
       setCurrentForm("edit"); // Cambia al formulario de edición
       setDialogOpen(true); // Abre el diálogo
     } else {
-      console.error(`No se encontró ninguna licencia con el ID: ${id}`);
+      console.error(`No se encontró ninguna sanción con el ID: ${id}`);
     }
   };
 
@@ -429,8 +429,8 @@ const handleSnackbarClose = () => {
           {currentForm === "add" && (
             <DynamicForm
               formFields={sancionFormFields}
-              formTitle="Registrando Nueva Licencia"
-              labelButtonOnSubmit="Registrar Licencia"
+              formTitle="Registrando Nueva Sancion"
+              labelButtonOnSubmit="Registrar Sanción"
               handleSendData={handleAddSanction}
               initialValues={getEmptyInitialValues()} // Estructura vacía del modelo
 
@@ -440,7 +440,7 @@ const handleSnackbarClose = () => {
           {currentForm === "edit" && (
             <DynamicForm
             formFields={sancionFormFields}
-            formTitle="Editando Licencia"
+            formTitle="Editando sanción"
             labelButtonOnSubmit="Guardar Cambios"
             initialValues={selectedSancion}
             handleSendData={handleUpdateSanction}
