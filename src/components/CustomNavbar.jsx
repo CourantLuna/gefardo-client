@@ -60,21 +60,20 @@ function CustomNavbar({
     setAnchorEl(null);
   };
 
+  
   useEffect(() => {
     const fetchUserInfo = async () => {
-      try {
-        const usuario = await userService.getUsuarioById(userId); // Llama al servicio
-        setUserInfo(usuario); // Establece la información del usuario
-        console.log("Información del usuario:", usuario);
-      } catch (error) {
-        console.error("Error al obtener la información del usuario:", error);
-      }
+        try {
+            const usuario = await userService.getUsuarioById(userId);
+            console.log("Información del usuario antes de setUserInfo:", usuario);
+            setUserInfo(usuario);
+        } catch (error) {
+            console.error("Error al obtener la información del usuario:", error);
+        }
     };
-  
-    if (userId) {
-      fetchUserInfo(); // Llama a la función si se proporciona un ID
-    }
-  }, [userId])
+    if (userId) fetchUserInfo();
+}, [userId]);
+
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%', height: '64px' }}>
@@ -131,7 +130,7 @@ function CustomNavbar({
               >
 
                 <Avatar  alt={userInfo.Nombre} 
-                src={userInfo.Foto_Perfil}
+                src={FotoPerfil || userInfo.Foto_Perfil}
                  />
               </IconButton>
 
