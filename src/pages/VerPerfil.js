@@ -29,6 +29,24 @@ const VerPerfil = () => {
     console.log("ID del usuario:", id);
     setUserId(id); // Guarda el ID en el estado
   }, []);
+
+  const handleUploadPhoto = async (event) => {
+    const file = event.target.files[0];
+  
+    if (file) {
+      const formData = new FormData();
+      formData.append('foto', file);
+  
+      try {
+        const response = await userService.uploadProfilePicture(userId, formData);
+        console.log('Foto de perfil:', response);
+        alert('Foto de perfil actualizada exitosamente!');
+      } catch (error) {
+        console.error('Error subiendo foto de perfil:', error);
+        alert('Error subiendo foto de perfil.');
+      }
+    }
+  };
   
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -69,29 +87,43 @@ const VerPerfil = () => {
         }}
       >
         <Grid container spacing={5}>
-          <Grid item xs={12} md={6} display="flex" flexDirection="column" alignItems="center">
+          <Grid item xs={12} md={6} display="flex" flexDirection="column" alignItems="center" justifyContent={"center"}>
             <Box sx={{ position: "relative", display: "inline-block", mb: 4 }}>
               <Avatar
                 alt={userInfo.Nombre}
-                src={userInfo.avatarUrl}
+                src={userInfo.Foto_Perfil}
                 sx={{ width: 200, height: 200                    
                   ,boxShadow: theme.shadows[7] // Niveles de 0 a 24
                 }}
                 
               />
               <IconButton
-                aria-label="Cambiar foto de perfil"
-                sx={{
-                  backgroundColor: theme.palette.background.paper,
-                  position: "absolute",
-                  bottom: 10,
-                  right: 10,
-                  borderColor: theme.palette.contrastThreshold,
-                  zIndex: 1,
-                  boxShadow: theme.shadows[4] // Niveles de 0 a 24
-                }}
-              >
+                  aria-label="Cambiar foto de perfil"
+                  sx={{
+                    backgroundColor: theme.palette.background.paper,
+                    position: "absolute",
+                    bottom: 10,
+                    right: 10,
+                    borderColor: theme.palette.contrastThreshold,
+                    zIndex: 1,
+                    boxShadow: theme.shadows[4],
+                  }}
+                >
                 <CameraAltIcon color="primary" />
+                <input
+                  type="file"
+                  accept="image/*"
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                    opacity: 0,
+                    cursor: 'pointer',
+                  }}
+                  onChange={handleUploadPhoto}
+                />
               </IconButton>
             </Box>
             <Typography variant="h4" fontWeight="bold" gutterBottom>
@@ -108,32 +140,64 @@ const VerPerfil = () => {
           </Grid>
 
           <Grid item xs={12} md={5} display="flex" flexDirection="column" alignItems="flex-start" justifyContent="center">
-            <Box display="flex" alignItems="center" mb={5}>
-              <BadgeIcon color="primary" sx={{ mr: 2 }} />
-              <Typography variant="h5">
-                <strong>Estado:</strong> {userInfo.Estado || "No disponible"}
-              </Typography>
+            {/* Estado */}
+            <Box display="flex" alignItems="center" mb={5} width="100%">
+              <Box sx={{ width: 40, display: "flex", justifyContent: "center" }}> 
+                <BadgeIcon color="primary" />
+              </Box>
+              <Box ml={2}> 
+                <Typography variant="h4">
+                  <strong>Estado:</strong>
+                </Typography>
+                <Typography variant="body1">
+                  {userInfo.Estado === 0 ? "Cuenta inactiva" : "Cuenta activa"}
+                </Typography>
+              </Box>
             </Box>
 
-            <Box display="flex" alignItems="center" mb={5}>
-              <BadgeIcon color="primary" sx={{ mr: 2 }} />
-              <Typography variant="h5">
-                <strong>Cédula:</strong> {userInfo.Cedula || "No disponible"}
-              </Typography>
+            {/* Cédula */}
+            <Box display="flex" alignItems="center" mb={5} width="100%">
+              <Box sx={{ width: 40, display: "flex", justifyContent: "center" }}> 
+                <BadgeIcon color="primary" />
+              </Box>
+              <Box ml={2}> 
+                <Typography variant="h4">
+                  <strong>Cédula:</strong>
+                </Typography>
+                <Typography variant="body1">
+                  {userInfo.Cedula || "No disponible"}
+                </Typography>
+              </Box>
             </Box>
 
-            <Box display="flex" alignItems="center" mb={5}>
-              <EmailIcon color="primary" sx={{ mr: 2 }} />
-              <Typography variant="h5">
-                <strong>Email:</strong> {userInfo.Correo_Electronico || "No disponible"}
-              </Typography>
+            {/* Email */}
+            <Box display="flex" alignItems="center" mb={5} width="100%">
+              <Box sx={{ width: 40, display: "flex", justifyContent: "center" }}> 
+                <EmailIcon color="primary" />
+              </Box>
+              <Box ml={2}> 
+                <Typography variant="h4" textAlign={"left"}>
+                  <strong>Email:</strong>
+                </Typography>
+                <Typography variant="body1">
+                  {userInfo.Correo_Electronico || "No disponible"}
+                </Typography>
+              </Box>
             </Box>
 
-            <Box display="flex" alignItems="center" mb={5}>
-              <PhoneIcon color="primary" sx={{ mr: 2 }} />
-              <Typography variant="h5">
-                <strong>Teléfono:</strong> {userInfo.Telefono || "No disponible"}
-              </Typography>
+            {/* Teléfono */}
+            <Box display="flex" alignItems="center" mb={5} width="100%">
+              <Box sx={{ width: 40, display: "flex", justifyContent: "center" }}> 
+                <PhoneIcon color="primary" />
+              </Box>
+              <Box ml={2}> 
+                <Typography variant="h4">
+                  <strong>Teléfono:</strong>
+                </Typography>
+                <Typography variant="body1">
+                  {userInfo.Telefono || "No disponible"}
+                </Typography>
+              </Box>
             </Box>
           </Grid>
         </Grid>

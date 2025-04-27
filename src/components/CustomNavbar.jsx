@@ -30,6 +30,7 @@ function CustomNavbar({
   showProfileButton = true, // Default: show the profile button
   NombreUsuario,
   ApellidosUsuario,
+  FotoPerfil
   // VerPerfil
 }) {
   const [anchorEl, setAnchorEl] = useState(null); // Controla el menú desplegable del perfil
@@ -108,7 +109,7 @@ function CustomNavbar({
                 }}
               >
 
-                <Avatar alt="Profile" src="https://mui.com/static/images/avatar/1.jpg" />
+                <Avatar alt="Profile" src={FotoPerfil || "https://mui.com/static/images/avatar/1.jpg"} />
               </IconButton>
 
               {/* Profile Menu */}
